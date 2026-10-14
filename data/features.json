@@ -1676,7 +1676,7 @@
   "lon": 72.50798,
   "elev": 2290,
   "confidence": "placed",
-  "note": "Main crossing of the demarcation line (~1,900 crossings/day) beside the foothill village of Qara-Chik on the road from Talas into the Talas Alatau; El-Choro post 1 km uphill.",
+  "note": "Main crossing of the demarcation line (~1,900 crossings/day) at about 2,300 m at the head of the Kara-Oi valley, ~37 km by road from Talas, beside Qara-Chik village; El-Choro post 1 km uphill.",
   "wiki": "Qara-Chik Border Checkpoint"
  },
  {
@@ -1871,7 +1871,7 @@
   "lon": 72.105,
   "elev": 1390,
   "confidence": "placed",
-  "note": "Gendarmerie checkpoint at the canyon mouth on the Sary-Bulak road (~20 km S of Talas).",
+  "note": "Gendarmerie control post where the Sary-Bulak road enters the canyon (~13 km SW of Talas), inside the ISEZ.",
   "wiki": "Fergana Mountain Transit Highway"
  },
  {
@@ -1886,7 +1886,7 @@
   "lon": 72.095,
   "elev": 1650,
   "confidence": "stated",
-  "note": "Antimony mine (1961) in the Sary-Bulak Gorge ~28 km S of Talas; ~2,300 staff; phased restart planned 2026-27.",
+  "note": "Antimony mine (1961) in the Sary-Bulak Gorge ~20 km SSW of Talas (~24 km by road); ~2,300 staff; phased restart planned 2026-27.",
   "wiki": "Sary-Bulak Antimony Works"
  },
  {
@@ -1901,7 +1901,7 @@
   "lon": 72.11,
   "elev": 1760,
   "confidence": "placed",
-  "note": "Steep limestone gorge ~28 km S of Talas lined with the shafts and dumps of SBAW; haul road and rail spur on its floor.",
+  "note": "Steep limestone gorge ~20 km SSW of Talas lined with the shafts and dumps of SBAW; haul road and rail spur on its floor.",
   "wiki": "Sary-Bulak Gorge"
  },
  {
@@ -3206,7 +3206,7 @@
   "lon": 72.75,
   "elev": 2010,
   "confidence": "stated",
-  "note": "Highest Gendarmerie checkpoint (~2,400 m, 2009) at the lower end of the track to the plateau; open on migration dates.",
+  "note": "Gendarmerie checkpoint (~2,000 m, 2009) on the line at the lower end of the track to the Aksay Plateau; open on migration dates.",
   "wiki": "Aksay Border Patrol Post"
  },
  {

@@ -364,7 +364,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Talas aimagı, ~9,800 km²: middle Talas valley around the capital incl. the air base, Kara-Bulak and Kara-Oi; seat Talas. Label point east of the city.",
+  "note": "Talas aimagı, ~6,000 km²: middle and upper Talas valley around the capital incl. the air base, Kara-Bulak, Kara-Oi, the Otmek valley and Orto-Ayyl; seat Talas.",
   "wiki": null
  },
  {
@@ -380,7 +380,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Kara-Buura aimagı, ~11,400 km²: lower/western Talas valley plus a corridor west along the Turksib and Trans-Talas Highway to the Kazakh frontier facing Shymkent (Talas North Terminal); seat Kyzyl-Adyr.",
+  "note": "Kara-Buura aimagı, ~6,800 km²: lower Talas valley plus a belt west along the main road, the Turksib and the Trans-Talas Highway to the Kazakh frontier facing Shymkent (Talas North Terminal); seat Kyzyl-Adyr.",
   "wiki": "Kara-Buura"
  },
  {
@@ -396,7 +396,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Chüy aimagı, ~24,600 km²: Chu lowlands around Nurzhan, oil fields, canals, Boz-Korgon; borders Kazakhstan east of the city; seat Nurzhan.",
+  "note": "Chüy aimagı, ~13,500 km²: the belt along the north foot of the Kyrgyz Range and the rounded district around Nurzhan (oases, oil fields, rail yards, Boz-Korgon, Chu Gate); seat Nurzhan.",
   "wiki": null
  },
  {
@@ -412,7 +412,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Sary-Bulak aimagı, ~10,900 km²: southern industrial corridor and foothills south of Talas incl. Sary-Bulak mine, Chatkal smelter and the lower Kara-Suu Canyon; seat Sary-Bulak.",
+  "note": "Sary-Bulak aimagı, ~350 km²: the Sary-Bulak Gorge and the Chatkal valley mouth south-west of Talas (Sary-Bulak works, Chatkal smelter, Kemer mine, Kara-Suu Canyon mouth); seat Sary-Bulak.",
   "wiki": null
  },
  {
@@ -428,7 +428,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Tömönkü Naryn aimagı, ~6,300 km²: salient around Tash-Kömür and Iyık Janyl, downstream Naryn cascade, switchyard, Fergana Gateway approach; seat Tash-Kömür.",
+  "note": "Tömönkü Naryn aimagı, ~4,100 km²: the Naryn gorge and salient around Tash-Kömür and Iyık Janyl, the Toktogul basin floor (Toktogul, Kara-Köl, dam, reservoir) and the State Route 1 corridor north to the Otmek tunnel; seat Tash-Kömür.",
   "wiki": null
  },
  {
@@ -444,7 +444,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~52,000 km²: southern Betpak-Dala north of the Chu and the Moiynkum sands between Chu and Talas; Boztorgoy winter pastures.",
+  "note": "UN planning zone ~92,000 km²: southern Betpak-Dala north of the Chu, the Moiynkum sands between Chu and Talas and the piedmont plain north of the Kyrgyz Range; Boztorgoy winter pastures.",
   "wiki": null
  },
  {
@@ -460,7 +460,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~21,000 km²: Karatau range and foothills running NW toward the Kyzylkum Fringe; Kulan-Talaa plain.",
+  "note": "UN planning zone ~38,200 km²: Karatau range and foothills on both sides of the ISEZ belt along the Shymkent road, toward the Kyzylkum Fringe; Kulan-Talaa plain.",
   "wiki": null
  },
  {
@@ -476,7 +476,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~17,500 km²: the high range south of the Talas valley, Aksay Plateau, Kara-Koyun, upper Besh-Tash and Kara-Suu, Aksu-Zhabagly, Manas Peak.",
+  "note": "UN planning zone ~18,500 km²: the high range south of the Talas valley and, since 2009, the high Kyrgyz Range east of the Kök-Bel road; Aksay Plateau, Kara-Koyun, upper Besh-Tash and Kara-Suu, Aksu-Zhabagly, Manas Peak.",
   "wiki": null
  },
  {
@@ -508,7 +508,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~12,500 km²: Toktogul reservoir basin and Naryn gorge down to the dam; Kökjal clan.",
+  "note": "UN planning zone ~10,000 km²: the highlands around the Toktogul basin and the Naryn's entry gorges (the basin floor is ISEZ since 2009); Kökjal clan.",
   "wiki": null
  },
  {
@@ -572,7 +572,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Foothill village beside the Qara-Chik Border Checkpoint on the road from Talas into the Talas Alatau; gives its name to the ceasefire line.",
+  "note": "Foothill village just below the Qara-Chik Border Checkpoint at the head of the Kara-Oi valley; gives its name to the ceasefire line.",
   "wiki": null
  },
  {
@@ -870,7 +870,7 @@
   "name_en": "Toguz-Bulak",
   "kind": "village",
   "zone": "ATR",
-  "district": "Talas",
+  "district": "Talas Alatau",
   "lat": 42.58,
   "lon": 72.745,
   "pop": 720,
@@ -918,7 +918,7 @@
   "name_en": "Ak-Tash",
   "kind": "village",
   "zone": "ATR",
-  "district": "Kara-Buura",
+  "district": "Talas Alatau",
   "lat": 42.52,
   "lon": 71.47,
   "pop": 4310,
@@ -1020,7 +1020,7 @@
   "pop": 4920,
   "elev": 1640,
   "confidence": "stated",
-  "note": "Antimony mining village (workers' settlement 'Rudnik') and district seat in the Talas Alatau foothills ~28 km south of Talas; reached by a branch road from the Kara-Suu canyon mouth. Placed SSW so the Besh-Tash valley (Talas District) stays separate.",
+  "note": "Antimony mining village (workers' settlement 'Rudnik') and district seat in the Sary-Bulak Gorge ~20 km SSW of Talas, up the road from the Kara-Suu Canyon mouth.",
   "wiki": "Sary-Bulak"
  },
  {
@@ -1462,7 +1462,7 @@
   "name_en": "Kara-Kungey",
   "kind": "village",
   "zone": "ATR",
-  "district": "Talas",
+  "district": "Talas Alatau",
   "lat": 42.355,
   "lon": 72.6,
   "pop": 610,
@@ -1516,7 +1516,7 @@
   "pop": 900,
   "elev": 2550,
   "confidence": "placed",
-  "note": "High village at ~2,300 m in the upper Western Karakol valley on the eastern Talas Alatau near the Suusamyr; end of the all-weather road; logistics depot.",
+  "note": "High village at ~2,550 m in the upper Western Karakol valley off the Suusamyr; end of the all-weather road from State Route 1; logistics depot.",
   "wiki": "Karakol"
  },
  {
@@ -2054,7 +2054,7 @@
   "name_en": "Hauzdy",
   "kind": "village",
   "zone": "ATR",
-  "district": "Kara-Buura",
+  "district": "Karatau",
   "lat": 42.985,
   "lon": 70.9,
   "pop": 310,
@@ -2070,7 +2070,7 @@
   "name_en": "Tar-Say",
   "kind": "village",
   "zone": "ATR",
-  "district": "Kara-Buura",
+  "district": "Karatau",
   "lat": 43.12,
   "lon": 70.7,
   "pop": 280,
@@ -2230,7 +2230,7 @@
   "name_en": "Kamyshtuu",
   "kind": "village",
   "zone": "ATR",
-  "district": "Chu",
+  "district": "Northern Steppe",
   "lat": 43.97,
   "lon": 73.62,
   "pop": 240,
