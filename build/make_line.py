@@ -467,4 +467,73 @@ for k, v in sorted(by.items()):
 line_cells = raster_lines([f["geometry"]["coordinates"] for f in feats])
 rwz = within_km(line_cells, 12) & irad
 json.dump({"type": "FeatureCollection", "features": [feat(trace(rwz, 0.004, 5), name="Restricted-weapons zone")]}, open(os.path.join(out, "restricted_zone.geojson"), "w"))
+
+# ---------- UN planning zones of the ATR ----------
+# The ISEZ splits the tribal land into three separate blocks (north of the plains belt; the mountains west of the
+# State Route 1 corridor and the Naryn gorge; the mountains east of them). Each zone lies inside one block, split
+# along the main crests, so no zone reaches across ISEZ land.
+atr = irad & ~isez
+blab, nb = ndimage.label(atr)
+bsz = ndimage.sum(atr, blab, range(1, nb + 1))
+blocks = list(1 + np.argsort(-bsz)[:3])
+def block_at(lon, lat):
+    return blab[cell(lon, lat)]
+B_N, B_W, B_E = block_at(71.0, 44.0), block_at(71.6, 42.3), block_at(73.1, 41.7)
+def ridge(lo, hi, x0, x1, smooth=9):
+    """latitude of the highest ground between lo and hi for each longitude (a crest line), smoothed"""
+    out = np.full(lons.shape, np.nan)
+    js = np.where((lats >= lo) & (lats <= hi))[0]
+    for i, x in enumerate(lons):
+        if x0 <= x <= x1:
+            out[i] = lats[js[np.argmax(ndimage.uniform_filter1d(E[js, i], 3))]]
+    ok = ~np.isnan(out)
+    out[ok] = ndimage.median_filter(out[ok], smooth)
+    out[~ok] = np.interp(lons[~ok], lons[ok], out[ok])
+    return out[None, :]
+fergana_crest = ridge(41.3, 41.75, 72.2, 74.0)      # Fergana Range / Babash-Ata: Naryn side vs Fergana side
+suusamyr_crest = ridge(41.92, 42.2, 72.9, 74.0)     # Suusamyr range: Suusamyr and Kyrgyz Range vs the Toktogul basin
+# Talas Alatau main crest (Talas side vs Chatkal side), through the passes the lore names
+_tc = np.array([(69.9, 42.3), (70.6, 42.2), (71.22, 42.12), (71.45, 42.19), (71.6, 42.29), (71.74, 42.31), (71.9, 42.22),
+                (72.05, 42.14), (72.26, 42.1), (72.5, 42.12), (72.72, 42.08), (73.0, 42.05)])
+talas_crest = np.interp(lons, _tc[:, 0], _tc[:, 1])[None, :]
+# Karatau: the range and its foothills (the upland above the Moiynkum and Chu–Sarysu lowland), west of the lower Talas
+E_s = ndimage.gaussian_filter(E, 8)
+karatau_axis = raster_lines([[(70.45, 42.75), (69.9, 43.25), (69.2, 43.7), (68.4, 44.15), (67.9, 44.4)]])
+karatau_ring = (E_s >= 380) & within_km(karatau_axis, 80)
+_l, _n = ndimage.label(karatau_ring & (blab == B_N))
+karatau_ring = _l == _l[cell(69.5, 43.4)]
+PZ = {
+    "Northern Steppe": (blab == B_N) & ~karatau_ring,
+    "Karatau": (blab == B_N) & karatau_ring,
+    "Talas Alatau": (blab == B_W) & (GY >= talas_crest),
+    "Chatkal Highlands": (blab == B_W) & (GY < talas_crest),
+    "Kyrgyz Range–Suusamyr": (blab == B_E) & (GY >= suusamyr_crest),
+    "Toktogul–Naryn": (blab == B_E) & (GY < suusamyr_crest) & (GY >= fergana_crest),
+    "Fergana Rim": (blab == B_E) & (GY < fergana_crest),
+}
+# stray tribal crumbs (tiny blocks) join the zone next to them; detached bits of a zone join the neighbour they touch most
+rest = atr & ~np.any(list(PZ.values()), axis=0)
+for _ in range(3):
+    names = list(PZ)
+    for k in names:
+        lab_, n_ = ndimage.label(PZ[k])
+        if n_ <= 1: continue
+        sizes = ndimage.sum(PZ[k], lab_, range(1, n_ + 1)); main = 1 + int(np.argmax(sizes))
+        for c in range(1, n_ + 1):
+            if c == main: continue
+            piece = lab_ == c; ring_ = ndimage.binary_dilation(piece, iterations=2) & ~piece
+            best = max((o for o in names if o != k), key=lambda o: (PZ[o] & ring_).sum())
+            if (PZ[best] & ring_).sum():
+                PZ[k] &= ~piece; PZ[best] |= piece
+    lab_, n_ = ndimage.label(rest)
+    for c in range(1, n_ + 1):
+        piece = lab_ == c; ring_ = ndimage.binary_dilation(piece, iterations=2) & ~piece
+        best = max(PZ, key=lambda o: (PZ[o] & ring_).sum())
+        PZ[best] |= piece
+    rest = atr & ~np.any(list(PZ.values()), axis=0)
+for k, v in PZ.items():
+    print("  zone %-22s %6.0f km2" % (k, area(v)))
+json.dump({"type": "FeatureCollection", "features": [feat(trace(v, 0.003, 1), zone=k, area_km2=int(round(area(v), -2))) for k, v in PZ.items()]},
+          open(os.path.join(out, "planning_zones.geojson"), "w"))
+np.save(os.path.join(os.path.dirname(DEMF), "planning_zones.npy"), np.stack([PZ[k] for k in PZ]))
 np.save(os.path.join(os.path.dirname(DEMF), "isez_mask.npy"), isez)
