@@ -31,7 +31,10 @@
     sources: {
       [omt]: { type: "vector", url: "https://tiles.openfreemap.org/planet" },
       dem: { type: "raster-dem", tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"], encoding: "terrarium", tileSize: 256, maxzoom: 12 },
-      phys: { type: "geojson", data: "data/physical.geojson" }
+      phys: { type: "geojson", data: "data/physical.geojson" },
+      citymask: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
+      cityov: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
+      citydet: { type: "geojson", data: { type: "FeatureCollection", features: [] } }
     },
     layers: [
       { id: "bg", type: "background", paint: { "background-color": C.land } },
@@ -60,7 +63,33 @@
       { id: "road-primary", type: "line", source: omt, "source-layer": "transportation", minzoom: 6, filter: ["in", ["get", "class"], ["literal", ["primary", "trunk"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.primary, "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.6, 16, 15] } },
       { id: "road-motorway", type: "line", source: omt, "source-layer": "transportation", minzoom: 5, filter: ["==", ["get", "class"], "motorway"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.motorway, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 0.8, 16, 18] } },
       { id: "rail", type: "line", source: omt, "source-layer": "transportation", minzoom: 9, filter: ["==", ["get", "class"], "rail"], paint: { "line-color": C.rail, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 16, 3] } },
-      { id: "rail-dash", type: "line", source: omt, "source-layer": "transportation", minzoom: 11, filter: ["==", ["get", "class"], "rail"], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } }
+      { id: "rail-dash", type: "line", source: omt, "source-layer": "transportation", minzoom: 11, filter: ["==", ["get", "class"], "rail"], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
+      // Iradi city plans (data/city): a mask hides the real base map inside each city, then its own streets are drawn
+      { id: "city-mask", type: "fill", source: "citymask", paint: { "fill-color": C.land } },
+      { id: "city-land", type: "fill", source: "cityov", filter: ["==", ["get", "t"], "land"],
+        paint: { "fill-color": ["match", ["get", "k"], "residential", C.res, "commercial", "#efdcd6", "industrial", "#e3dbe6", "park", C.park, "grass", C.grass,
+          "farm", C.farm, "cemetery", "#d3dfca", "institution", "#efe6c8", "pitch", "#cfe5c0", "wood", C.wood, "parking", "#e7e3dc", C.res], "fill-opacity": 0.9 } },
+      { id: "city-river", type: "line", source: "cityov", filter: ["==", ["get", "t"], "river"], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.water, "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 9, 1.5, 13, 6, 16, 30] } },
+      { id: "city-canal", type: "line", source: "cityov", filter: ["==", ["get", "t"], "canal"], minzoom: 11, paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 3] } },
+      { id: "city-ditch", type: "line", source: "citydet", filter: ["==", ["get", "t"], "canal"], minzoom: 14, paint: { "line-color": C.waterLine, "line-width": 1 } },
+      { id: "city-building", type: "fill", source: "citydet", minzoom: 13, filter: ["==", ["get", "t"], "building"],
+        paint: { "fill-color": ["case", ["has", "tall"], "#d3c9bc", C.building], "fill-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0, 14.5, 0.9] } },
+      { id: "city-path", type: "line", source: "citydet", minzoom: 15, filter: ["==", ["get", "k"], "path"], paint: { "line-color": "#c9bfa9", "line-dasharray": [2, 2], "line-width": 1 } },
+      { id: "city-minor-case", type: "line", source: "citydet", minzoom: 12.5, filter: ["in", ["get", "k"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 12.5, 1, 16, ["match", ["get", "k"], "service", 6, 10]] } },
+      { id: "city-minor", type: "line", source: "citydet", minzoom: 12.5, filter: ["in", ["get", "k"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 12.5, 0.5, 16, ["match", ["get", "k"], "service", 4.5, 8]] } },
+      { id: "city-rail", type: "line", source: "cityov", minzoom: 9, filter: ["==", ["get", "t"], "rail"], paint: { "line-color": C.rail, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 16, 3] } },
+      { id: "city-rail-dash", type: "line", source: "cityov", minzoom: 11, filter: ["all", ["==", ["get", "t"], "rail"], ["==", ["get", "k"], "rail"]], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
+      { id: "city-mid-case", type: "line", source: "cityov", minzoom: 9.5, filter: ["==", ["get", "k"], "mid"], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 9.5, 1, 16, 14] } },
+      { id: "city-mid", type: "line", source: "cityov", minzoom: 9.5, filter: ["==", ["get", "k"], "mid"], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 9.5, 0.5, 16, 12] } },
+      { id: "city-major-case", type: "line", source: "cityov", minzoom: 8.5, filter: ["==", ["get", "k"], "major"], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.primaryCase, "line-width": ["interpolate", ["linear"], ["zoom"], 8.5, 1.2, 16, 18] } },
+      { id: "city-major", type: "line", source: "cityov", minzoom: 8.5, filter: ["==", ["get", "k"], "major"], layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": C.primary, "line-width": ["interpolate", ["linear"], ["zoom"], 8.5, 0.6, 16, 15] } }
     ]
   };
 
@@ -75,6 +104,43 @@
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
   map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: false } }), "bottom-right");
   map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
+
+  /* ---------- city plans: overview near the cities, detail tiles when zoomed in ---------- */
+  const CITY = { index: null, ov: new Map(), tiles: new Map(), pending: new Set() };
+  fetch("data/city/index.json").then(r => r.json()).then(ix => {
+    CITY.index = ix;
+    const setMask = () => map.getSource("citymask") && map.getSource("citymask").setData({ type: "FeatureCollection", features: ix.cities.map(c => ({ type: "Feature", properties: { name: c.name }, geometry: c.footprint })) });
+    if (map.isStyleLoaded()) setMask(); else map.once("style.load", setMask);
+    map.on("style.load", setMask);
+    updateCities();
+  }).catch(() => {});
+  function updateCities() {
+    const ix = CITY.index; if (!ix || !map.getSource("cityov")) return;
+    const z = map.getZoom(), b = map.getBounds();
+    const vis = ix.cities.filter(c => !(c.bbox[0] > b.getEast() || c.bbox[2] < b.getWest() || c.bbox[1] > b.getNorth() || c.bbox[3] < b.getSouth()));
+    let changed = false;
+    for (const c of vis) {
+      if (z >= 8 && !CITY.ov.has(c.name) && !CITY.pending.has("ov:" + c.name)) {
+        CITY.pending.add("ov:" + c.name);
+        fetch(`data/city/${c.name}/overview.json`).then(r => r.json()).then(j => { CITY.ov.set(c.name, j.features); pushOv(); });
+      }
+      if (z >= 12.5) {
+        const T = ix.tile, i0 = Math.floor(b.getWest() / T), i1 = Math.floor(b.getEast() / T), j0 = Math.floor(b.getSouth() / T), j1 = Math.floor(b.getNorth() / T);
+        for (const [i, j] of c.tiles) {
+          if (i < i0 - 1 || i > i1 || j < j0 - 1 || j > j1) continue;   // features are filed by their first point: take one tile of margin
+          const key = `${c.name}/t_${i}_${j}`;
+          if (CITY.tiles.has(key) || CITY.pending.has(key)) continue;
+          CITY.pending.add(key); changed = true;
+          fetch(`data/city/${key}.json`).then(r => r.json()).then(fc => { CITY.tiles.set(key, fc.features); pushDet(); });
+        }
+      }
+    }
+  }
+  let detTimer = null;
+  function pushOv() { map.getSource("cityov").setData({ type: "FeatureCollection", features: [].concat(...CITY.ov.values()) }); }
+  function pushDet() { clearTimeout(detTimer); detTimer = setTimeout(() => map.getSource("citydet").setData({ type: "FeatureCollection", features: [].concat(...CITY.tiles.values()) }), 120); }
+  map.on("moveend", updateCities);
+  map.on("style.load", () => { if (CITY.ov.size) pushOv(); if (CITY.tiles.size) pushDet(); updateCities(); });
 
   /* ---------- data ---------- */
   const D = { places: [], feats: [], routes: [], irad: null, zones: null, districts: null };

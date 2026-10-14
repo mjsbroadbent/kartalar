@@ -1,11 +1,12 @@
 #!/bin/sh
 # Rebuild the routes, the Qara-Chik line, the zones and the checkpoints, in order.
-# Usage: build/rebuild.sh irad-dem.bin irad-osm-roads.json
+# Usage: build/rebuild.sh irad-dem.bin irad-osm-roads.json [dir with city-<donor>.json from tools/city-export.html]
 set -e
 cd "$(dirname "$0")/.."
 DEM="$1"; OSM="$2"
 python3 build/route_terrain.py "$DEM" "$OSM"     # roads and railways over the terrain (build/route_specs.json)
 python3 build/derive_lines.py                   # Otmek tunnel; pipelines and power lines along their routes
+if [ -n "$3" ]; then python3 build/make_cities.py "$DEM" "$OSM" "$3"; fi   # borrowed city plans; routes re-laid along their streets
 python3 build/make_line.py "$DEM" "$OSM"        # ISEZ/ATR, districts, Qara-Chik line, restricted zone
 python3 build/place_checkpoints.py              # named checkpoints onto the line
 python3 build/make_crossings.py                 # a crossing point wherever a road or railway crosses the line

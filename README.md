@@ -51,7 +51,7 @@ python3 build/make_base.py ne/geojson
 
 `build/route_terrain.py` then lays the routes listed in `build/route_specs.json` over the real terrain: each is a cheapest path through the real road (or rail) network plus a fine terrain grid where new road would have to be built, with costs for steep climbs (beyond the route's ruling grade), steep side slopes and altitude. Real main roads are kept as they are; new-built stretches are straightened, rounded and given hairpins where they still climb too fast. `build/derive_lines.py` cuts the Otmek tunnel into State Route 1 and lays the pipelines and power lines along their routes.
 
-`tools/city-export.html` downloads the streets, buildings, land use and parks of the donor cities (Bishkek for Talas, Shymkent for Nurzhan, Osh for Iyık Janyl) for the city plans.
+`tools/city-export.html` downloads the streets, buildings, land use and parks of the donor cities (Bishkek for Talas, Shymkent for Nurzhan, Osh for Iyık Janyl). `build/make_cities.py` moves each donor plan onto its Iradi site (Shymkent turned 45° so its refinery district lies east; Osh mirrored so its sacred hill becomes Cathedral Hill on the east bank of the Naryn), clips it to the ground the city can occupy (valley floor, off the airfield, clear of Tash-Kömür), drops every real name, and writes `data/city/` (an overview per city and 0.02° detail tiles). It also re-lays the lore routes and railways through each city along the borrowed main streets and tracks, and moves the stations onto them. The map hides the real base map inside each city footprint and draws the borrowed plan instead.
 
 ## Features
 
