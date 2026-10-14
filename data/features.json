@@ -1811,7 +1811,7 @@
   "lon": 72.222,
   "elev": 1700,
   "confidence": "placed",
-  "note": "32 km limestone gorge (walls to 650 m) S of Talas carrying State Route 1; lower canyon ISEZ (Sary-Bulak District), upper valley ATR.",
+  "note": "32 km limestone gorge (walls to 650 m) south of Talas carrying the Sary-Bulak road to the antimony works and the Chatkal smelter; lower canyon ISEZ (Sary-Bulak District), upper valley ATR.",
   "wiki": "Kara-Suu Canyon"
  },
  {
@@ -1871,7 +1871,7 @@
   "lon": 72.215,
   "elev": 1330,
   "confidence": "placed",
-  "note": "Gendarmerie checkpoint at the canyon mouth where heavy vehicles pay the road-use charge; branch road to Sary-Bulak leaves here (~20 km S of Talas).",
+  "note": "Gendarmerie checkpoint at the canyon mouth on the Sary-Bulak road (~20 km S of Talas).",
   "wiki": "Fergana Mountain Transit Highway"
  },
  {
@@ -5323,5 +5323,20 @@
   "confidence": "placed",
   "note": "661 km endorheic river flowing W through the capital (braided channel, aryk intakes) then N into the Moiynkum.",
   "wiki": "Talas River"
+ },
+ {
+  "id": "otmek-valley-checkpoint",
+  "name": "Otmek Valley Checkpoint",
+  "name_ir": "Ötmök örööndögü teksherüü punktu",
+  "name_ru": "КПП в долине Отмок",
+  "kind": "checkpoint",
+  "city": null,
+  "zone": "ISEZ",
+  "lat": 42.392,
+  "lon": 72.952,
+  "elev": null,
+  "confidence": "stated",
+  "note": "Gendarmerie checkpoint at the mouth of the Otmek valley where State Route 1 leaves the Talas valley; heavy vehicles pay the road-use charge here.",
+  "wiki": null
  }
 ]
