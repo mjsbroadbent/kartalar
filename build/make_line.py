@@ -338,7 +338,7 @@ south_corr = naryn & ~tc & (GY < 42.28)
 dam_ = P.get("toktogul-dam", {"lat": 41.677})
 tokt = south_corr & (GY >= dam_["lat"] - 0.012)
 ln = south_corr & ~tokt
-dist = {"Toktogul": tokt, "Lower Naryn": ln, "Sary-Bulak": tc & sary_bulak & south_of_axis & (GY < AXLAT - 0.06)}
+dist = {"Toktogul": tokt, "Lower Naryn": ln, "Sary-Bulak": tc & (GY < 42.452) & ((sary_bulak & south_of_axis & (GY < AXLAT - 0.06)) | ((GY < 42.43) & (GX >= 71.95) & (GX <= 72.25)))}  # the industrial corridor and the limestone foothills south of Talas
 rest = isez & ~south_corr & ~dist["Sary-Bulak"]
 # Talas District is the Talas valley up to the crest of the Kyrgyz Range; west of it, Kara-Buura, the border following
 # the low ground where the Kenkol and Kara-Buura fans meet; north of the range, Kara-Buura near Taraz and Chu further east,

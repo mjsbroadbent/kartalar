@@ -364,7 +364,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Talas aimagı, ~2,890 km²: the middle and upper Talas valley up to the crest of the Kyrgyz Range, from the low ground between the Kenkol and Kara-Buura fans east past Kara-Bulak, the air base, Semiz, Kara-Oi and the Otmek valley to Orto-Ayyl and the Otmek tunnel; seat Talas.",
+  "note": "Talas aimagı, ~2,720 km²: the middle and upper Talas valley up to the crest of the Kyrgyz Range, from the low ground between the Kenkol and Kara-Buura fans east past Kara-Bulak, the air base, Semiz, Kara-Oi and the Otmek valley to Orto-Ayyl and the Otmek tunnel; seat Talas.",
   "wiki": null
  },
  {
@@ -412,7 +412,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Sary-Bulak aimagı, ~350 km²: the Sary-Bulak Gorge and the Chatkal valley mouth south-west of Talas with the foothill villages along the Chatkal road (Sary-Bulak works, Chatkal smelter, Kemer mine, Kara-Suu Canyon mouth); seat Sary-Bulak.",
+  "note": "Sary-Bulak aimagı, ~490 km²: the industrial corridor and limestone foothills south and south-west of Talas: the Sary-Bulak Gorge and works, the Chatkal smelter and Kemer mine, the lower Kara-Suu Canyon, Ak-Kyr and the Kyrk-Kazyk Caves, and the foothill villages along the Chatkal road; seat Sary-Bulak.",
   "wiki": null
  },
  {
@@ -428,7 +428,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Tömönkü Naryn aimagı, ~2,510 km²: the Naryn below the Toktogul dam: Kara-Köl, the narrow corridor down the gorge, the river flats at Iyık Janyl and Tash-Kömür and the farm belt of the northern Fergana rim east past Bazar-Korgon to the Uzbek frontier; seat Tash-Kömür.",
+  "note": "Tömönkü Naryn aimagı, ~2,550 km²: the Naryn below the Toktogul dam: Kara-Köl, the narrow corridor down the gorge, the river flats at Iyık Janyl and Tash-Kömür and the farm belt of the northern Fergana rim east past Bazar-Korgon to the Uzbek frontier; seat Tash-Kömür.",
   "wiki": null
  },
  {
@@ -1062,7 +1062,7 @@
   "name_en": "Tunuk-Bulak",
   "kind": "village",
   "zone": "ISEZ",
-  "district": "Talas",
+  "district": "Sary-Bulak",
   "lat": 42.335,
   "lon": 72.17,
   "pop": 1020,
@@ -2332,7 +2332,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "Toktogul aimagı, ~1,290 km²: the State Route 1 corridor from the Otmek tunnel over the Ala-Bel and down the Chychkan valley, and the floor of the Toktogul basin with Toktogul town, the reservoir and the dam; seat Toktogul.",
+  "note": "Toktogul aimagı, ~1,270 km²: the State Route 1 corridor from the Otmek tunnel over the Ala-Bel and down the Chychkan valley, and the floor of the Toktogul basin with Toktogul town, the reservoir and the dam; seat Toktogul.",
   "wiki": null
  }
 ]
