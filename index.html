@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Attelkom Kartalar · Maps of Irad</title>
+  <meta name="description" content="Attelkom Kartalar: maps of Irad. Cities, villages, roads, railways and places across the ISEZ and the tribal regions.">
+  <meta name="theme-color" content="#1f7a2e">
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="map" role="application" aria-label="Map of Irad"></div>
+
+  <!-- search and brand -->
+  <div class="top">
+    <div class="search" id="searchBox">
+      <a class="brand" href="./" title="Attelkom Kartalar"><img src="img/attelkom-mark.png" alt="" width="34" height="34"></a>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" data-tp="searchPh" placeholder="Search Kartalar" aria-label="Search">
+      <button type="button" class="ico" id="qClear" aria-label="Clear" hidden>✕</button>
+      <button type="button" class="ico" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+    </div>
+    <ul class="results" id="results" role="listbox" hidden></ul>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <!-- place card -->
+  <aside class="card" id="card" hidden aria-live="polite">
+    <button type="button" class="card-x" id="cardClose" aria-label="Close">✕</button>
+    <div id="cardBody"></div>
+  </aside>
+
+  <!-- menu -->
+  <div class="menu" id="menu" hidden>
+    <div class="menu-h"><img src="img/attelkom-mark.png" alt="" width="40" height="40"><div><b>Attelkom Kartalar</b><small data-t="tagline">Maps of Irad</small></div></div>
+    <h4 data-t="language">Language</h4>
+    <div class="seg" id="langSeg"><button data-lang="ir">Iradcha</button><button data-lang="ru">Русский</button><button data-lang="en">English</button></div>
+    <h4 data-t="layers">Map layers</h4>
+    <label class="tog"><input type="checkbox" data-layer="terrain" checked> <span data-t="lyrTerrain">Terrain shading</span></label>
+    <label class="tog"><input type="checkbox" data-layer="routes" checked> <span data-t="lyrRoutes">Highways and railways</span></label>
+    <label class="tog"><input type="checkbox" data-layer="poi" checked> <span data-t="lyrPoi">Places of interest</span></label>
+    <label class="tog"><input type="checkbox" data-layer="zones" checked> <span data-t="lyrZones">Zones and districts</span></label>
+    <label class="tog"><input type="checkbox" data-layer="infra"> <span data-t="lyrInfra">Pipelines, canals and power lines</span></label>
+    <p class="menu-note" data-t="menuNote">Map data in the Autonomous Tribal Regions is limited. Report a mistake at any Attelkom office.</p>
+    <p class="menu-links"><a href="https://irad.wiki/" target="_blank" rel="noopener">Irad Wiki</a> · <a href="https://talasherald.com/" target="_blank" rel="noopener">Talas Herald</a></p>
+  </div>
+
+  <div class="notice" id="notice" hidden></div>
+  <div class="toast" id="toast" hidden role="status"></div>
+
+  <script src="vendor/maplibre-gl.js"></script>
+  <script src="strings.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

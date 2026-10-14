@@ -1,0 +1,2191 @@
+[
+ {
+  "id": "trans-talas-highway",
+  "name": "Trans-Talas Highway",
+  "name_ir": "Trans-Talas jolu",
+  "name_ru": "Трансталасская автомагистраль",
+  "kind": "highway",
+  "note": "~230 km main road of the Talas valley (rebuilt 2001-04): Kazakh frontier at Talas North Terminal (Kara-Buura corridor facing Shymkent) - Kyzyl-Adyr - Kara-Bulak - Talas Air Base - Semiz - Talas - east up the valley past Rabat-i-Safed; beyond the Qara-Chik line a gravel herders' track continues to the Otmek Pass (last 4 points). Four lanes through the Talas suburbs.",
+  "coords": [
+   [
+    70.3,
+    42.47
+   ],
+   [
+    70.36,
+    42.48
+   ],
+   [
+    70.45,
+    42.46
+   ],
+   [
+    70.53,
+    42.47
+   ],
+   [
+    70.62,
+    42.52
+   ],
+   [
+    70.7,
+    42.565
+   ],
+   [
+    70.79,
+    42.6
+   ],
+   [
+    70.88,
+    42.625
+   ],
+   [
+    70.98,
+    42.64
+   ],
+   [
+    71.08,
+    42.65
+   ],
+   [
+    71.18,
+    42.655
+   ],
+   [
+    71.28,
+    42.652
+   ],
+   [
+    71.38,
+    42.645
+   ],
+   [
+    71.45,
+    42.66
+   ],
+   [
+    71.52,
+    42.64
+   ],
+   [
+    71.58,
+    42.622
+   ],
+   [
+    71.64,
+    42.605
+   ],
+   [
+    71.7,
+    42.585
+   ],
+   [
+    71.76,
+    42.568
+   ],
+   [
+    71.815,
+    42.556
+   ],
+   [
+    71.88,
+    42.548
+   ],
+   [
+    71.94,
+    42.54
+   ],
+   [
+    71.99,
+    42.536
+   ],
+   [
+    72.05,
+    42.531
+   ],
+   [
+    72.095,
+    42.528
+   ],
+   [
+    72.133,
+    42.519
+   ],
+   [
+    72.18,
+    42.521
+   ],
+   [
+    72.215,
+    42.523
+   ],
+   [
+    72.24,
+    42.52
+   ],
+   [
+    72.3,
+    42.517
+   ],
+   [
+    72.36,
+    42.516
+   ],
+   [
+    72.42,
+    42.519
+   ],
+   [
+    72.48,
+    42.525
+   ],
+   [
+    72.545,
+    42.532
+   ],
+   [
+    72.61,
+    42.505
+   ],
+   [
+    72.67,
+    42.48
+   ],
+   [
+    72.73,
+    42.455
+   ],
+   [
+    72.79,
+    42.43
+   ],
+   [
+    72.85,
+    42.4
+   ],
+   [
+    72.93,
+    42.36
+   ],
+   [
+    73.01,
+    42.325
+   ],
+   [
+    73.09,
+    42.295
+   ],
+   [
+    73.17,
+    42.27
+   ]
+  ],
+  "length_km_drawn": 251.8
+ },
+ {
+  "id": "fergana-mountain-transit-highway",
+  "name": "Fergana Mountain Transit Highway (State Route 1)",
+  "name_ir": "Pargana too jolu",
+  "name_ru": "Ферганская горная транзитная автомагистраль (Гос. трасса 1)",
+  "kind": "highway",
+  "note": "236 km, the only road from the ISEZ core to the Lower Naryn salient: Talas - 20 km of valley farmland - Kara-Suu Canyon (checkpoint, Kara-Suu HPS) - avalanche galleries and 2.2 km Otmek Tunnel (2003) - Fergana Gateway 2,480 m (summit checkpoint) - switchbacks to the Naryn below Toktogul dam (bridge checkpoint, switchyard) - down the gorge past Kurpsai - Tash-Kömür. Rebuilt 1997-2004; ~20 closure days a winter; inside the 12 km restricted-weapons zone.",
+  "coords": [
+   [
+    72.24,
+    42.52
+   ],
+   [
+    72.235,
+    42.49
+   ],
+   [
+    72.228,
+    42.46
+   ],
+   [
+    72.222,
+    42.43
+   ],
+   [
+    72.218,
+    42.4
+   ],
+   [
+    72.216,
+    42.37
+   ],
+   [
+    72.215,
+    42.345
+   ],
+   [
+    72.218,
+    42.318
+   ],
+   [
+    72.22,
+    42.29
+   ],
+   [
+    72.225,
+    42.262
+   ],
+   [
+    72.235,
+    42.24
+   ],
+   [
+    72.255,
+    42.22
+   ],
+   [
+    72.278,
+    42.19
+   ],
+   [
+    72.3,
+    42.15
+   ],
+   [
+    72.32,
+    42.11
+   ],
+   [
+    72.345,
+    42.07
+   ],
+   [
+    72.37,
+    42.03
+   ],
+   [
+    72.395,
+    42.0
+   ],
+   [
+    72.42,
+    41.97
+   ],
+   [
+    72.45,
+    41.945
+   ],
+   [
+    72.475,
+    41.915
+   ],
+   [
+    72.5,
+    41.885
+   ],
+   [
+    72.52,
+    41.855
+   ],
+   [
+    72.54,
+    41.825
+   ],
+   [
+    72.56,
+    41.79
+   ],
+   [
+    72.58,
+    41.755
+   ],
+   [
+    72.598,
+    41.72
+   ],
+   [
+    72.612,
+    41.69
+   ],
+   [
+    72.625,
+    41.668
+   ],
+   [
+    72.633,
+    41.658
+   ],
+   [
+    72.615,
+    41.64
+   ],
+   [
+    72.59,
+    41.61
+   ],
+   [
+    72.56,
+    41.585
+   ],
+   [
+    72.525,
+    41.56
+   ],
+   [
+    72.49,
+    41.54
+   ],
+   [
+    72.445,
+    41.525
+   ],
+   [
+    72.41,
+    41.5
+   ],
+   [
+    72.375,
+    41.475
+   ],
+   [
+    72.34,
+    41.45
+   ],
+   [
+    72.3,
+    41.42
+   ],
+   [
+    72.27,
+    41.395
+   ],
+   [
+    72.245,
+    41.372
+   ],
+   [
+    72.22,
+    41.35
+   ]
+  ],
+  "length_km_drawn": 153.4
+ },
+ {
+  "id": "iyik-janyl-branch-road",
+  "name": "Iyık Janyl branch road",
+  "name_ir": "Iyık Janyl jolu",
+  "name_ru": "Подъездная дорога к Ийык-Джанылу",
+  "kind": "road",
+  "note": "12 km branch leaving State Route 1 above Tash-Kömür and climbing east up the side valley to Iyık Janyl (total ~235 km from Talas); the pilgrims' road to the Feast of St. Janyl.",
+  "coords": [
+   [
+    72.3,
+    41.42
+   ],
+   [
+    72.315,
+    41.432
+   ],
+   [
+    72.332,
+    41.445
+   ],
+   [
+    72.348,
+    41.458
+   ],
+   [
+    72.362,
+    41.468
+   ],
+   [
+    72.375,
+    41.476
+   ],
+   [
+    72.384,
+    41.482
+   ]
+  ],
+  "length_km_drawn": 9.8
+ },
+ {
+  "id": "irad-temir-jolu-chu-line",
+  "name": "Irad Temir Jolu - Chu line (Turksib)",
+  "name_ir": "Irad Temir Jolu - Chüy linyasy",
+  "name_ru": "Ирад Темир Жолу - Чуйская линия (Турксиб)",
+  "kind": "railway",
+  "note": "Single-track 1,520 mm diesel line built as part of the Turkestan-Siberia Railway (1927-31): Nurzhan junction west across the Chu plain and around the western end of the Kyrgyz Range to the lowland junction where the Talas branch and the Kara-Buura corridor line meet. Daily Talas-Nurzhan passenger train (~7 h) uses it.",
+  "coords": [
+   [
+    73.765,
+    43.615
+   ],
+   [
+    73.72,
+    43.595
+   ],
+   [
+    73.66,
+    43.555
+   ],
+   [
+    73.58,
+    43.5
+   ],
+   [
+    73.48,
+    43.43
+   ],
+   [
+    73.38,
+    43.36
+   ],
+   [
+    73.28,
+    43.29
+   ],
+   [
+    73.18,
+    43.22
+   ],
+   [
+    73.08,
+    43.15
+   ],
+   [
+    72.98,
+    43.08
+   ],
+   [
+    72.88,
+    43.01
+   ],
+   [
+    72.78,
+    42.945
+   ],
+   [
+    72.7,
+    42.935
+   ],
+   [
+    72.55,
+    42.92
+   ],
+   [
+    72.4,
+    42.915
+   ],
+   [
+    72.25,
+    42.918
+   ],
+   [
+    72.1,
+    42.925
+   ],
+   [
+    71.95,
+    42.93
+   ],
+   [
+    71.8,
+    42.93
+   ],
+   [
+    71.65,
+    42.925
+   ],
+   [
+    71.5,
+    42.915
+   ],
+   [
+    71.37,
+    42.9
+   ]
+  ],
+  "length_km_drawn": 224.5
+ },
+ {
+  "id": "irad-temir-jolu-talas-branch",
+  "name": "Irad Temir Jolu - Talas branch",
+  "name_ir": "Irad Temir Jolu - Talas linyasy",
+  "name_ru": "Ирад Темир Жолу - Таласская ветка",
+  "kind": "railway",
+  "note": "Branch from the lowland junction up the Talas valley via Kyzyl-Adyr, Kara-Bulak (grain depot) and the TAEZ sidings to the Talas terminus.",
+  "coords": [
+   [
+    71.37,
+    42.9
+   ],
+   [
+    71.42,
+    42.855
+   ],
+   [
+    71.47,
+    42.8
+   ],
+   [
+    71.52,
+    42.74
+   ],
+   [
+    71.56,
+    42.68
+   ],
+   [
+    71.585,
+    42.625
+   ],
+   [
+    71.64,
+    42.61
+   ],
+   [
+    71.7,
+    42.592
+   ],
+   [
+    71.76,
+    42.573
+   ],
+   [
+    71.816,
+    42.557
+   ],
+   [
+    71.9,
+    42.552
+   ],
+   [
+    71.97,
+    42.545
+   ],
+   [
+    72.03,
+    42.54
+   ],
+   [
+    72.08,
+    42.536
+   ],
+   [
+    72.12,
+    42.522
+   ],
+   [
+    72.15,
+    42.525
+   ],
+   [
+    72.18,
+    42.528
+   ],
+   [
+    72.225,
+    42.533
+   ]
+  ],
+  "length_km_drawn": 89.9
+ },
+ {
+  "id": "irad-temir-jolu-kara-buura-line",
+  "name": "Irad Temir Jolu - Kara-Buura corridor line (to Talas North Terminal)",
+  "name_ir": "Irad Temir Jolu - Kara-Buura linyasy",
+  "name_ru": "Ирад Темир Жолу - Кара-Буурынская линия (до терминала Талас-Северный)",
+  "kind": "railway",
+  "note": "Turksib section west through the Kara-Buura corridor to the Talas North Terminal on the frontier facing Shymkent, the only protocol crossing handling trains (antimony, lint, beef reefers leave here).",
+  "coords": [
+   [
+    71.37,
+    42.9
+   ],
+   [
+    71.25,
+    42.85
+   ],
+   [
+    71.12,
+    42.78
+   ],
+   [
+    71.0,
+    42.71
+   ],
+   [
+    70.88,
+    42.645
+   ],
+   [
+    70.79,
+    42.6
+   ],
+   [
+    70.7,
+    42.56
+   ],
+   [
+    70.62,
+    42.52
+   ],
+   [
+    70.54,
+    42.48
+   ],
+   [
+    70.45,
+    42.458
+   ],
+   [
+    70.37,
+    42.468
+   ],
+   [
+    70.3,
+    42.47
+   ]
+  ],
+  "length_km_drawn": 102.6
+ },
+ {
+  "id": "irad-temir-jolu-north-line",
+  "name": "Irad Temir Jolu - Nurzhan north line",
+  "name_ir": "Irad Temir Jolu - Tündük linyasy",
+  "name_ru": "Ирад Темир Жолу - Северная линия",
+  "kind": "railway",
+  "note": "Line from Nurzhan past the freight depot to the rail-only border station north of the city where trains are exchanged with the Kazakh network.",
+  "coords": [
+   [
+    73.765,
+    43.615
+   ],
+   [
+    73.778,
+    43.626
+   ],
+   [
+    73.81,
+    43.68
+   ],
+   [
+    73.86,
+    43.75
+   ],
+   [
+    73.92,
+    43.82
+   ],
+   [
+    73.99,
+    43.89
+   ],
+   [
+    74.07,
+    43.96
+   ],
+   [
+    74.14,
+    44.02
+   ],
+   [
+    74.19,
+    44.05
+   ]
+  ],
+  "length_km_drawn": 59.7
+ },
+ {
+  "id": "irad-temir-jolu-east-line",
+  "name": "Irad Temir Jolu - eastern corridor to Boz-Korgon",
+  "name_ir": "Irad Temir Jolu - Chygysh linyasy",
+  "name_ru": "Ирад Темир Жолу - Восточная линия (Боз-Коргон)",
+  "kind": "railway",
+  "note": "Rail stub east from Nurzhan through the eastern Chu fields to the Boz-Korgon security depot (\"road and rail corridor east from Nurzhan\"); no passenger service.",
+  "coords": [
+   [
+    73.765,
+    43.615
+   ],
+   [
+    73.83,
+    43.612
+   ],
+   [
+    73.9,
+    43.604
+   ],
+   [
+    73.98,
+    43.598
+   ],
+   [
+    74.06,
+    43.592
+   ],
+   [
+    74.14,
+    43.587
+   ],
+   [
+    74.2,
+    43.583
+   ],
+   [
+    74.245,
+    43.58
+   ]
+  ],
+  "length_km_drawn": 38.9
+ },
+ {
+  "id": "irad-temir-jolu-sary-bulak-spur",
+  "name": "Irad Temir Jolu - Sary-Bulak and Chatkal spur",
+  "name_ir": "Sary-Bulak temir jol tarmagy",
+  "name_ru": "Ветка на Сары-Булак и Чаткал",
+  "kind": "railway",
+  "note": "Industrial spur from Talas south to the Sary-Bulak Antimony Works (along the gorge floor), with a branch to the Chatkal smelter; siding repairs budgeted for the 2026-27 restart.",
+  "coords": [
+   [
+    72.225,
+    42.533
+   ],
+   [
+    72.215,
+    42.505
+   ],
+   [
+    72.2,
+    42.47
+   ],
+   [
+    72.185,
+    42.435
+   ],
+   [
+    72.17,
+    42.4
+   ],
+   [
+    72.155,
+    42.365
+   ],
+   [
+    72.145,
+    42.34
+   ],
+   [
+    72.135,
+    42.315
+   ],
+   [
+    72.128,
+    42.295
+   ],
+   [
+    72.125,
+    42.28
+   ]
+  ],
+  "length_km_drawn": 29.3
+ },
+ {
+  "id": "irad-temir-jolu-chatkal-spur",
+  "name": "Irad Temir Jolu - Chatkal smelter siding",
+  "name_ir": "Chatkal temir jol tarmagy",
+  "name_ru": "Подъездной путь Чаткальского комбината",
+  "kind": "railway",
+  "note": "Siding from the Sary-Bulak spur west to the Chatkal Chemical Smelting Complex.",
+  "coords": [
+   [
+    72.145,
+    42.34
+   ],
+   [
+    72.11,
+    42.336
+   ],
+   [
+    72.07,
+    42.334
+   ],
+   [
+    72.03,
+    42.333
+   ],
+   [
+    71.995,
+    42.332
+   ]
+  ],
+  "length_km_drawn": 12.4
+ },
+ {
+  "id": "irad-temir-jolu-taez-siding",
+  "name": "Irad Temir Jolu - TAEZ sidings",
+  "name_ir": "TAEZ temir jol tarmagy",
+  "name_ru": "Подъездные пути ТАЭЗ",
+  "kind": "railway",
+  "note": "Short sidings to the cold-chain rail terminal of the Talas Agribusiness Export Zone west of Semiz.",
+  "coords": [
+   [
+    72.12,
+    42.522
+   ],
+   [
+    72.122,
+    42.515
+   ],
+   [
+    72.123,
+    42.51
+   ]
+  ],
+  "length_km_drawn": 1.4
+ },
+ {
+  "id": "talas-nurzhan-road",
+  "name": "Talas-Nurzhan road (lowland route)",
+  "name_ir": "Talas-Nurzhan jolu",
+  "name_ru": "Автодорога Талас - Нуржан (равнинная)",
+  "kind": "road",
+  "note": "All-season road following the railway's lowland route out of the Talas valley via Kyzyl-Adyr and around the western end of the Kyrgyz Range across the Chu plain to Nurzhan; used in winter when the Kök-Bel road is shut.",
+  "coords": [
+   [
+    72.24,
+    42.52
+   ],
+   [
+    72.215,
+    42.523
+   ],
+   [
+    72.18,
+    42.521
+   ],
+   [
+    72.133,
+    42.519
+   ],
+   [
+    72.095,
+    42.528
+   ],
+   [
+    72.05,
+    42.531
+   ],
+   [
+    71.99,
+    42.536
+   ],
+   [
+    71.94,
+    42.54
+   ],
+   [
+    71.88,
+    42.548
+   ],
+   [
+    71.815,
+    42.556
+   ],
+   [
+    71.76,
+    42.568
+   ],
+   [
+    71.7,
+    42.585
+   ],
+   [
+    71.64,
+    42.605
+   ],
+   [
+    71.58,
+    42.622
+   ],
+   [
+    71.555,
+    42.69
+   ],
+   [
+    71.515,
+    42.75
+   ],
+   [
+    71.465,
+    42.81
+   ],
+   [
+    71.42,
+    42.86
+   ],
+   [
+    71.38,
+    42.91
+   ],
+   [
+    71.5,
+    42.925
+   ],
+   [
+    71.65,
+    42.935
+   ],
+   [
+    71.8,
+    42.94
+   ],
+   [
+    71.95,
+    42.94
+   ],
+   [
+    72.1,
+    42.935
+   ],
+   [
+    72.25,
+    42.928
+   ],
+   [
+    72.4,
+    42.925
+   ],
+   [
+    72.55,
+    42.93
+   ],
+   [
+    72.7,
+    42.945
+   ],
+   [
+    72.79,
+    42.96
+   ],
+   [
+    72.89,
+    43.02
+   ],
+   [
+    72.99,
+    43.09
+   ],
+   [
+    73.09,
+    43.16
+   ],
+   [
+    73.19,
+    43.23
+   ],
+   [
+    73.29,
+    43.3
+   ],
+   [
+    73.39,
+    43.37
+   ],
+   [
+    73.49,
+    43.44
+   ],
+   [
+    73.59,
+    43.51
+   ],
+   [
+    73.67,
+    43.565
+   ],
+   [
+    73.76,
+    43.6
+   ]
+  ],
+  "length_km_drawn": 313.7
+ },
+ {
+  "id": "kok-bel-road",
+  "name": "Kök-Bel road",
+  "name_ir": "Kök-Bel jolu",
+  "name_ru": "Дорога через перевал Кёк-Бел",
+  "kind": "road",
+  "note": "Shorter summer route Talas-Nurzhan over the 2,375 m Kök-Bel Pass across the western Kyrgyz Range (paved in the territorial period, snowplough depot at Toguz-Bulak); buses and trucks in summer.",
+  "coords": [
+   [
+    72.24,
+    42.52
+   ],
+   [
+    72.32,
+    42.53
+   ],
+   [
+    72.4,
+    42.545
+   ],
+   [
+    72.48,
+    42.565
+   ],
+   [
+    72.56,
+    42.57
+   ],
+   [
+    72.66,
+    42.575
+   ],
+   [
+    72.745,
+    42.58
+   ],
+   [
+    72.755,
+    42.65
+   ],
+   [
+    72.75,
+    42.72
+   ],
+   [
+    72.81,
+    42.78
+   ],
+   [
+    72.88,
+    42.85
+   ],
+   [
+    72.96,
+    42.93
+   ],
+   [
+    73.05,
+    43.01
+   ],
+   [
+    73.15,
+    43.1
+   ],
+   [
+    73.26,
+    43.2
+   ],
+   [
+    73.37,
+    43.3
+   ],
+   [
+    73.48,
+    43.39
+   ],
+   [
+    73.59,
+    43.48
+   ],
+   [
+    73.68,
+    43.55
+   ],
+   [
+    73.76,
+    43.6
+   ]
+  ],
+  "length_km_drawn": 185.5
+ },
+ {
+  "id": "chu-highway",
+  "name": "Chu highway (Nurzhan - Chu Gate)",
+  "name_ir": "Chüy jolu",
+  "name_ru": "Чуйское шоссе (Нуржан - Чуйские ворота)",
+  "kind": "highway",
+  "note": "Main road-freight route east from Nurzhan through the eastern Chu fields to the Chu Gate crossing into Kazakhstan, Trans-Chuy's bonded trucking corridor.",
+  "coords": [
+   [
+    73.76,
+    43.6
+   ],
+   [
+    73.84,
+    43.598
+   ],
+   [
+    73.92,
+    43.594
+   ],
+   [
+    74.0,
+    43.59
+   ],
+   [
+    74.08,
+    43.586
+   ],
+   [
+    74.16,
+    43.582
+   ],
+   [
+    74.23,
+    43.575
+   ],
+   [
+    74.31,
+    43.566
+   ],
+   [
+    74.39,
+    43.556
+   ],
+   [
+    74.47,
+    43.546
+   ],
+   [
+    74.55,
+    43.538
+   ],
+   [
+    74.63,
+    43.53
+   ]
+  ],
+  "length_km_drawn": 70.6
+ },
+ {
+  "id": "boz-korgon-branch",
+  "name": "Boz-Korgon branch road",
+  "name_ir": "Boz-Korgon jolu",
+  "name_ru": "Подъезд к Боз-Коргону",
+  "kind": "road",
+  "note": "Short guarded branch from the Chu highway to the compound (UNMI patrols barred since 2023).",
+  "coords": [
+   [
+    74.23,
+    43.575
+   ],
+   [
+    74.24,
+    43.578
+   ],
+   [
+    74.25,
+    43.58
+   ]
+  ],
+  "length_km_drawn": 1.7
+ },
+ {
+  "id": "sary-bulak-road",
+  "name": "Sary-Bulak branch road",
+  "name_ir": "Sary-Bulak jolu",
+  "name_ru": "Дорога на Сары-Булак",
+  "kind": "road",
+  "note": "Branch leaving State Route 1 at the Kara-Suu Canyon mouth to the Sary-Bulak works (haul road up the gorge) and the Chatkal smelter; 3 buses a day from Talas (2 h).",
+  "coords": [
+   [
+    72.215,
+    42.345
+   ],
+   [
+    72.195,
+    42.33
+   ],
+   [
+    72.17,
+    42.315
+   ],
+   [
+    72.145,
+    42.3
+   ],
+   [
+    72.128,
+    42.285
+   ],
+   [
+    72.125,
+    42.28
+   ]
+  ],
+  "length_km_drawn": 10.4
+ },
+ {
+  "id": "chatkal-smelter-road",
+  "name": "Chatkal smelter road",
+  "name_ir": "Chatkal kombinat jolu",
+  "name_ru": "Дорога к Чаткальскому комбинату",
+  "kind": "road",
+  "note": "Road from Talas SW through the foothills to the Chatkal smelter and Kemer mine.",
+  "coords": [
+   [
+    72.24,
+    42.52
+   ],
+   [
+    72.2,
+    42.49
+   ],
+   [
+    72.16,
+    42.46
+   ],
+   [
+    72.12,
+    42.43
+   ],
+   [
+    72.08,
+    42.4
+   ],
+   [
+    72.04,
+    42.37
+   ],
+   [
+    72.01,
+    42.345
+   ],
+   [
+    71.99,
+    42.332
+   ],
+   [
+    71.98,
+    42.3
+   ],
+   [
+    71.98,
+    42.278
+   ]
+  ],
+  "length_km_drawn": 35.4
+ },
+ {
+  "id": "qara-chik-road",
+  "name": "Talas - Qara-Chik checkpoint road",
+  "name_ir": "Qara-Chik jolu",
+  "name_ru": "Дорога Талас - КПП Кара-Чик",
+  "kind": "road",
+  "note": "Road from Talas into the Talas Alatau via Kalba (livestock inspection pens) and past UNMI Kara-Oi to the main demarcation-line crossing; continues as a gravel track on the tribal side.",
+  "coords": [
+   [
+    72.24,
+    42.52
+   ],
+   [
+    72.3,
+    42.495
+   ],
+   [
+    72.37,
+    42.47
+   ],
+   [
+    72.44,
+    42.445
+   ],
+   [
+    72.465,
+    42.425
+   ],
+   [
+    72.488,
+    42.404
+   ],
+   [
+    72.508,
+    42.388
+   ],
+   [
+    72.522,
+    42.373
+   ],
+   [
+    72.535,
+    42.355
+   ]
+  ],
+  "length_km_drawn": 31.2
+ },
+ {
+  "id": "kenkol-military-road",
+  "name": "Kenkol Pass road",
+  "name_ir": "Kenkol ashuu jolu",
+  "name_ru": "Дорога через перевал Кенкол",
+  "kind": "road",
+  "note": "Graded unpaved 1960s military road up the Kenkol valley from the western Talas valley to the pass; snowbound most of winter; mined in 1992/2007.",
+  "coords": [
+   [
+    71.725,
+    42.6
+   ],
+   [
+    71.725,
+    42.575
+   ],
+   [
+    71.73,
+    42.54
+   ],
+   [
+    71.735,
+    42.5
+   ],
+   [
+    71.738,
+    42.46
+   ],
+   [
+    71.74,
+    42.42
+   ],
+   [
+    71.742,
+    42.38
+   ],
+   [
+    71.742,
+    42.35
+   ],
+   [
+    71.74,
+    42.33
+   ]
+  ],
+  "length_km_drawn": 30.1
+ },
+ {
+  "id": "karakol-road",
+  "name": "Western Karakol valley road",
+  "name_ir": "Batysh Karakol jolu",
+  "name_ru": "Дорога по долине Западного Каракола",
+  "kind": "road",
+  "note": "All-weather road into the upper Western Karakol valley ending at Karakol village and its logistics depot (tribal side).",
+  "coords": [
+   [
+    73.55,
+    42.16
+   ],
+   [
+    73.47,
+    42.14
+   ],
+   [
+    73.4,
+    42.12
+   ],
+   [
+    73.35,
+    42.11
+   ],
+   [
+    73.3,
+    42.1
+   ]
+  ],
+  "length_km_drawn": 21.7
+ },
+ {
+  "id": "lower-naryn-uzbek-road",
+  "name": "Tash-Kömür - Uzbek border road",
+  "name_ir": "Tash-Kömür - Özbek chek ara jolu",
+  "name_ru": "Дорога Таш-Кумыр - граница с Узбекистаном",
+  "kind": "road",
+  "note": "Regional road continuing State Route 1 down the Naryn past Kapka-Tash and the lower cascade stations toward Uzbekistan, the start of Irad's southern road transit.",
+  "coords": [
+   [
+    72.22,
+    41.35
+   ],
+   [
+    72.205,
+    41.32
+   ],
+   [
+    72.192,
+    41.29
+   ],
+   [
+    72.185,
+    41.255
+   ],
+   [
+    72.18,
+    41.22
+   ],
+   [
+    72.165,
+    41.195
+   ],
+   [
+    72.14,
+    41.18
+   ],
+   [
+    72.11,
+    41.165
+   ],
+   [
+    72.075,
+    41.14
+   ]
+  ],
+  "length_km_drawn": 27.7
+ },
+ {
+  "id": "nurzhan-petroleum-pipeline",
+  "name": "Nurzhan Petroleum Pipeline",
+  "name_ir": "Nurzhan munay tütügü",
+  "name_ru": "Нуржанский нефтепровод",
+  "kind": "pipeline",
+  "note": "~90 km buried, insulated crude trunk line (mid-1950s) from the main field collection station WNW of Nurzhan along the Uzun-Kyr fields (route kept south of the Chu, inside Chu District) across the irrigated Chu District to Refinery No. 1 and the tank farm in the eastern industrial zone; guarded by the Gendarmerie and 2nd Motor Rifle Brigade.",
+  "coords": [
+   [
+    73.02,
+    43.73
+   ],
+   [
+    73.09,
+    43.732
+   ],
+   [
+    73.16,
+    43.735
+   ],
+   [
+    73.23,
+    43.738
+   ],
+   [
+    73.3,
+    43.74
+   ],
+   [
+    73.37,
+    43.742
+   ],
+   [
+    73.44,
+    43.735
+   ],
+   [
+    73.51,
+    43.715
+   ],
+   [
+    73.58,
+    43.69
+   ],
+   [
+    73.65,
+    43.66
+   ],
+   [
+    73.72,
+    43.63
+   ],
+   [
+    73.78,
+    43.612
+   ],
+   [
+    73.822,
+    43.598
+   ],
+   [
+    73.845,
+    43.612
+   ]
+  ],
+  "length_km_drawn": 70.6
+ },
+ {
+  "id": "northern-export-feeder",
+  "name": "Northern Export Feeder",
+  "name_ir": "Tündük eksport tütügü",
+  "name_ru": "Северный экспортный нефтепровод",
+  "kind": "pipeline",
+  "note": "85 km, 530 mm crude line (Nov 2000; IPTC, NurGaz 51%) NE from the NurGaz tank farm across the Chu plain and semi-desert to the metering station on the eastern Kazakh frontier, into KazTransOil (toward Shymkent / Russia); two intermediate pumping stations.",
+  "coords": [
+   [
+    73.845,
+    43.612
+   ],
+   [
+    73.91,
+    43.66
+   ],
+   [
+    73.975,
+    43.71
+   ],
+   [
+    74.04,
+    43.76
+   ],
+   [
+    74.105,
+    43.81
+   ],
+   [
+    74.17,
+    43.86
+   ],
+   [
+    74.235,
+    43.91
+   ],
+   [
+    74.3,
+    43.965
+   ],
+   [
+    74.365,
+    44.02
+   ],
+   [
+    74.43,
+    44.08
+   ],
+   [
+    74.5,
+    44.14
+   ],
+   [
+    74.56,
+    44.18
+   ]
+  ],
+  "length_km_drawn": 85.3
+ },
+ {
+  "id": "talas-air-base-products-pipeline",
+  "name": "Nurzhan - Talas Air Base products pipeline",
+  "name_ir": "Talas Aba Bazasynyn kuyaar mai tütügü",
+  "name_ru": "Продуктопровод Нуржан - авиабаза Талас",
+  "kind": "pipeline",
+  "note": "Jet-fuel pipeline laid in the territorial period from the Nurzhan refinery to the fuel farm at Talas Air Base; route not described, drawn along the railway's lowland corridor.",
+  "coords": [
+   [
+    73.822,
+    43.598
+   ],
+   [
+    73.7,
+    43.59
+   ],
+   [
+    73.58,
+    43.488
+   ],
+   [
+    73.48,
+    43.418
+   ],
+   [
+    73.38,
+    43.348
+   ],
+   [
+    73.28,
+    43.278
+   ],
+   [
+    73.18,
+    43.208
+   ],
+   [
+    73.08,
+    43.138
+   ],
+   [
+    72.98,
+    43.068
+   ],
+   [
+    72.88,
+    42.998
+   ],
+   [
+    72.78,
+    42.933
+   ],
+   [
+    72.7,
+    42.923
+   ],
+   [
+    72.55,
+    42.908
+   ],
+   [
+    72.4,
+    42.903
+   ],
+   [
+    72.25,
+    42.906
+   ],
+   [
+    72.1,
+    42.913
+   ],
+   [
+    71.95,
+    42.918
+   ],
+   [
+    71.8,
+    42.918
+   ],
+   [
+    71.65,
+    42.913
+   ],
+   [
+    71.5,
+    42.903
+   ],
+   [
+    71.37,
+    42.888
+   ],
+   [
+    71.415,
+    42.845
+   ],
+   [
+    71.465,
+    42.79
+   ],
+   [
+    71.515,
+    42.73
+   ],
+   [
+    71.555,
+    42.672
+   ],
+   [
+    71.585,
+    42.615
+   ],
+   [
+    71.64,
+    42.6
+   ],
+   [
+    71.7,
+    42.582
+   ],
+   [
+    71.76,
+    42.563
+   ],
+   [
+    71.816,
+    42.55
+   ],
+   [
+    71.9,
+    42.545
+   ],
+   [
+    71.97,
+    42.538
+   ],
+   [
+    72.04,
+    42.535
+   ],
+   [
+    72.093,
+    42.533
+   ]
+  ],
+  "length_km_drawn": 307.8
+ },
+ {
+  "id": "muyunkum-gas-line",
+  "name": "Muyunkum gas line",
+  "name_ir": "Moiynkum gaz tütügü",
+  "name_ru": "Газопровод Мойынкум - Нуржан",
+  "kind": "pipeline",
+  "note": "Small gas line from Soviet-era wells on the southern margin of the Muyunkum field (supplied under a clan-council arrangement) to the Nurzhan Gas Compressor Station.",
+  "coords": [
+   [
+    72.95,
+    43.8
+   ],
+   [
+    73.05,
+    43.78
+   ],
+   [
+    73.15,
+    43.76
+   ],
+   [
+    73.25,
+    43.735
+   ],
+   [
+    73.35,
+    43.71
+   ],
+   [
+    73.45,
+    43.685
+   ],
+   [
+    73.55,
+    43.66
+   ],
+   [
+    73.65,
+    43.642
+   ],
+   [
+    73.76,
+    43.632
+   ]
+  ],
+  "length_km_drawn": 67.9
+ },
+ {
+  "id": "chu-irrigation-main-canal",
+  "name": "Chu Irrigation Canal System (main canal)",
+  "name_ir": "Chüy sugat kanaly",
+  "name_ru": "Чуйская оросительная система (магистральный канал)",
+  "kind": "canal",
+  "note": "Trunk of the ~1,200 km lower-Chu network (1930s-70s, >80,000 ha) run by the Chu Valley Irrigation Inspectorate from Nurzhan; drawn from the headworks where the Chu enters the ISEZ, along the southern side of the river past Nurzhan to the western farms (route schematic).",
+  "coords": [
+   [
+    74.3,
+    43.44
+   ],
+   [
+    74.2,
+    43.47
+   ],
+   [
+    74.1,
+    43.5
+   ],
+   [
+    74.0,
+    43.525
+   ],
+   [
+    73.9,
+    43.548
+   ],
+   [
+    73.82,
+    43.565
+   ],
+   [
+    73.76,
+    43.575
+   ],
+   [
+    73.69,
+    43.583
+   ],
+   [
+    73.62,
+    43.588
+   ],
+   [
+    73.55,
+    43.592
+   ],
+   [
+    73.48,
+    43.6
+   ],
+   [
+    73.41,
+    43.615
+   ],
+   [
+    73.34,
+    43.635
+   ],
+   [
+    73.27,
+    43.66
+   ],
+   [
+    73.2,
+    43.69
+   ]
+  ],
+  "length_km_drawn": 93.6
+ },
+ {
+  "id": "eski-aryk",
+  "name": "Eski-Aryk",
+  "name_ir": "Eski-Aryk",
+  "name_ru": "Канал Эски-Арык",
+  "kind": "canal",
+  "note": "19 km branch canal west of Nurzhan partly on the bed of the medieval canal of Shahr-i Buzurg, ending in sluices at Shaar-Döbö.",
+  "coords": [
+   [
+    73.59,
+    43.59
+   ],
+   [
+    73.555,
+    43.596
+   ],
+   [
+    73.52,
+    43.602
+   ],
+   [
+    73.485,
+    43.608
+   ],
+   [
+    73.45,
+    43.613
+   ],
+   [
+    73.42,
+    43.617
+   ],
+   [
+    73.392,
+    43.621
+   ]
+  ],
+  "length_km_drawn": 16.3
+ },
+ {
+  "id": "jangy-aryk",
+  "name": "Jangy-Aryk",
+  "name_ir": "Jangy-Aryk",
+  "name_ru": "Канал Джангы-Арык",
+  "kind": "canal",
+  "note": "25 km concrete-lined branch (1963-66, 4 m3/s, 5,000 ha) north of Nurzhan serving Shahr-i Nav.",
+  "coords": [
+   [
+    73.8,
+    43.64
+   ],
+   [
+    73.803,
+    43.665
+   ],
+   [
+    73.806,
+    43.69
+   ],
+   [
+    73.812,
+    43.715
+   ],
+   [
+    73.822,
+    43.745
+   ],
+   [
+    73.834,
+    43.775
+   ],
+   [
+    73.846,
+    43.805
+   ],
+   [
+    73.858,
+    43.835
+   ]
+  ],
+  "length_km_drawn": 22.2
+ },
+ {
+  "id": "kashkar-aryk-canal",
+  "name": "Kashkar-Aryk",
+  "name_ir": "Kashkar-Aryk",
+  "name_ru": "Кашкар-Арык",
+  "kind": "canal",
+  "note": "Spring-fed ~5 km stream/canal from below the Old Citadel terrace through northern Talas gardens to the river (partly culverted 1970s).",
+  "coords": [
+   [
+    72.206,
+    42.531
+   ],
+   [
+    72.203,
+    42.537
+   ],
+   [
+    72.199,
+    42.543
+   ],
+   [
+    72.193,
+    42.548
+   ],
+   [
+    72.185,
+    42.553
+   ],
+   [
+    72.176,
+    42.557
+   ]
+  ],
+  "length_km_drawn": 3.9
+ },
+ {
+  "id": "toktogul-north-export-line",
+  "name": "Toktogul northern export power line",
+  "name_ir": "Toktogul tündük elektr liniyasy",
+  "name_ru": "Северная экспортная ЛЭП Токтогульской ГЭС",
+  "kind": "power-line",
+  "note": "High-voltage export line from the ISEZ switchyard below the dam north along the State Route 1 corridor to Talas and on to the Kazakh grid; the lore puts all export lines ISEZ-side but does not trace them (schematic).",
+  "coords": [
+   [
+    72.615,
+    41.64
+   ],
+   [
+    72.6,
+    41.7
+   ],
+   [
+    72.58,
+    41.755
+   ],
+   [
+    72.545,
+    41.82
+   ],
+   [
+    72.5,
+    41.885
+   ],
+   [
+    72.445,
+    41.95
+   ],
+   [
+    72.39,
+    41.995
+   ],
+   [
+    72.345,
+    42.06
+   ],
+   [
+    72.315,
+    42.115
+   ],
+   [
+    72.29,
+    42.16
+   ],
+   [
+    72.262,
+    42.215
+   ],
+   [
+    72.23,
+    42.25
+   ],
+   [
+    72.222,
+    42.32
+   ],
+   [
+    72.23,
+    42.42
+   ],
+   [
+    72.24,
+    42.5
+   ],
+   [
+    72.215,
+    42.533
+   ],
+   [
+    72.18,
+    42.531
+   ],
+   [
+    72.133,
+    42.529
+   ],
+   [
+    72.095,
+    42.538
+   ],
+   [
+    72.05,
+    42.541
+   ],
+   [
+    71.99,
+    42.546
+   ],
+   [
+    71.94,
+    42.55
+   ],
+   [
+    71.88,
+    42.558
+   ],
+   [
+    71.815,
+    42.566
+   ],
+   [
+    71.76,
+    42.578
+   ],
+   [
+    71.7,
+    42.595
+   ],
+   [
+    71.64,
+    42.615
+   ],
+   [
+    71.58,
+    42.632
+   ],
+   [
+    71.52,
+    42.65
+   ],
+   [
+    71.45,
+    42.67
+   ],
+   [
+    71.38,
+    42.655
+   ],
+   [
+    71.28,
+    42.662
+   ],
+   [
+    71.18,
+    42.665
+   ],
+   [
+    71.08,
+    42.66
+   ],
+   [
+    70.98,
+    42.65
+   ],
+   [
+    70.88,
+    42.635
+   ],
+   [
+    70.79,
+    42.61
+   ],
+   [
+    70.7,
+    42.575
+   ],
+   [
+    70.62,
+    42.53
+   ],
+   [
+    70.53,
+    42.48
+   ],
+   [
+    70.45,
+    42.47
+   ],
+   [
+    70.36,
+    42.49
+   ],
+   [
+    70.3,
+    42.48
+   ]
+  ],
+  "length_km_drawn": 273.3
+ },
+ {
+  "id": "toktogul-south-export-line",
+  "name": "Toktogul southern export power line",
+  "name_ir": "Toktogul tüshtük elektr liniyasy",
+  "name_ru": "Южная экспортная ЛЭП Токтогульской ГЭС",
+  "kind": "power-line",
+  "note": "Export line from the switchyard down the Lower Naryn cascade past Tash-Kömür toward Uzbekistan (schematic).",
+  "coords": [
+   [
+    72.615,
+    41.64
+   ],
+   [
+    72.56,
+    41.59
+   ],
+   [
+    72.49,
+    41.545
+   ],
+   [
+    72.44,
+    41.52
+   ],
+   [
+    72.37,
+    41.47
+   ],
+   [
+    72.3,
+    41.415
+   ],
+   [
+    72.245,
+    41.37
+   ],
+   [
+    72.205,
+    41.32
+   ],
+   [
+    72.185,
+    41.255
+   ],
+   [
+    72.17,
+    41.2
+   ],
+   [
+    72.12,
+    41.17
+   ],
+   [
+    72.07,
+    41.14
+   ]
+  ],
+  "length_km_drawn": 74.0
+ }
+]
