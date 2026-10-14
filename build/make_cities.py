@@ -26,7 +26,10 @@ CITIES = [
      # the Talas valley floor below the foothills, off Talas Air Base
      "ellipse": ((72.225, 42.515), 12.5, 8.5), "max_elev": 1420, "max_slope": 0.09,
      "exclude": [[(72.055, 42.517), (72.13, 42.517), (72.13, 42.548), (72.055, 42.548)]],
-     "rivers": ["Талас"]},
+     "rivers": ["Талас"],
+     # the Kokand-era Old City (Köhne Diz, ~64 ha) west of the Russian grid: citadel mound, gates, bazaar, mahalla lanes
+     "old_town": {"center": (72.2290, 42.5275), "a": 0.60, "b": 0.42, "angle": 12, "citadel": (72.2266, 42.5276), "citadel_r": (0.13, 0.10),
+                  "bazaar": (72.2338, 42.5262), "gates": [(72.2268, 42.5298), (72.2264, 42.5254)], "seed": 11}},
     {"name": "nurzhan", "donor": "shymkent", "pivot_donor": (69.5875, 42.3155), "pivot": (73.760, 43.600), "rotate": 45, "mirror": False,
      "scale": 0.92, "donor_r_km": 11.5,
      "ellipse": ((73.77, 43.60), 11.5, 10.5), "max_elev": 900, "max_slope": 0.08,
@@ -103,6 +106,119 @@ def classify(f):
 
 def rings_of(f):
     return f["c"] if f.get("multi") else [f["c"]]
+
+
+def old_town(O, feats, kt, cell_ok, near_river):
+    """replace the donor's streets inside the old-town ellipse with an organic mahalla: lanes from the gates and the
+    bazaar to the edges, crooked alleys and dead ends between them, dense courtyard houses, the citadel on its mound
+    and the bazaar square"""
+    from scipy.spatial import Delaunay
+    rng = np.random.default_rng(O.get("seed", 1))
+    (cx, cy), a, b = O["center"], O["a"], O["b"]; th = math.radians(O["angle"])
+    def local(x, y):
+        X, Y = (np.asarray(x) - cx) * kt, (np.asarray(y) - cy) * KY
+        return (X * math.cos(th) + Y * math.sin(th)) / a, (-X * math.sin(th) + Y * math.cos(th)) / b
+    inside = lambda x, y: (lambda u: u[0] ** 2 + u[1] ** 2 <= 1)(local(x, y))
+    ccx, ccy = O["citadel"]; cra, crb = O["citadel_r"]
+    in_cit = lambda x, y: ((np.asarray(x) - ccx) * kt / cra) ** 2 + ((np.asarray(y) - ccy) * KY / crb) ** 2 <= 1
+    # drop donor buildings, minor streets and land use inside; cut through roads at the edge (main roads pass round it)
+    new = []
+    for k, p_, parts in feats:
+        T = parts[0]; inn = inside(T[:, 0], T[:, 1])
+        if not inn.any(): new.append((k, p_, parts)); continue
+        if k in ("road", "rail", "canal"):
+            if k == "canal" or (k == "road" and p_["k"] in ("major",)): new.append((k, p_, parts)); continue
+            run = []
+            for pt, i_ in zip(T, inn):
+                if not i_: run.append(pt)
+                else:
+                    if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+                    run = []
+            if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+        elif k == "land" and inn.mean() < 0.3:
+            new.append((k, p_, parts))
+    feats = new
+    to_ll = lambda X, Y: (cx + (X * math.cos(th) - Y * math.sin(th)) / kt, cy + (X * math.sin(th) + Y * math.cos(th)) / KY)
+    # nodes: Poisson-disc in the ellipse (~55 m apart), the gates, points on the rim where outside streets end
+    pts = []
+    for _try in range(20000):
+        u, v = rng.uniform(-1, 1, 2)
+        if u * u + v * v > 0.97: continue
+        X, Y = u * a, v * b
+        if all(math.hypot(X - q[0], Y - q[1]) > 0.055 for q in pts): pts.append((X, Y))
+        if len(pts) > 260: break
+    rim = []
+    for k, p_, parts in feats:
+        if k != "road" or p_["k"] not in ("mid", "minor"): continue
+        for end in (parts[0][0], parts[0][-1]):
+            u, v = local(end[0], end[1])
+            if 1.0 <= math.hypot(u, v) < 1.12:
+                X = ((end[0] - cx) * kt * math.cos(th) + (end[1] - cy) * KY * math.sin(th)); Y = (-(end[0] - cx) * kt * math.sin(th) + (end[1] - cy) * KY * math.cos(th))
+                rim.append((X, Y))
+    P = np.array(pts + rim)
+    tri = Delaunay(P)
+    edges = set()
+    for s_ in tri.simplices:
+        for i, j in ((0, 1), (1, 2), (0, 2)):
+            edges.add((min(s_[i], s_[j]), max(s_[i], s_[j])))
+    E_ = sorted(edges, key=lambda e: math.hypot(*(P[e[0]] - P[e[1]])))
+    par = list(range(len(P)))
+    def find(i):
+        while par[i] != i: par[i] = par[par[i]]; i = par[i]
+        return i
+    keep = []
+    for i, j in E_:
+        L = math.hypot(*(P[i] - P[j]))
+        if L > 0.16: continue
+        x_, y_ = to_ll(*(P[i] + P[j]) / 2)
+        if in_cit(x_, y_): continue
+        if find(i) != find(j): par[find(i)] = find(j); keep.append((i, j))
+        elif rng.random() < 0.18: keep.append((i, j))          # a few loops; the rest stay dead ends
+    lanes = 0
+    for i, j in keep:
+        A, B = P[i], P[j]; mid = (A + B) / 2 + rng.normal(0, 0.008, 2)     # crooked
+        seg = np.array([A, mid, B])
+        ll = np.array([to_ll(X, Y) for X, Y in seg])
+        if cell_ok(ll[:, 0], ll[:, 1], near_river).any(): continue
+        feats.append(("road", {"k": "minor"}, [ll])); lanes += 1
+    # the gates: lanes from the citadel to its gates and on to the rim
+    for gx, gy in O["gates"]:
+        feats.append(("road", {"k": "mid"}, [np.array([(gx, gy), (ccx + (gx - ccx) * 1.9, ccy + (gy - ccy) * 1.9)])]))
+    # houses: small courtyard houses packed along the lanes
+    occ = []
+    from scipy.spatial import cKDTree
+    houses = 0
+    for k, p_, parts in list(feats):
+        if k != "road" or p_["k"] not in ("minor", "mid"): continue
+        T = parts[0]
+        if not inside(T[:, 0], T[:, 1]).any(): continue
+        for A, B in zip(T, T[1:]):
+            dx, dy = (B[0] - A[0]) * kt * 1000, (B[1] - A[1]) * KY * 1000; L = math.hypot(dx, dy)
+            if L < 8: continue
+            ux, uy = dx / L, dy / L; nx_, ny_ = -uy, ux; pos = 3.0
+            while pos < L - 3:
+                w_, dpt = rng.uniform(7, 11), rng.uniform(9, 14)
+                for side in (1, -1):
+                    cxm = pos * ux + side * (4 + dpt / 2) * nx_; cym = pos * uy + side * (4 + dpt / 2) * ny_
+                    corners = [(-w_ / 2, -dpt / 2), (w_ / 2, -dpt / 2), (w_ / 2, dpt / 2), (-w_ / 2, dpt / 2)]
+                    ring = [(A[0] + (cxm + c1 * ux + c2 * nx_ * side) / 1000 / kt, A[1] + (cym + c1 * uy + c2 * ny_ * side) / 1000 / KY) for c1, c2 in corners]
+                    R_ = np.array(ring + [ring[0]]); c0 = R_[:4].mean(0)
+                    if not inside(c0[0], c0[1]) or in_cit(c0[0], c0[1]) or cell_ok(R_[:, 0], R_[:, 1], near_river).any(): continue
+                    q = (c0[0] * kt * 1000, c0[1] * KY * 1000)
+                    if any(math.hypot(q[0] - o[0], q[1] - o[1]) < 9 for o in occ[-400:]): continue
+                    occ.append(q); feats.append(("building", {"k": "building"}, [R_])); houses += 1
+                pos += w_ + rng.uniform(0.5, 2.5)
+    # citadel mound and bazaar
+    ring = np.array([(ccx + cra * math.cos(t) * (1 + 0.08 * math.sin(3 * t)) / kt, ccy + crb * math.sin(t) * (1 + 0.08 * math.cos(2 * t)) / KY) for t in np.linspace(0, 2 * math.pi, 41)])
+    feats.append(("land", {"k": "heritage"}, [ring]))
+    bx, by = O["bazaar"]
+    sq = np.array([(bx - 0.08 / kt, by - 0.05 / KY), (bx + 0.08 / kt, by - 0.05 / KY), (bx + 0.08 / kt, by + 0.05 / KY), (bx - 0.08 / kt, by + 0.05 / KY), (bx - 0.08 / kt, by - 0.05 / KY)])
+    feats = [f for f in feats if not (f[0] == "building" and (np.abs(f[2][0][:, 0] - bx) * kt < 0.09).all() and (np.abs(f[2][0][:, 1] - by) * KY < 0.06).all())]
+    feats.append(("land", {"k": "commercial"}, [sq]))
+    hall = np.array([(bx - 0.035 / kt, by - 0.02 / KY), (bx + 0.035 / kt, by - 0.02 / KY), (bx + 0.035 / kt, by + 0.02 / KY), (bx - 0.035 / kt, by + 0.02 / KY), (bx - 0.035 / kt, by - 0.02 / KY)])
+    feats.append(("building", {"k": "building", "tall": 1}, [hall]))
+    print(f"  old town: {lanes} lanes, {houses} courtyard houses, citadel and bazaar")
+    return feats
 
 
 # ---------- per city ----------
@@ -288,6 +404,24 @@ def build(C):
                         if len(run) >= 2: feats.append((kind, {"k": sub}, [np.array(run)]))
                         run = []
                 if len(run) >= 2: feats.append((kind, {"k": sub}, [np.array(run)]))
+    if not C.get("no_rail"):
+        # the city's railways are Irad Temir Jolu's own lines: donor tracks are kept only as yards and sidings beside them,
+        # and nothing is built on the line
+        from scipy.spatial import cKDTree
+        lines_ = [np.array(r["coords"]) for r in json.load(open(os.path.join(ROOT, "data/routes.json"))) if r["kind"] == "railway"]
+        dense = []
+        for c in lines_:
+            for a_, b_ in zip(c, c[1:]):
+                n_ = max(1, int(math.hypot((b_[0] - a_[0]) * kt, (b_[1] - a_[1]) * KY) / 0.01))
+                for t_ in range(n_): dense.append(a_ + (b_ - a_) * t_ / n_)
+        if dense:
+            D_ = np.array(dense); rt_ = cKDTree(np.column_stack([D_[:, 0] * kt, D_[:, 1] * KY]))
+            dist_ = lambda T: rt_.query(np.column_stack([T[:, 0] * kt, T[:, 1] * KY]))[0]
+            before = len(feats)
+            feats = [f for f in feats if not (f[0] == "rail" and np.median(dist_(f[2][0])) > 0.25)
+                     and not (f[0] == "building" and dist_(f[2][0]).min() < 0.018)]
+            print(f"  {C['name']}: {before - len(feats)} donor tracks and buildings cleared off the railway")
+
     if C.get("demote_major"):
         # the donor's arterials are not the Iradi highways here: draw them as ordinary town streets
         feats = [(k, ({"k": "mid"} if k == "road" and p_["k"] == "major" else p_), parts) for k, p_, parts in feats]
@@ -340,6 +474,9 @@ def build(C):
             new.append((k, p_, parts))
         feats = new
         print(f"  {C['name']}: {len(sites)} bridges kept of {len(cross)} crossings")
+
+    if C.get("old_town"):
+        feats = old_town(C["old_town"], feats, kt, cell_ok, near_river)
 
     if C.get("fill_gaps"):
         # open ground inside the town that the donor left empty (its parks and hills) gets ordinary blocks: a street grid
@@ -700,7 +837,7 @@ def relay_routes(cities_out):
             return out
 
         for r in routes:
-            if r["kind"] not in ("highway", "road", "railway"): continue
+            if r["kind"] not in ("highway", "road"): continue      # railways keep their own alignment (build/route_rail.py)
             if relay_only is not None and r["id"] not in relay_only: continue
             G = G_rail if r["kind"] == "railway" else G_road
             if G is None: continue

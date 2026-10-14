@@ -186,7 +186,7 @@
     map.addSource("rwz", { type: "geojson", data: D.rwz });
     map.addSource("routes", { type: "geojson", data: fc(D.routes.map(r => ({ type: "Feature", properties: { id: r.id, kind: r.kind, label: nameOf(r) }, geometry: { type: "LineString", coordinates: r.coords } })).concat(D.routes.flatMap(r => (r.tunnels || []).map(t => ({ type: "Feature", properties: { id: r.id, kind: "tunnel", label: "" }, geometry: { type: "LineString", coordinates: t } }))))) });
     const bk = D.byId["boz-korgon"];
-    map.addSource("restricted", { type: "geojson", data: fc(bk ? [circle([bk.lon, bk.lat], 3.2)] : []) });
+    map.addSource("restricted", { type: "geojson", data: "data/boz_korgon.geojson" });
     map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: PLACE_RANK[p.kind] || 6, pop: p.pop || 0 }))) });
     map.addSource("feats", { type: "geojson", data: fc(D.feats.map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "" }))) });
     map.addSource("neighbours", { type: "geojson", data: fc([
@@ -207,7 +207,7 @@
       { id: "qarachik", type: "line", source: "qarachik", layout: { "line-join": "round" },
         paint: { "line-color": C.qarachik, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1.2, 12, 3], "line-dasharray": [4, 2], "line-opacity": 0.9 }, _g: "zones" },
       { id: "qarachik-hit", type: "line", source: "qarachik", paint: { "line-color": "#000", "line-width": 14, "line-opacity": 0 }, _g: "zones" },
-      { id: "restricted-fill", type: "fill", source: "restricted", minzoom: 8, paint: { "fill-color": "#9b2c2c", "fill-opacity": 0.16 } },
+      { id: "restricted-fill", type: "fill", source: "restricted", minzoom: 8, paint: { "fill-color": "#9b2c2c", "fill-opacity": ["match", ["get", "kind"], "compound", 0.32, 0.13] } },
       { id: "restricted-line", type: "line", source: "restricted", minzoom: 8, paint: { "line-color": "#9b2c2c", "line-width": 1.4, "line-dasharray": [2, 2] } },
       { id: "border-halo", type: "line", source: "irad", paint: { "line-color": C.borderHalo, "line-width": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 9], "line-opacity": 0.6 } },
       { id: "border", type: "line", source: "irad", paint: { "line-color": C.border, "line-width": ["interpolate", ["linear"], ["zoom"], 4, 1.2, 10, 2.4] } },
@@ -241,7 +241,7 @@
       { id: "nature-label", type: "symbol", source: "feats", minzoom: 8, maxzoom: 11, filter: ["in", ["get", "kind"], ["literal", ["peak", "pass", "lake", "reservoir", "park"]]],
         layout: { "text-field": ["case", ["==", ["get", "kind"], "peak"], ["concat", "▲ ", ["get", "label"]], ["get", "label"]], "text-font": textFont("i"), "text-size": 11, "text-max-width": 8 },
         paint: { "text-color": "#4b7a55", "text-halo-color": C.halo, "text-halo-width": 1.4 }, _g: "poi" },
-      { id: "restricted-label", type: "symbol", source: "restricted", minzoom: 9, layout: { "text-field": t("restricted"), "text-font": textFont("b"), "text-size": 11 }, paint: { "text-color": "#9b2c2c", "text-halo-color": C.halo, "text-halo-width": 1.5 } },
+      { id: "restricted-label", type: "symbol", source: "restricted", minzoom: 9, filter: ["==", ["get", "kind"], "label"], layout: { "text-field": t("restricted"), "text-font": textFont("b"), "text-size": 11 }, paint: { "text-color": "#9b2c2c", "text-halo-color": C.halo, "text-halo-width": 1.5 } },
       // settlements
       { id: "place-dot", type: "circle", source: "places", filter: ["in", ["get", "kind"], ["literal", ["capital", "city", "town", "village"]]],
         minzoom: 5,
