@@ -615,12 +615,12 @@
   "kind": "village",
   "zone": "ISEZ",
   "district": "Talas",
-  "lat": 42.622,
-  "lon": 72.33,
+  "lat": 42.5487,
+  "lon": 72.3808,
   "pop": 3280,
   "elev": null,
   "confidence": "placed",
-  "note": "Horse-breeding and falconry village on the northern side of the valley where the Kyrgyz Range foothills meet the valley floor.",
+  "note": "Horse-breeding and falconry village on the northern side of the valley where the Kyrgyz Range foothills meet the valley floor. (Moved onto the real road in Oct 2026.)",
   "wiki": "Cholpon-Bulak"
  },
  {
@@ -1175,12 +1175,12 @@
   "kind": "village",
   "zone": "ISEZ",
   "district": "Chu",
-  "lat": 43.78,
-  "lon": 73.42,
+  "lat": 43.8431,
+  "lon": 73.542,
   "pop": 1160,
   "elev": null,
   "confidence": "placed",
-  "note": "Village (ex-Zheltaya Mogila, 1891) around the ruined fort of Diz-i Zard in the lower Chu valley; placed downstream (NW) of Nurzhan.",
+  "note": "Village (ex-Zheltaya Mogila, 1891) around the ruined fort of Diz-i Zard in the lower Chu valley; placed downstream (NW) of Nurzhan. (Moved onto the real road in Oct 2026.)",
   "wiki": "Sary-Döbö"
  },
  {
@@ -1559,12 +1559,12 @@
   "kind": "village",
   "zone": "ATR",
   "district": "Chatkal Highlands",
-  "lat": 41.87,
-  "lon": 71.53,
+  "lat": 41.8203,
+  "lon": 71.5749,
   "pop": 2870,
   "elev": null,
   "confidence": "real-place",
-  "note": "Largest village of the Chatkal valley: secondary school, hospital, weekly market, gold washing (approximate real location).",
+  "note": "Largest village of the Chatkal valley: secondary school, hospital, weekly market, gold washing (approximate real location). (Moved onto the real river in Oct 2026.)",
   "wiki": "Kanysh-Kiya"
  },
  {
@@ -2215,12 +2215,12 @@
   "kind": "village",
   "zone": "ATR",
   "district": "Northern Steppe",
-  "lat": 44.05,
-  "lon": 72.95,
+  "lat": 44.2625,
+  "lon": 73.0064,
   "pop": 430,
   "elev": null,
   "confidence": "placed",
-  "note": "Reed-cutting and fishing village on the lower Chu below the irrigated zone.",
+  "note": "Reed-cutting and fishing village on the lower Chu below the irrigated zone. (Moved onto the real river in Oct 2026.)",
   "wiki": "Kaiyrma"
  },
  {

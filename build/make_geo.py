@@ -91,7 +91,9 @@ chu = mask_poly([[(73.2, 42.80), (73.8, 42.90), (74.55, 43.22), (75.0, 43.45), (
 # southern industrial corridor and foothills south of Talas (antimony works, Chatkal smelter)
 sary_bulak = mask_poly([[(71.86, 42.42), (72.0, 42.37), (72.4, 42.34), (72.5, 42.30), (72.42, 42.285), (72.25, 42.282), (72.15, 42.245), (72.06, 42.275), (71.95, 42.28), (71.86, 42.30)]])
 naryn = mask_poly([[(71.95, 41.10), (72.20, 40.98), (72.38, 41.18), (72.47, 41.40), (72.56, 41.50), (72.64, 41.60), (72.635, 41.650), (72.59, 41.655), (72.50, 41.59), (72.40, 41.55), (72.10, 41.45)]])
-fmth = near_line(R["fergana-mountain-transit-highway"]["coords"], 1.5) | near_line(R["iyik-janyl-branch-road"]["coords"], 2)
+# the Fergana Mountain Transit Highway crosses tribal land (Suusamyr, Toktogul basin) as a guarded road, not ISEZ territory;
+# only the short branch to Iyık Janyl is added to the Lower Naryn salient
+fmth = near_line(R["iyik-janyl-branch-road"]["coords"], 2)
 toktogul_dam = near_line([(72.62, 41.672), (72.66, 41.682)], 2.5)   # the dam itself stays with the ATR
 isez = irad & (valley | belt | corridor | chu | sary_bulak | naryn | fmth) & ~toktogul_dam
 

@@ -39,6 +39,10 @@ python3 build/check_zones.py --fix
 python3 build/make_base.py ne/geojson
 ```
 
+## Fitting routes to real roads
+
+`tools/osm-export.html` downloads the main roads, railways and rivers for Irad's area from OpenStreetMap (Overpass API) and saves them as one file. `build/snap_routes.py <that file>` redraws every highway, road, railway and canal in `data/routes.json` along the real network, keeping the lore's waypoints in `coords_lore`. Invented railways with no real track follow the valley road; pipelines and power lines stay as drawn. Re-run `build/make_geo.py` and `build/check_zones.py` afterwards.
+
 ## Features
 
 - Search across every place in Iradi, English or Russian (accents optional), with keyboard navigation
