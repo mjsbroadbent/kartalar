@@ -142,7 +142,7 @@ def build(C):
     sizes = ndimage.sum(ok, lab, range(1, n + 1))
     main = lab[j0, i0] or (1 + int(np.argmax(sizes)))
     ok = lab == main
-    near_river = dr * GRID * KY * 1000 < 45      # no buildings in the river
+    near_river = dr * GRID * KY * 1000 < 60      # no buildings or side streets in the river
 
     def cell_ok(x, y, arr=ok):
         i = np.round((np.asarray(x) - lons[0]) / GRID).astype(int); j = np.round((np.asarray(y) - lats[0]) / GRID).astype(int)
@@ -189,6 +189,8 @@ def build(C):
                     L = math.hypot((x2 - x1) * kd, (y2 - y1) * KY); n = max(1, int(L / 0.06))
                     for t in range(1, n + 1): pts.append([x1 + (x2 - x1) * t / n, y1 + (y2 - y1) * t / n])
                 T = tf(pts); okv = cell_ok(T[:, 0], T[:, 1])
+                if not (kind == "road" and sub in ("major", "mid")):
+                    okv &= ~cell_ok(T[:, 0], T[:, 1], near_river)   # only the main streets bridge the river
                 run = []
                 for p, o in zip(T, okv):
                     if o: run.append(p)

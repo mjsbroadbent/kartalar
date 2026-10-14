@@ -109,8 +109,9 @@
   const CITY = { index: null, ov: new Map(), tiles: new Map(), pending: new Set() };
   fetch("data/city/index.json").then(r => r.json()).then(ix => {
     CITY.index = ix;
-    const setMask = () => map.getSource("citymask") && map.getSource("citymask").setData({ type: "FeatureCollection", features: ix.cities.map(c => ({ type: "Feature", properties: { name: c.name }, geometry: c.footprint })) });
-    if (map.isStyleLoaded()) setMask(); else map.once("style.load", setMask);
+    const setMask = () => { const src = map.getSource("citymask"); if (!src) return false; src.setData({ type: "FeatureCollection", features: ix.cities.map(c => ({ type: "Feature", properties: { name: c.name }, geometry: c.footprint })) }); return true; };
+    // the style may still be loading (or already loaded): retry until the source exists
+    if (!setMask()) { const iv = setInterval(() => { if (setMask()) { clearInterval(iv); updateCities(); } }, 200); }
     map.on("style.load", setMask);
     updateCities();
   }).catch(() => {});
