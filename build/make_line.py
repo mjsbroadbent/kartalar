@@ -332,13 +332,47 @@ print("ISEZ %.0f km2 (Talas-Chu %.0f, Naryn %.0f), ATR %.0f" % (area(isez), area
 
 # ---------- districts ----------
 south_of_axis = GY < AXLAT
-# the State Route 1 corridor belongs to Lower Naryn from the Otmek tunnel south; north of it, to Talas
-ln = naryn & ~tc & (GY < 42.28)
-dist = {"Lower Naryn": ln, "Sary-Bulak": tc & sary_bulak & south_of_axis & (GY < AXLAT - 0.06)}
-rest = isez & ~ln & ~dist["Sary-Bulak"]
-dist["Chu"] = rest & (GX >= 72.95) & (GY >= 42.72)
-dist["Kara-Buura"] = rest & ~dist["Chu"] & (GX < 71.92)
-dist["Talas"] = rest & ~dist["Chu"] & ~dist["Kara-Buura"]
+# State Route 1 corridor from the Otmek tunnel south and the Toktogul basin down to the dam: Toktogul District;
+# the Naryn below the dam (gorge, Iyık Janyl and Tash-Kömür flats, Fergana farm belt): Lower Naryn District
+south_corr = naryn & ~tc & (GY < 42.28)
+dam_ = P.get("toktogul-dam", {"lat": 41.677})
+tokt = south_corr & (GY >= dam_["lat"] - 0.012)
+ln = south_corr & ~tokt
+dist = {"Toktogul": tokt, "Lower Naryn": ln, "Sary-Bulak": tc & sary_bulak & south_of_axis & (GY < AXLAT - 0.06)}
+rest = isez & ~south_corr & ~dist["Sary-Bulak"]
+# Talas District is the Talas valley up to the crest of the Kyrgyz Range; west of it, Kara-Buura, the border following
+# the low ground where the Kenkol and Kara-Buura fans meet; north of the range, Kara-Buura near Taraz and Chu further east,
+# split at the stream that comes off the range at about 72.85 E
+fan_lat = np.arange(42.3, 42.92, STEP)
+fan_lon = []
+for y in fan_lat:
+    # low ground between the fans on the valley floor; the crest of the spur at the range's western end above it and
+    # in the mountains below
+    lo, hi = (71.6, 71.95) if y > 42.62 else (71.62, 71.78)
+    i0, i1 = int(round((lo - LON0) / STEP)), int(round((hi - LON0) / STEP)); j = int(round((y - LAT0) / STEP))
+    row = ndimage.uniform_filter1d(E[j, i0:i1 + 1], 5)
+    fan_lon.append(lons[i0 + (int(np.argmin(row)) if 42.45 < y <= 42.62 else int(np.argmax(row)))])
+fan_lon = ndimage.uniform_filter1d(np.array(fan_lon), 9)
+fan_x = np.interp(GY, fan_lat, fan_lon)
+north_of_range = (GY > kcrest[None, :]) & (GX > 71.6)
+# the Chu/Kara-Buura border north of the range: the valley of the stream that comes off the range at about 72.85 E,
+# then the stream itself across the plain
+st_lat = np.arange(42.7, 43.25, STEP); st_lon = []
+riv = [p for w in OSM if w["k"].startswith("water:river") and not w.get("n") for p in w["c"] if 72.75 < p[0] < 72.97 and 42.95 < p[1] < 43.12]
+riv = np.array(riv) if riv else np.zeros((0, 2))
+for y in st_lat:
+    near_ = riv[np.abs(riv[:, 1] - y) < 0.01] if len(riv) else []
+    if len(near_):
+        st_lon.append(float(np.median(near_[:, 0])))
+    elif y < 42.97:
+        i0, i1 = int(round((72.75 - LON0) / STEP)), int(round((72.95 - LON0) / STEP)); j = int(round((y - LAT0) / STEP))
+        st_lon.append(lons[i0 + int(np.argmin(ndimage.uniform_filter1d(E[j, i0:i1 + 1], 3)))])
+    else:
+        st_lon.append(st_lon[-1] if st_lon else 72.85)
+stream_x = np.interp(GY, st_lat, ndimage.uniform_filter1d(np.array(st_lon), 7))
+dist["Kara-Buura"] = rest & ((GX < fan_x) | (north_of_range & (GX < stream_x)))
+dist["Chu"] = rest & ~dist["Kara-Buura"] & (north_of_range | (GX > 73.3))
+dist["Talas"] = rest & ~dist["Kara-Buura"] & ~dist["Chu"]
 for k, v in dist.items():
     print("  %-12s %.0f km2" % (k, area(v)))
 

@@ -27,6 +27,13 @@ NOTES = {
  "Fergana Rim": "the Fergana side of the Fergana Range above the ISEZ farm belt: Mailuu-Suu, the Kara-Unkur valley, Arslanbob and its walnut forest, Oruktu, Jangak-Bulak; highland Chubar.",
 }
 NAME_RU = {"Kyrgyz Range–Suusamyr": "Киргизский хребет – Суусамыр"}
+DF = json.load(open(os.path.join(ROOT, "data/districts.geojson")))["features"]
+DZ = [(f["properties"]["district"], [[Path(np.array(r)) for r in poly] for poly in f["geometry"]["coordinates"]]) for f in DF]
+DISTRICTS = {n for n, _ in DZ}
+def district_at(x, y):
+    for n, polys in DZ:
+        if inside(polys, x, y): return n
+    return None
 for fn in ("data/settlements.json", "data/features.json"):
     D = json.load(open(os.path.join(ROOT, fn)))
     have = {p["id"] for p in D}
@@ -47,6 +54,10 @@ for fn in ("data/settlements.json", "data/features.json"):
                 c = min(cand, key=lambda q: (q[0] - c[0]) ** 2 + (q[1] - c[1]) ** 2)
             p["lon"], p["lat"] = round(float(c[0]), 3), round(float(c[1]), 3)
             p["note"] = f"UN planning zone ~{a:,} km²: " + NOTES[n]
+        elif p.get("zone") == "ISEZ" and p.get("district") in DISTRICTS and p.get("kind") != "district":
+            d = district_at(p["lon"], p["lat"])
+            if d and d != p["district"]:
+                print(f"  {p['id']:34} {p['district']} -> {d}"); p["district"] = d
         elif p.get("zone") == "ATR" and (p.get("district") or fn.endswith("settlements.json")):
             z = zone_at(p["lon"], p["lat"])
             if p.get("district") != z:
