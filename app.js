@@ -94,8 +94,9 @@
   function fc(features) { return { type: "FeatureCollection", features }; }
   function pointFeat(p, extra) { return { type: "Feature", id: undefined, geometry: { type: "Point", coordinates: [p.lon, p.lat] }, properties: Object.assign({ id: p.id, label: nameOf(p), kind: p.kind }, extra) }; }
 
-  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson")])
-    .then(([pl, fe, ro, ir, zo, di]) => {
+  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson")])
+    .then(([pl, fe, ro, ir, zo, di, qc, rz]) => {
+      D.line = qc; D.rwz = rz;
       D.places = pl; D.feats = fe; D.routes = ro; D.irad = ir; D.zones = zo; D.districts = di;
       D.all = pl.map(p => Object.assign({ _t: "place" }, p)).concat(fe.map(f => Object.assign({ _t: "feat" }, f)));
       D.byId = Object.fromEntries(D.all.map(p => [p.id, p]));
@@ -113,6 +114,8 @@
     map.addSource("irad", { type: "geojson", data: D.irad });
     map.addSource("zones", { type: "geojson", data: D.zones });
     map.addSource("districts", { type: "geojson", data: D.districts });
+    map.addSource("qarachik", { type: "geojson", data: D.line });
+    map.addSource("rwz", { type: "geojson", data: D.rwz });
     map.addSource("routes", { type: "geojson", data: fc(D.routes.map(r => ({ type: "Feature", properties: { id: r.id, kind: r.kind, label: nameOf(r) }, geometry: { type: "LineString", coordinates: r.coords } }))) });
     const bk = D.byId["boz-korgon"];
     map.addSource("restricted", { type: "geojson", data: fc(bk ? [circle([bk.lon, bk.lat], 3.2)] : []) });
@@ -131,7 +134,11 @@
       { id: "outside", type: "fill", source: "outside", paint: { "fill-color": C.outside, "fill-opacity": 0.72 } },
       { id: "atr-tint", type: "fill", source: "zones", filter: ["==", ["get", "zone"], "ATR"], paint: { "fill-color": "#b58a4c", "fill-opacity": ["interpolate", ["linear"], ["zoom"], 5, 0.07, 10, 0.03] }, _g: "zones" },
       { id: "district-line", type: "line", source: "districts", minzoom: 6.5, paint: { "line-color": "#8c8577", "line-width": 0.8, "line-dasharray": [3, 2] }, _g: "zones" },
-      { id: "qarachik", type: "line", source: "zones", filter: ["==", ["get", "zone"], "ISEZ"], paint: { "line-color": C.qarachik, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1, 10, 2.2], "line-dasharray": [4, 2], "line-opacity": 0.85 }, _g: "zones" },
+      { id: "rwz", type: "fill", source: "rwz", minzoom: 6, paint: { "fill-color": C.qarachik, "fill-opacity": ["interpolate", ["linear"], ["zoom"], 6, 0.035, 11, 0.02] }, _g: "zones" },
+      { id: "qarachik-halo", type: "line", source: "qarachik", paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["linear"], ["zoom"], 5, 3, 12, 7], "line-opacity": 0.6 }, _g: "zones" },
+      { id: "qarachik", type: "line", source: "qarachik", layout: { "line-join": "round" },
+        paint: { "line-color": C.qarachik, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1.2, 12, 3], "line-dasharray": [4, 2], "line-opacity": 0.9 }, _g: "zones" },
+      { id: "qarachik-hit", type: "line", source: "qarachik", paint: { "line-color": "#000", "line-width": 14, "line-opacity": 0 }, _g: "zones" },
       { id: "restricted-fill", type: "fill", source: "restricted", minzoom: 8, paint: { "fill-color": "#9b2c2c", "fill-opacity": 0.16 } },
       { id: "restricted-line", type: "line", source: "restricted", minzoom: 8, paint: { "line-color": "#9b2c2c", "line-width": 1.4, "line-dasharray": [2, 2] } },
       { id: "border-halo", type: "line", source: "irad", paint: { "line-color": C.borderHalo, "line-width": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 9], "line-opacity": 0.6 } },
@@ -390,14 +397,29 @@
 
   /* ---------- map clicks ---------- */
   const CLICKABLE = ["place-label", "place-dot", "poi-dot", "poi-label", "nature-label", "quarter-label", "district-label", "zone-area-label"];
+  function openLine(f, ll) {
+    const p = f.properties;
+    if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });
+    hl.setLngLat(ll).addTo(map);
+    const total = D.line.features.reduce((a, x) => a + x.properties.km, 0);
+    $("#cardBody").innerHTML = `<div class="c-kind" style="color:${C.qarachik}">┅ ${esc(t("lineKind"))}</div>
+      <h2>${esc(t("lineName"))}</h2><p class="c-alt">${esc(LANG === "ru" ? "Qara-Chik chek ara sızığı · Qara-Chik Demarcation Line" : LANG === "ir" ? "Qara-Chik Demarcation Line · Демаркационная линия Кара-Чик" : "Qara-Chik chek ara sızığı · Демаркационная линия Кара-Чик")}</p>
+      <p class="c-where">${esc(t("sec_" + p.sector))} · ${esc(t("fol_" + p.follows))}</p>
+      <div class="c-actions"><a class="c-btn primary" href="${wikiUrl("Qara-Chik Demarcation Line")}" target="_blank" rel="noopener">📖 ${esc(t("readWiki"))}</a></div>
+      <p class="info">${esc(t("lineText"))}</p>
+      <dl class="c-facts"><dt>${esc(t("lineLen"))}</dt><dd>${Math.round(total / 10) * 10} km</dd><dt>${esc(t("lineRwz"))}</dt><dd>12 km</dd><dt>${esc(t("coords"))}</dt><dd>${ll.lat.toFixed(4)}°N, ${ll.lng.toFixed(4)}°E</dd></dl>`;
+    $("#card").hidden = false;
+  }
   map.on("click", e => {
     if (!ready) return;
     const hit = map.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], { layers: CLICKABLE.filter(id => map.getLayer(id)) });
     if (hit.length) { const p = D.byId[hit[0].properties.id]; if (p) { openPlace(p, false); return; } }
+    const lh = map.getLayer("qarachik-hit") && map.getLayoutProperty("qarachik-hit", "visibility") !== "none" ? map.queryRenderedFeatures(e.point, { layers: ["qarachik-hit"] }) : [];
+    if (lh.length) { openLine(lh[0], e.lngLat); return; }
     if (!$("#card").hidden) { closeCard(); return; }
     dropPin(e.lngLat);
   });
-  CLICKABLE.forEach(id => {
+  ["qarachik-hit"].concat(CLICKABLE).forEach(id => {
     map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
     map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
   });

@@ -82,3 +82,16 @@ Object.assign(window.KT_STR.ru, { "dn_Talas": "Таласский", "dn_Kara-Buu
   "dist_Toktogul–Naryn": "Токтогул — Нарын", "dist_Fergana Rim": "Ферганское обрамление" });
 Object.assign(window.KT_STR.en, { "dist_Lower Naryn": "Lower Naryn District", "dist_Talas": "Talas District", "dist_Kara-Buura": "Kara-Buura District", "dist_Chu": "Chu District", "dist_Sary-Bulak": "Sary-Bulak District" });
 Object.assign(window.KT_STR.ir, { "dist_Talas": "Talas rayonu", "dist_Kara-Buura": "Kara-Buura rayonu", "dist_Chu": "Chu rayonu", "dist_Sary-Bulak": "Sary-Bulak rayonu" });
+
+Object.assign(window.KT_STR.en, { lineKind: "Ceasefire line", lineName: "Qara-Chik Demarcation Line",
+  lineText: "Fixed by the 2007 Bishkek Ceasefire Agreement and monitored by the UN Mission in Irad. Concrete pillars in the valleys, stone cairns on the ridges. Cross only at designated crossings.",
+  lineLen: "Length", lineRwz: "Restricted-weapons zone", sec_western: "Western sector", sec_central: "Central sector", sec_southern: "Southern (Naryn) sector", sec_northern: "Northern sector",
+  fol_survey: "surveyed line between pillars", fol_river: "follows the river", fol_canal: "follows the canal", fol_foothills: "along the foothills", fol_crest: "along the crest" });
+Object.assign(window.KT_STR.ir, { lineKind: "Ok toktotuu sızığı", lineName: "Qara-Chik chek ara sızığı",
+  lineText: "2007-jılkı Bishkek ok toktotuu kelishimi menen bekitilgen, BUUnun Iraddagı missiyası köz salat. Öröndördö beton mamılar, kırlarda tash ümütölör. Belgilengen ötkööldördön gana ötüñüz.",
+  lineLen: "Uzundugu", lineRwz: "Kurallar chektelgen zona", sec_western: "Batısh sektoru", sec_central: "Borborduk sektor", sec_southern: "Tüshtük (Narın) sektoru", sec_northern: "Tündük sektoru",
+  fol_survey: "mamılardın ortosundagı ölchöngön sızık", fol_river: "dayra boyu", fol_canal: "kanal boyu", fol_foothills: "too etegi boyu", fol_crest: "kır boyu" });
+Object.assign(window.KT_STR.ru, { lineKind: "Линия прекращения огня", lineName: "Демаркационная линия Кара-Чик",
+  lineText: "Установлена Бишкекским соглашением о прекращении огня 2007 года, под наблюдением Миссии ООН в Ираде. Бетонные столбы в долинах, каменные туры на хребтах. Пересекать только в установленных пунктах.",
+  lineLen: "Протяжённость", lineRwz: "Зона ограничения вооружений", sec_western: "Западный сектор", sec_central: "Центральный сектор", sec_southern: "Южный (Нарынский) сектор", sec_northern: "Северный сектор",
+  fol_survey: "межевая линия между столбами", fol_river: "по реке", fol_canal: "по каналу", fol_foothills: "по предгорьям", fol_crest: "по гребню хребта" });

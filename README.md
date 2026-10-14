@@ -21,6 +21,8 @@ Static site, no build step for the page itself. Deploy on GitHub Pages from the 
 | `data/irad.geojson` | Irad's border |
 | `data/zones.geojson` | The ISEZ and the Autonomous Tribal Regions (the ISEZ outline is drawn as the Qara-Chik line) |
 | `data/districts.geojson` | The five ISEZ districts |
+| `data/qarachik.geojson` | The Qara-Chik Demarcation Line, in pieces tagged by sector and by what each piece follows (crest, river, canal, foothills, surveyed line) |
+| `data/restricted_zone.geojson` | The 12 km restricted-weapons zone either side of the line |
 | `data/settlements_report.md`, `data/features_report.md` | How each place was positioned, contradictions found in the lore and how they were resolved |
 
 Each place has a `confidence`: `anchor` (fixed by decision), `real-place` (a real place of the same name), `stated` (derived from distances or directions in the lore) or `placed` (a consistent guess). Move `placed` ones freely.
@@ -38,6 +40,10 @@ python3 build/make_geo.py ne/geojson/ne_10m_admin_1_states_provinces.geojson
 python3 build/check_zones.py --fix
 python3 build/make_base.py ne/geojson
 ```
+
+## The Qara-Chik line from real terrain
+
+`tools/dem-export.html` saves an elevation grid for Irad's area (Mapzen/AWS Terrain Tiles, every 0.005°). `build/make_line.py <irad-dem.bin> <irad-osm-roads.json>` then rebuilds the ISEZ, the districts and the line itself, following the wiki's description of each sector: the Talas Alatau foothills above the valley floor (bulging around the Sary-Bulak corridor and the lore's own ISEZ villages), the edge of the irrigated Talas and Chu plains (canals, the Turksib corridor, the oil-field and rail corridors), the Karatau foothills, and the crests of the Naryn catchment below the Toktogul dam. `build/make_crossings.py` adds a crossing point wherever a road or the railway crosses the line. Run order: `make_geo.py` (border) → `make_line.py` → `make_crossings.py` → `check_zones.py --fix`.
 
 ## Fitting routes to real roads
 
