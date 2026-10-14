@@ -43,11 +43,15 @@ python3 build/make_base.py ne/geojson
 
 ## The Qara-Chik line from real terrain
 
-`tools/dem-export.html` saves an elevation grid for Irad's area (Mapzen/AWS Terrain Tiles, every 0.005°). `build/make_line.py <irad-dem.bin> <irad-osm-roads.json>` then rebuilds the ISEZ, the districts and the line itself, following the wiki's description of each sector: the Talas Alatau foothills above the valley floor (bulging around the Sary-Bulak corridor and the lore's own ISEZ villages), the edge of the irrigated Talas and Chu plains (canals, the Turksib corridor, the oil-field and rail corridors), the Karatau foothills, and the crests of the Naryn catchment below the Toktogul dam. `build/make_crossings.py` adds a crossing point wherever a road or the railway crosses the line. Run order: `make_geo.py` (border) → `make_line.py` → `make_crossings.py` → `check_zones.py --fix`.
+`tools/dem-export.html` saves an elevation grid for Irad's area (Mapzen/AWS Terrain Tiles, every 0.005°). `build/make_line.py <irad-dem.bin> <irad-osm-roads.json>` then rebuilds the ISEZ, the districts and the line itself, following the wiki's description of each sector: the Talas Alatau foothills above the valley floor (bulging around the Sary-Bulak corridor and the lore's own ISEZ villages), the edge of the irrigated Talas and Chu plains (canals, the Turksib corridor, the oil-field and rail corridors), the Karatau foothills, and the crests of the Naryn catchment below the Toktogul dam. `build/make_crossings.py` adds a crossing point wherever a road or the railway crosses the line. Run order: `make_geo.py` (border), then `build/rebuild.sh <irad-dem.bin> <irad-osm-roads.json>`, which runs `route_terrain.py` → `derive_lines.py` → `make_line.py` → `place_checkpoints.py` → `make_crossings.py` → `check_zones.py --fix`.
 
 ## Fitting routes to real roads
 
 `tools/osm-export.html` downloads the main roads, railways and rivers for Irad's area from OpenStreetMap (Overpass API) and saves them as one file. `build/snap_routes.py <that file>` redraws every highway, road, railway and canal in `data/routes.json` along the real network, keeping the lore's waypoints in `coords_lore`. Invented railways with no real track follow the valley road; pipelines and power lines stay as drawn. Re-run `build/make_geo.py` and `build/check_zones.py` afterwards.
+
+`build/route_terrain.py` then lays the routes listed in `build/route_specs.json` over the real terrain: each is a cheapest path through the real road (or rail) network plus a fine terrain grid where new road would have to be built, with costs for steep climbs (beyond the route's ruling grade), steep side slopes and altitude. Real main roads are kept as they are; new-built stretches are straightened, rounded and given hairpins where they still climb too fast. `build/derive_lines.py` cuts the Otmek tunnel into State Route 1 and lays the pipelines and power lines along their routes.
+
+`tools/city-export.html` downloads the streets, buildings, land use and parks of the donor cities (Bishkek for Talas, Shymkent for Nurzhan, Osh for Iyık Janyl) for the city plans.
 
 ## Features
 

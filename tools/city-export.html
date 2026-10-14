@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kartalar city export</title>
+  <style>
+    :root { --green: #1f7a2e; }
+    body { margin: 0; font: 15px/1.5 "Segoe UI", system-ui, sans-serif; background: #f4f3ef; color: #202124; }
+    main { max-width: 680px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    p { margin: 0 0 12px; color: #444; }
+    .box { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 11px 18px; background: var(--green); color: #fff; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: default; }
+    label { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+    progress { width: 100%; height: 14px; margin: 14px 0 6px; }
+    #log { font: 12.5px/1.5 ui-monospace, Consolas, monospace; background: #f6f6f4; border-radius: 8px; padding: 10px; max-height: 240px; overflow-y: auto; white-space: pre-wrap; margin-top: 10px; }
+    #out a { display: block; margin-top: 10px; font-weight: 600; color: var(--green); }
+    small { color: #666; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>City export for Kartalar</h1>
+  <p>Downloads the streets, buildings, land use, parks and small waterways of three real cities from OpenStreetMap's Overpass API. Kartalar borrows their street plans for the Iradi cities. Each city is fetched in small tiles and saved as its own file. It takes about 10 to 20 minutes in all, mostly waiting on the server. When it finishes, save all three files and send them back.</p>
+  <div class="box">
+    <label><input type="checkbox" class="city" value="0" checked> Bishkek <small>(the plan for Talas)</small></label>
+    <label><input type="checkbox" class="city" value="1" checked> Shymkent <small>(the plan for Nurzhan)</small></label>
+    <label><input type="checkbox" class="city" value="2" checked> Osh <small>(the plan for Iyık Janyl)</small></label>
+    <label><input type="checkbox" id="optBld" checked> Include buildings <small>(the biggest part; untick if it keeps failing)</small></label>
+    <button id="go">Start download</button>
+    <progress id="prog" value="0" max="1" hidden></progress>
+    <div id="status"></div>
+    <div id="out"></div>
+    <div id="log"></div>
+  </div>
+</main>
+<script>
+(function () {
+  // south, west, north, east
+  const CITIES = [
+    { name: "bishkek", bbox: [42.77, 74.44, 42.95, 74.79] },
+    { name: "shymkent", bbox: [42.22, 69.47, 42.42, 69.76] },
+    { name: "osh", bbox: [40.47, 72.72, 40.61, 72.88] },
+  ];
+  const STEP = 0.05;
+  const ENDPOINTS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"];
+  const $ = id => document.getElementById(id);
+  const log = s => { $("log").textContent += s + "\n"; $("log").scrollTop = 1e9; };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const R = v => Math.round(v * 1e5) / 1e5;
+
+  function query(b) {
+    const bb = b.join(",");
+    const p = [
+      `way["highway"](${bb});`,
+      `way["railway"~"^(rail|tram|light_rail|narrow_gauge|abandoned|disused)$"](${bb});`,
+      `way["waterway"~"^(river|canal|stream|ditch|drain)$"](${bb});`,
+      `way["natural"="water"](${bb});relation["natural"="water"](${bb});`,
+      `way["landuse"](${bb});relation["landuse"](${bb});`,
+      `way["leisure"~"^(park|garden|pitch|stadium|playground|sports_centre)$"](${bb});relation["leisure"="park"](${bb});`,
+      `way["amenity"~"^(school|university|college|hospital|marketplace|parking|grave_yard)$"](${bb});`,
+    ];
+    if ($("optBld").checked) p.push(`way["building"](${bb});relation["building"](${bb});`);
+    return `[out:json][timeout:180];(${p.join("")});out tags geom qt;`;
+  }
+
+  async function fetchTile(b) {
+    for (let attempt = 0; attempt < 7; attempt++) {
+      const url = ENDPOINTS[attempt % ENDPOINTS.length];
+      try {
+        const r = await fetch(url, { method: "POST", body: "data=" + encodeURIComponent(query(b)), headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+        if (r.status === 429 || r.status === 504) { log(`  busy (${r.status}) at ${new URL(url).host}, waiting…`); await sleep(10000 + attempt * 5000); continue; }
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return await r.json();
+      } catch (e) { log(`  ${e.message} at ${new URL(url).host}, retrying…`); await sleep(5000 + attempt * 4000); }
+    }
+    throw new Error("tile failed after several tries: " + b.join(","));
+  }
+
+  // keep only the tags Kartalar uses
+  function kindOf(t) {
+    if (t.building) return "building";
+    if (t.highway) return "hw:" + t.highway;
+    if (t.railway) return "rail:" + t.railway;
+    if (t.waterway) return "ww:" + t.waterway;
+    if (t.natural === "water") return "water";
+    if (t.leisure) return "leisure:" + t.leisure;
+    if (t.amenity) return "amenity:" + t.amenity;
+    if (t.landuse) return "landuse:" + t.landuse;
+    return null;
+  }
+  function keepTags(t) {
+    const o = {};
+    for (const k of ["name", "name:en", "building:levels", "height", "lanes", "oneway", "bridge", "tunnel", "layer", "surface", "service", "religion"]) if (t[k] !== undefined) o[k] = t[k];
+    if (t.building && t.building !== "yes") o.b = t.building;
+    return o;
+  }
+
+  $("go").addEventListener("click", async () => {
+    $("go").disabled = true; $("out").innerHTML = ""; $("log").textContent = "";
+    const chosen = [...document.querySelectorAll(".city:checked")].map(c => CITIES[+c.value]);
+    const jobs = [];
+    for (const c of chosen) {
+      const [s0, w0, n0, e0] = c.bbox;
+      for (let s = s0; s < n0 - 1e-9; s += STEP) for (let w = w0; w < e0 - 1e-9; w += STEP)
+        jobs.push({ city: c, b: [R(s), R(w), R(Math.min(s + STEP, n0)), R(Math.min(w + STEP, e0))] });
+    }
+    $("prog").hidden = false; $("prog").max = jobs.length; $("prog").value = 0;
+    const store = new Map(chosen.map(c => [c.name, { ways: new Map(), failed: [] }]));
+    for (let i = 0; i < jobs.length; i++) {
+      const { city, b } = jobs[i], st = store.get(city.name);
+      $("status").textContent = `${city.name}: tile ${i + 1} of ${jobs.length} · ${st.ways.size.toLocaleString()} features so far`;
+      try {
+        const j = await fetchTile(b);
+        let n = 0;
+        for (const el of j.elements || []) {
+          const t = el.tags || {}, k = kindOf(t);
+          if (!k) continue;
+          const key = el.type[0] + el.id;
+          if (st.ways.has(key)) continue;
+          let rings;
+          if (el.type === "way" && el.geometry) rings = [el.geometry.map(p => [R(p.lon), R(p.lat)])];
+          else if (el.type === "relation" && el.members) rings = el.members.filter(m => m.geometry && m.role !== "inner").map(m => m.geometry.map(p => [R(p.lon), R(p.lat)]));
+          if (!rings || !rings.length) continue;
+          const holes = el.type === "relation" && el.members ? el.members.filter(m => m.geometry && m.role === "inner").map(m => m.geometry.map(p => [R(p.lon), R(p.lat)])) : [];
+          const f = { k, c: rings.length === 1 ? rings[0] : rings };
+          if (rings.length > 1) f.multi = 1;
+          if (holes.length) f.h = holes;
+          const tg = keepTags(t); if (Object.keys(tg).length) f.t = tg;
+          st.ways.set(key, f); n++;
+        }
+        log(`${city.name} tile ${b.join(",")}: +${n}`);
+      } catch (e) { st.failed.push(b); log("FAILED " + e.message); }
+      $("prog").value = i + 1;
+      await sleep(1500);
+    }
+    for (const c of chosen) {
+      const st = store.get(c.name);
+      const data = { source: "OpenStreetMap contributors (ODbL) via Overpass API", city: c.name, bbox: c.bbox, made: new Date().toISOString(), failedTiles: st.failed, features: [...st.ways.values()] };
+      const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = `city-${c.name}.json`;
+      a.textContent = `Save city-${c.name}.json (${(blob.size / 1048576).toFixed(1)} MB, ${st.ways.size.toLocaleString()} features${st.failed.length ? `, ${st.failed.length} tile(s) failed` : ""})`;
+      $("out").appendChild(a);
+      a.click();
+      await sleep(800);
+    }
+    const nf = [...store.values()].reduce((s, v) => s + v.failed.length, 0);
+    $("status").textContent = nf ? `Done, but ${nf} tile(s) failed. Save the files anyway, or press Start again later for just the city that failed.` : "Done. Three files were saved (or click the links above).";
+    $("go").disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
