@@ -79,7 +79,10 @@ suusamyr = mask_poly([[(72.95, 42.32), (73.75, 42.30), (73.80, 41.95), (73.20, 4
 import math as _m
 _ring = [(72.998 + 0.075 * _m.cos(t), 40.928 + 0.052 * _m.sin(t)) for t in [k * _m.pi / 18 for k in range(36)]]
 jalal_abad = mask_poly([_ring]) | mask_poly([[(73.03, 40.9), (73.12, 40.87), (73.2, 40.78), (73.08, 40.76), (72.99, 40.86)]])
-irad = (A["KG-T"] | A["KG-J"] | jambyl | turkistan_part | uz_rim | suusamyr) & (GX >= 68.0) & ~jalal_abad
+# the Balkhash road notch: the oblast line dips west round a bend of the Almaty–Balkhash highway; Irad's border runs straight
+# across it so the road does not leave and re-enter the country
+balkhash_notch = mask_poly([[(73.74, 45.30), (74.11, 45.30), (74.11, 45.03), (73.80, 45.03)]])
+irad = (A["KG-T"] | A["KG-J"] | jambyl | turkistan_part | uz_rim | suusamyr | balkhash_notch) & (GX >= 68.0) & ~jalal_abad
 
 # ---------- ISEZ ----------
 R = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "data/routes.json")))}
