@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kartalar · OSM road export</title>
+  <style>
+    :root { --green: #1f7a2e; }
+    body { margin: 0; font: 15px/1.5 "Segoe UI", system-ui, sans-serif; background: #f4f3ef; color: #202124; }
+    main { max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    p { margin: 0 0 12px; color: #444; }
+    .box { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 11px 18px; background: var(--green); color: #fff; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: default; }
+    label { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+    progress { width: 100%; height: 14px; margin: 14px 0 6px; }
+    #log { font: 12.5px/1.5 ui-monospace, Consolas, monospace; background: #f6f6f4; border-radius: 8px; padding: 10px; max-height: 220px; overflow-y: auto; white-space: pre-wrap; margin-top: 10px; }
+    a.dl { display: inline-block; margin-top: 12px; font-weight: 600; color: var(--green); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>OSM road and rail export for Kartalar</h1>
+  <p>Downloads the main roads, railways and rivers in Irad's area (40.6–46.1° N, 68.0–75.2° E) from OpenStreetMap's Overpass API, in small tiles, and saves them as one compact file. It takes a few minutes. When it finishes, save the file and send it back.</p>
+  <div class="box">
+    <label><input type="checkbox" id="optRoads" checked> Roads: motorway, trunk, primary, secondary, tertiary</label>
+    <label><input type="checkbox" id="optRail" checked> Railways</label>
+    <label><input type="checkbox" id="optRivers" checked> Rivers and canals</label>
+    <button id="go">Start download</button>
+    <progress id="prog" value="0" max="1" hidden></progress>
+    <div id="status"></div>
+    <div id="out"></div>
+    <div id="log"></div>
+  </div>
+</main>
+<script>
+(function () {
+  const BBOX = [40.6, 68.0, 46.1, 75.2];               // south, west, north, east
+  const STEP_LAT = 1.1, STEP_LON = 1.2;                  // tile size
+  const ENDPOINTS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"];
+  const $ = id => document.getElementById(id);
+  const log = s => { $("log").textContent += s + "\n"; $("log").scrollTop = 1e9; };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function query(b) {
+    const bb = b.join(",");
+    const parts = [];
+    if ($("optRoads").checked) parts.push(`way["highway"~"^(motorway|trunk|primary|secondary|tertiary|motorway_link|trunk_link|primary_link)$"](${bb});`);
+    if ($("optRail").checked) parts.push(`way["railway"~"^(rail|narrow_gauge)$"](${bb});`);
+    if ($("optRivers").checked) parts.push(`way["waterway"~"^(river|canal)$"](${bb});`);
+    return `[out:json][timeout:170];(${parts.join("")});out tags geom qt;`;
+  }
+
+  async function fetchTile(b) {
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const url = ENDPOINTS[attempt % ENDPOINTS.length];
+      try {
+        const r = await fetch(url, { method: "POST", body: "data=" + encodeURIComponent(query(b)), headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+        if (r.status === 429 || r.status === 504) { log(`  busy (${r.status}) at ${new URL(url).host}, waiting…`); await sleep(8000 + attempt * 4000); continue; }
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return await r.json();
+      } catch (e) { log(`  ${e.message} at ${new URL(url).host}, retrying…`); await sleep(4000 + attempt * 3000); }
+    }
+    throw new Error("tile failed after several tries: " + b.join(","));
+  }
+
+  $("go").addEventListener("click", async () => {
+    $("go").disabled = true; $("out").innerHTML = ""; $("log").textContent = "";
+    const tiles = [];
+    for (let s = BBOX[0]; s < BBOX[2]; s += STEP_LAT) for (let w = BBOX[1]; w < BBOX[3]; w += STEP_LON)
+      tiles.push([+s.toFixed(2), +w.toFixed(2), +Math.min(s + STEP_LAT, BBOX[2]).toFixed(2), +Math.min(w + STEP_LON, BBOX[3]).toFixed(2)]);
+    const ways = new Map();
+    $("prog").hidden = false; $("prog").max = tiles.length; $("prog").value = 0;
+    const failed = [];
+    for (let i = 0; i < tiles.length; i++) {
+      $("status").textContent = `Tile ${i + 1} of ${tiles.length} · ${ways.size.toLocaleString()} lines so far`;
+      try {
+        const j = await fetchTile(tiles[i]);
+        let n = 0;
+        for (const el of j.elements || []) {
+          if (el.type !== "way" || !el.geometry || ways.has(el.id)) continue;
+          const tg = el.tags || {};
+          ways.set(el.id, {
+            id: el.id,
+            k: tg.highway ? "road:" + tg.highway : tg.railway ? "rail:" + tg.railway : "water:" + tg.waterway,
+            n: tg.name || undefined, ne: tg["name:en"] || undefined, ref: tg.ref || undefined,
+            c: el.geometry.map(p => [Math.round(p.lon * 1e5) / 1e5, Math.round(p.lat * 1e5) / 1e5])
+          });
+          n++;
+        }
+        log(`tile ${i + 1}: +${n} lines`);
+      } catch (e) { failed.push(tiles[i]); log("FAILED " + e.message); }
+      $("prog").value = i + 1;
+      await sleep(1200);
+    }
+    const data = { source: "OpenStreetMap contributors (ODbL) via Overpass API", bbox: BBOX, made: new Date().toISOString(), failedTiles: failed, ways: [...ways.values()] };
+    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "irad-osm-roads.json"; a.className = "dl";
+    a.textContent = `Save irad-osm-roads.json (${(blob.size / 1048576).toFixed(1)} MB, ${ways.size.toLocaleString()} lines)`;
+    $("out").appendChild(a);
+    $("status").textContent = failed.length ? `Done, but ${failed.length} tile(s) failed. You can save anyway, or press Start again later.` : "Done.";
+    a.click();
+    $("go").disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
