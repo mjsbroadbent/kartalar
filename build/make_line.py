@@ -128,33 +128,50 @@ sary_bulak = within_km(sb_roads, 3.2) & (E < FLOOR + 1700) & (GY >= 42.245)
 # ---------- western sector: Karatau foothills ----------
 atr_karatau = (GX < 71.35) & (GY > AXLAT + 0.04) & (E > FLOOR + 160)
 
-# ---------- northern sector: edge of the irrigated plains ----------
-nur = P["nurzhan"]; bk = P["boz-korgon"]
-city = np.zeros(GX.shape, bool)
-for k, r in (("talas", 0), ("nurzhan", 0), ("boz-korgon", 0), ("kyzyl-adyr", 0)):
+SKIP_KINDS0 = {"park", "peak", "pass", "lake", "river-point", "other", "reservoir", "spring", "district", "zone-area"}
+# ---------- northern and western sectors: the settled plains ----------
+# The plains ISEZ is a belt along the trunk roads and the railway (the M39 from the Shymkent frontier through Taraz and
+# Merke, the road north to Nurzhan, the Turksib), with the irrigated farmland beside them. Secondary roads running
+# out into the steppe do not pull the line with them.
+road_k = lambda ks: raster_lines(ways(lambda w: w["k"] in ks))
+plains = (GX >= 69.9) & (GX <= 75.05) & (GY >= 42.3) & (GY <= 43.85)
+trunk = road_k({"road:motorway", "road:trunk"}) & plains & irad
+main_roads = road_k({"road:motorway", "road:trunk", "road:primary"})
+turksib = rail & plains & ~((GX < 71.3) & (GY > 42.95))  # not the Zhanatas branch into the Karatau
+lore_core = raster_lines([R[k]["coords"] for k in ("trans-talas-highway", "talas-nurzhan-road", "chu-highway", "boz-korgon-branch",
+                          "irad-temir-jolu-kara-buura-line", "irad-temir-jolu-chu-line", "irad-temir-jolu-talas-branch",
+                          "irad-temir-jolu-east-line") if k in R])
+core = trunk | turksib | lore_core
+d_core = ndimage.distance_transform_edt(~core) * CELL_KM
+settled = (d_core <= 7) & (E < 1100)
+settled |= within_km(canals, 2.5) & (d_core <= 16) & (E < 1000)
+for k in ("nurzhan", "boz-korgon"):
     if k in P:
-        j, i = cell(P[k]["lon"], P[k]["lat"]); city[j, i] = True
-turksib = rail & (GX >= 70.2) & (GX <= 75.0) & (GY >= 42.4) & (GY <= 44.2)
-irrigated = within_km(canals & (E < 1100), 4.0) | within_km(turksib, 6.0) | within_km(city & (GY > 43), 16)
-irrigated = ndimage.binary_closing(irrigated, iterations=14)
-irrigated = ndimage.binary_opening(irrigated, iterations=5)
-irrigated = ndimage.binary_closing(irrigated, iterations=6)
-irrigated = ndimage.binary_fill_holes(irrigated)
+        settled |= np.hypot((GX - P[k]["lon"]) * KX, (GY - P[k]["lat"]) * KY) < (14 if k == "nurzhan" else 6)
 # guarded corridors to the oil fields and the northern rail border station
-irrigated |= within_km(raster_lines([R[k]["coords"] for k in ("nurzhan-petroleum-pipeline", "northern-export-feeder", "irad-temir-jolu-north-line") if k in R]), 3.0)
-atr_north = (E < 1000) & (GY > 42.78) & ~irrigated
+settled |= within_km(raster_lines([R[k]["coords"] for k in ("nurzhan-petroleum-pipeline", "northern-export-feeder", "irad-temir-jolu-north-line") if k in R]), 2.5)
+# smooth the belt the way surveyors would draw it: wide sweeping curves, no fingers along every canal
+settled = (ndimage.gaussian_filter(settled.astype(float), 4.0) > 0.5)
+# around Nurzhan the oases, the oil fields and the rail yards merge into one district: close the gaps between the arms
+chu_n = (GX > 72.95) & (GY > 43.2)
+for p in P.values():
+    if p["zone"] == "ISEZ" and p.get("confidence") in ("stated", "real-place") and p.get("kind") not in SKIP_KINDS0 and p["lon"] > 72.95 and p["lat"] > 43.2:
+        settled |= np.hypot((GX - p["lon"]) * KX, (GY - p["lat"]) * KY) < 5
+for k in ("chu-oil-fields", "nurgaz-field-collection-station"):
+    if k in P:
+        settled |= np.hypot((GX - P[k]["lon"]) * KX, (GY - P[k]["lat"]) * KY) < 5
+closed = ~within_km(~within_km(settled & chu_n, 15), 15)
+settled |= closed & chu_n
+settled = (ndimage.gaussian_filter(settled.astype(float), 5.0) > 0.5)
 
 # ---------- Talas-Chu complex ----------
 box = (GX >= 69.9) & (GX <= 75.05) & (GY >= 42.0) & (GY <= 44.7)
-# north of the Kirghiz Range (and west of Kyzyl-Adyr) only the irrigated plains are ISEZ; between the ranges
-# everything below the Talas Alatau foothills is ISEZ
+# north of the Kirghiz Range (and west of Kyzyl-Adyr) only the settled plains are ISEZ;
+# between the ranges everything below the Talas Alatau foothills is ISEZ
 region_north = (GY > 42.88) | ((GX > 73.3) & (GY > 42.72)) | ((GX < 71.4) & (GY > AXLAT + 0.05))
-tc = irad & box & ((region_north & irrigated) | (~region_north & ~atr_south & ~atr_karatau))
+tc = irad & box & ((region_north & settled) | (~region_north & ~atr_south & ~atr_karatau))
 tc |= irad & sary_bulak & ~region_north
-# the Trans-Talas Highway and the railway along the Kara-Buura corridor stay inside the ISEZ
-tc |= irad & within_km(raster_lines([R["trans-talas-highway"]["coords"], R["irad-temir-jolu-kara-buura-line"]["coords"]]), 2.5)
-# the lore's own ISEZ places pull the line around them (villages, works, checkpoints, oil fields);
-# its tribal places push it back
+# the lore's own ISEZ places pull the line around them; its tribal villages push it back
 SKIP_KINDS = {"park", "peak", "pass", "lake", "river-point", "other", "reservoir", "spring", "district", "zone-area"}
 pin_in = np.zeros(GX.shape, bool); pin_out = np.zeros(GX.shape, bool)
 for p in P.values():
@@ -163,46 +180,36 @@ for p in P.values():
     j, i = cell(p["lon"], p["lat"])
     if p["zone"] == "ISEZ":
         pin_in[j, i] = True
-    elif p.get("confidence") != "placed":
+    elif p.get("confidence") != "placed" or p.get("kind") == "village":
         pin_out[j, i] = True
-pins = within_km(pin_in, 2.6) & irad & box
-tc |= pins
-# join any island to the main body along the shortest line (a valley corridor)
-lab, n = ndimage.label(tc)
-main = {lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("talas", "nurzhan", "kyzyl-adyr") if k in P} - {0}
-main_mask = np.isin(lab, list(main))
-dist_main, (nj, ni) = ndimage.distance_transform_edt(~main_mask, return_indices=True)
-links = np.zeros(GX.shape, bool)
-for k in range(1, n + 1):
-    if k in main:
-        continue
-    comp = lab == k
-    if comp.sum() > 20000:
-        continue
-    cj, ci = np.unravel_index(np.argmin(np.where(comp, dist_main, np.inf)), comp.shape)
-    if dist_main[cj, ci] * CELL_KM > 25:
-        continue
-    tj, ti = nj[cj, ci], ni[cj, ci]
-    for t in np.linspace(0, 1, int(max(abs(tj - cj), abs(ti - ci))) + 2):
-        links[int(round(cj + (tj - cj) * t)), int(round(ci + (ti - ci) * t))] = True
-tc |= within_km(links, 1.3) & irad
-tc &= ~within_km(pin_out, 1.6)
-# the upper Talas valley above the mouth of the Otmek valley is tribal
+tc |= within_km(pin_in, 2.6) & irad & box
+# the upper Talas valley above the mouth of the Otmek valley is tribal (State Route 1 is added back below)
 kcrest = np.full(lons.shape, 43.0)
 for i, x in enumerate(lons):
     js = np.where((lats >= 42.5) & (lats <= 43.0))[0]
     kcrest[i] = lats[js[np.argmax(E[js, i])]]
 kcrest = ndimage.median_filter(kcrest, 11)
 tc &= ~((GX > 72.975) & (GY < kcrest[None, :]))
+# the high Kirghiz Range east of the Talas-Nurzhan road is tribal summer pasture, joined to the tribal mountains in the east
+hi = irad & (E > 2300) & (GY > AXLAT) & (GY < 42.95) & (GX > 72.3)
+hi = ndimage.binary_opening(hi, iterations=2)
+lab, n = ndimage.label(hi | (irad & (GX > 72.975) & (GY < kcrest[None, :]) & (E > 2300)))
+east_ids = set(np.unique(lab[(GX > 73.3) & (lab > 0)])) - {0}
+hi = np.isin(lab, list(east_ids))
+hi = ndimage.gaussian_filter(within_km(hi, 1.5).astype(float), 3) > 0.5
+tc &= ~hi
 lab, n = ndimage.label(tc)
 keep = {lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("talas", "nurzhan", "kyzyl-adyr") if k in P} - {0}
 tc = np.isin(lab, list(keep))
-tc = ndimage.binary_fill_holes(tc) & irad
-# drop slivers: open/close a little so the line doesn't zigzag cell by cell
-tc = ndimage.binary_closing(tc, iterations=3) & irad
-tc = ndimage.binary_opening(tc, iterations=2)
+
+# the trunk roads and the lore's ISEZ routes stay inside the zone end to end, so the line crosses them only where
+# they leave Irad or enter the mountains
+protect = (core | (main_roads & within_km(tc, 6) & (E < 1100))) & irad
+tc |= within_km(protect, 2.5) & irad & (box | within_km(lore_core, 3))
+tc &= ~within_km(pin_out, 1.4) | within_km(protect, 3.0)
 lab, n = ndimage.label(tc)
 tc = np.isin(lab, list({lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("talas", "nurzhan") if k in P} - {0}))
+tc = ndimage.binary_fill_holes(tc) & irad
 
 # ---------- southern (Naryn) sector: catchment of the Naryn below the Toktogul dam ----------
 W = (71.2, 73.3, 40.95, 42.25)
@@ -277,16 +284,25 @@ naryn = ndimage.binary_fill_holes(ndimage.binary_opening(naryn, iterations=1))
 uk = P.get("uch-kurgan-hps")
 if uk:
     naryn |= irad & (np.hypot((GX - uk["lon"]) * KX, (GY - uk["lat"]) * KY) < 2.2)
-# Kara-Köl and the slopes around the dam stay tribal (canon)
-naryn &= ~((GY > 41.595) & (GX > 72.55))
-lab, n = ndimage.label(naryn)
-naryn = np.isin(lab, [s_ for s_ in [lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("tash-komur", "iyik-janyl")] if s_])
+# State Route 1: the valley floors along the road from the Talas valley over the Otmek and Ala-Bel, down the Chychkan
+# valley and around the Toktogul basin to the Naryn gorge (a corridor up to the valley sides, narrow over the passes)
+sr1 = R["fergana-mountain-transit-highway"]["coords"]
+sr1_cells = raster_lines([sr1])
+road_elev = np.where(sr1_cells, E, np.nan)
+dist_sr1, (rj, ri) = ndimage.distance_transform_edt(~sr1_cells, return_indices=True)
+floor_sr1 = E[rj, ri]
+corridor = irad & ((dist_sr1 * CELL_KM <= 1.6) | ((dist_sr1 * CELL_KM <= 8) & (E < floor_sr1 + 250) & (floor_sr1 < 1900)))
+lab, n = ndimage.label(corridor)
+corridor = np.isin(lab, list(set(np.unique(lab[sr1_cells & corridor])) - {0}))
+corridor = ndimage.binary_fill_holes(ndimage.binary_closing(corridor, iterations=4)) & irad
+naryn |= corridor
 # the Toktogul switchyard: a small ISEZ pocket below the dam, joined to the salient along the road
 sw = P.get("toktogul-switchyard")
 if sw:
     naryn |= irad & (np.hypot((GX - sw["lon"]) * KX, (GY - sw["lat"]) * KY) < 1.6)
 
 isez = tc | naryn
+isez = ndimage.binary_fill_holes(isez) & irad
 atr_holes, n = ndimage.label(irad & ~isez)
 small = [k + 1 for k, v in enumerate(ndimage.sum(np.ones_like(atr_holes), atr_holes, range(1, n + 1))) if v < 60]
 isez |= np.isin(atr_holes, small)
@@ -413,7 +429,7 @@ for pc in pieces:
         cur.append(p)
     runs.append((key, cur))
     for (sec, fol), c in runs:
-        eps = {"survey": 0.045, "canal": 0.012, "river": 0.003, "foothills": 0.005, "crest": 0.004}[fol]
+        eps = {"survey": 0.02, "canal": 0.012, "river": 0.003, "foothills": 0.005, "crest": 0.004}[fol]
         c = rdp(c, eps)
         if len(c) < 2: continue
         km = sum(math.hypot((a[0] - b_[0]) * KX, (a[1] - b_[1]) * KY) for a, b_ in zip(c, c[1:]))
