@@ -4297,11 +4297,11 @@
   "kind": "government",
   "city": null,
   "zone": "ISEZ",
-  "lat": 43.58,
-  "lon": 74.25,
-  "elev": 760,
+  "lat": 43.58011,
+  "lon": 74.25001,
+  "elev": 890,
   "confidence": "anchor",
-  "note": "\"Grey Fortress\" hardened continuity-of-government site 40 km E of Nurzhan beside the eastern road-rail corridor; Toktarov residence since 2011, de facto executive seat since 2023; UNMI barred.",
+  "note": "\"Grey Fortress\" hardened continuity-of-government site: a walled ~116 ha compound on a spur crest (~890 m) 40 km E of Nurzhan, inside a fenced ~40 km² restricted area along the eastern road-rail corridor; Toktarov residence since 2011, de facto executive seat since 2023; UNMI barred.",
   "wiki": "Boz-Korgon"
  },
  {
@@ -4323,7 +4323,7 @@
   "id": "nurzhan-rail-border-station",
   "name": "Nurzhan rail border station",
   "name_ir": "Nurzhan temir jol chek ara bekety",
-  "name_ru": "Пограничная железнодорожная станция (к северу от Нуржана)",
+  "name_ru": "Пограничная железнодорожная станция Нуржан (на Отар)",
   "kind": "border-crossing",
   "city": null,
   "zone": "ISEZ",
@@ -4331,7 +4331,7 @@
   "lon": 74.975,
   "elev": 520,
   "confidence": "placed",
-  "note": "Rail-only frontier station north of the city where crews and customs of both sides exchange trains.",
+  "note": "Rail-only frontier station at the end of the north line (the Turksib east of Nurzhan), on the Kazakh frontier towards Otar, where crews and customs of both sides exchange trains with Kazakhstan Temir Zholy.",
   "wiki": "Transport in Irad"
  },
  {

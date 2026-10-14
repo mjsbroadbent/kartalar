@@ -9171,7 +9171,7 @@
   "name_ir": "Irad Temir Jolu - Tündük linyasy",
   "name_ru": "Ирад Темир Жолу - Северная линия",
   "kind": "railway",
-  "note": "Line from Nurzhan past the freight depot to the rail-only border station north of the city where trains are exchanged with the Kazakh network.",
+  "note": "The Turksib east from Nurzhan past the freight depot to the rail-only border station on the Kazakh frontier (towards Otar and Almaty), where trains are exchanged with Kazakhstan Temir Zholy.",
   "coords": [
    [
     73.75927,
@@ -10975,44 +10975,6 @@
    ]
   ],
   "length_km_drawn": 59.7,
-  "coords_lore": [
-   [
-    73.765,
-    43.615
-   ],
-   [
-    73.778,
-    43.626
-   ],
-   [
-    73.81,
-    43.68
-   ],
-   [
-    73.86,
-    43.75
-   ],
-   [
-    73.92,
-    43.82
-   ],
-   [
-    73.99,
-    43.89
-   ],
-   [
-    74.07,
-    43.96
-   ],
-   [
-    74.14,
-    44.02
-   ],
-   [
-    74.19,
-    44.05
-   ]
-  ],
   "snapped": "rail",
   "in_city": [
    "nurzhan"
@@ -11486,7 +11448,7 @@
   "name_ir": "Sary-Bulak temir jol tarmagy",
   "name_ru": "Ветка на Сары-Булак и Чаткал",
   "kind": "railway",
-  "note": "Industrial spur (~26 km) from Talas across the fans to the Kara-Suu Canyon mouth and up the gorge floor to the Sary-Bulak Antimony Works; siding repairs budgeted for the 2026-27 restart.",
+  "note": "Industrial spur (~24 km) from the Talas branch west of the city across the fans to the Kara-Suu Canyon mouth and up the gorge floor to the Sary-Bulak Antimony Works; siding repairs budgeted for the 2026-27 restart.",
   "coords": [
    [
     72.14725,
@@ -11914,7 +11876,7 @@
   "name_ir": "Chatkal temir jol tarmagy",
   "name_ru": "Подъездной путь Чаткальского комбината",
   "kind": "railway",
-  "note": "Siding (~21 km) leaving the Sary-Bulak spur near the canyon mouth, west along the foothills and up the valley to the Chatkal Chemical Smelting Complex.",
+  "note": "Siding (~23 km) leaving the Sary-Bulak spur near the canyon mouth, west along the foothills and up the valley to the Chatkal Chemical Smelting Complex.",
   "coords": [
    [
     72.11474,

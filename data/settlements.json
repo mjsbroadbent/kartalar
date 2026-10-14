@@ -55,12 +55,12 @@
   "kind": "town",
   "zone": "ISEZ",
   "district": "Chu",
-  "lat": 43.58,
-  "lon": 74.25,
+  "lat": 43.58011,
+  "lon": 74.25001,
   "pop": null,
-  "elev": null,
+  "elev": 890,
   "confidence": "anchor",
-  "note": "Fortified government compound (~120 ha), de facto executive seat since 2023; on rising ground beside the road/rail corridor 40 km east of Nurzhan.",
+  "note": "Fortified government compound (~116 ha) on a spur crest above the road/rail corridor 40 km east of Nurzhan, inside a fenced ~40 km² restricted area; de facto executive seat since 2023.",
   "wiki": "Boz-Korgon"
  },
  {

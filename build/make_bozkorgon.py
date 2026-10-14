@@ -97,3 +97,13 @@ out = {"type": "FeatureCollection", "features": [
     {"type": "Feature", "properties": {"kind": "label"}, "geometry": {"type": "Point", "coordinates": label_pt()}}]}
 json.dump(out, open(os.path.join(ROOT, "data/boz_korgon.geojson"), "w"))
 print(f"restricted area {area(fence):.1f} km2, {len(fence) - 1} fence posts; compound {area(comp) * 100:.0f} ha at {ec:.0f} m (plain ~{floor:.0f} m)")
+
+# the compound's point in the gazetteer sits in the compound
+cc = np.array(comp[:-1]).mean(0)
+for fn in ("data/features.json", "data/settlements.json"):
+    pts = json.load(open(os.path.join(ROOT, fn)))
+    for p in pts:
+        if p["id"] == "boz-korgon":
+            p["lon"], p["lat"] = round(float(cc[0]), 5), round(float(cc[1]), 5)
+            if fn.endswith("features.json"): p["elev"] = 890
+    json.dump(pts, open(os.path.join(ROOT, fn), "w"), ensure_ascii=False, indent=1)
