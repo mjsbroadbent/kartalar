@@ -37,7 +37,7 @@ for x, r, sector in hits:
     if any(km(x, (f["lon"], f["lat"])) < 5 for f in existing + added): continue
     near = min((s for s in S if s["kind"] in ("city", "town", "village", "capital", "suburb")), key=lambda s: km(x, (s["lon"], s["lat"])))
     nm = r.get("crossing_name") or near["name"]
-    f = {"id": "qarachik-crossing-" + (r.get("crossing_name", "").lower() or near["id"]), "name": f"{nm} crossing", "name_ir": f"{nm} ötkökü", "name_ru": f"КПП «{r.get('crossing_name_ru') or near.get('name_ru') or nm}»",
+    f = {"id": "qarachik-crossing-" + (r.get("crossing_name", "").lower().replace(" ", "-").replace("-road", "") or near["id"]), "name": f"{nm} crossing", "name_ir": f"{nm} ötkökü", "name_ru": f"КПП «{r.get('crossing_name_ru') or near.get('name_ru') or nm}»",
          "kind": "checkpoint", "city": None, "zone": "ISEZ", "lat": round(x[1], 5), "lon": round(x[0], 5), "elev": None, "confidence": "placed",
          "note": f"Qara-Chik line crossing on the {r['name']} ({sector} sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
          "wiki": "Qara-Chik Demarcation Line", "auto_crossing": True}

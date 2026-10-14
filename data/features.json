@@ -5402,5 +5402,37 @@
   "note": "Qara-Chik line crossing on the Western Karakol valley road (northern sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
   "wiki": "Qara-Chik Demarcation Line",
   "auto_crossing": true
+ },
+ {
+  "id": "qarachik-crossing-mailuu-suu",
+  "name": "Mailuu-Suu road crossing",
+  "name_ir": "Mailuu-Suu road ötkökü",
+  "name_ru": "КПП «Майлуу-Суу»",
+  "kind": "checkpoint",
+  "city": null,
+  "zone": "ISEZ",
+  "lat": 41.135,
+  "lon": 72.4325,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Qara-Chik line crossing on the Mailuu-Suu road (southern sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
+  "wiki": "Qara-Chik Demarcation Line",
+  "auto_crossing": true
+ },
+ {
+  "id": "qarachik-crossing-arslanbob",
+  "name": "Arslanbob road crossing",
+  "name_ir": "Arslanbob road ötkökü",
+  "name_ru": "КПП «Арсланбоб»",
+  "kind": "checkpoint",
+  "city": null,
+  "zone": "ISEZ",
+  "lat": 41.125,
+  "lon": 72.80377,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Qara-Chik line crossing on the Arslanbob road (southern sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
+  "wiki": "Qara-Chik Demarcation Line",
+  "auto_crossing": true
  }
 ]

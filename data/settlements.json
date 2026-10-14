@@ -421,10 +421,10 @@
   "name_ru": "Нижне-Нарынский район",
   "name_en": "Lower Naryn District",
   "kind": "district",
-  "zone": "ATR",
+  "zone": "ISEZ",
   "district": "Lower Naryn",
-  "lat": 41.4,
-  "lon": 72.3,
+  "lat": 41.08,
+  "lon": 72.55,
   "pop": null,
   "elev": null,
   "confidence": "placed",
@@ -444,7 +444,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~92,000 km²: southern Betpak-Dala north of the Chu, the Moiynkum sands between Chu and Talas and the piedmont plain north of the Kyrgyz Range; Boztorgoy winter pastures.",
+  "note": "UN planning zone ~93,000 km²: southern Betpak-Dala north of the Chu, the Moiynkum sands between Chu and Talas and the piedmont plain north of the Kyrgyz Range; Boztorgoy winter pastures.",
   "wiki": null
  },
  {
@@ -460,7 +460,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~38,200 km²: Karatau range and foothills on both sides of the ISEZ belt along the Shymkent road, toward the Kyzylkum Fringe; Kulan-Talaa plain.",
+  "note": "UN planning zone ~50,000 km²: Karatau range and foothills on both sides of the ISEZ belt along the Shymkent road, toward the Kyzylkum Fringe; Kulan-Talaa plain.",
   "wiki": null
  },
  {
@@ -476,7 +476,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~18,500 km²: the high range south of the Talas valley and, since 2009, the high Kyrgyz Range east of the Kök-Bel road; Aksay Plateau, Kara-Koyun, upper Besh-Tash and Kara-Suu, Aksu-Zhabagly, Manas Peak.",
+  "note": "UN planning zone ~13,300 km²: the high range south of the Talas valley and, since 2009, the high Kyrgyz Range east of the Kök-Bel road; Aksay Plateau, Kara-Koyun, upper Besh-Tash and Kara-Suu, Aksu-Zhabagly, Manas Peak.",
   "wiki": null
  },
  {
@@ -492,7 +492,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~16,000 km²: Chatkal valley and range, Sary-Chelek, walnut forests; Naiman and Sarybagysh pastures.",
+  "note": "UN planning zone ~12,800 km²: Chatkal valley and range, Sary-Chelek, walnut forests; Naiman and Sarybagysh pastures.",
   "wiki": null
  },
  {
@@ -501,14 +501,14 @@
   "name_ru": "Токтогул–Нарын",
   "name_en": "Toktogul–Naryn",
   "kind": "zone-area",
-  "zone": "ISEZ",
-  "district": "Lower Naryn",
-  "lat": 41.82,
-  "lon": 73.0,
+  "zone": "ATR",
+  "district": "Toktogul–Naryn",
+  "lat": 41.5,
+  "lon": 72.48,
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone ~10,000 km²: the highlands around the Toktogul basin and the Naryn's entry gorges (the basin floor is ISEZ since 2009); Kökjal clan.",
+  "note": "UN planning zone ~11,500 km²: the highlands around the Toktogul basin and the mountains either side of the lower Naryn gorge (the basin floor and the gorge corridor are ISEZ); Kökjal clan.",
   "wiki": null
  },
  {
@@ -524,7 +524,7 @@
   "pop": null,
   "elev": null,
   "confidence": "placed",
-  "note": "UN planning zone: the hill country above the northern Fergana rim (Mailuu-Suu, the Kara-Unkur valley, Arslanbob and its walnut forest, Oruktu); the lowland farm belt below is ISEZ. Highland Chubar.",
+  "note": "UN planning zone ~7,700 km²: the hill country above the northern Fergana rim (Mailuu-Suu, the Kara-Unkur valley, Arslanbob and its walnut forest, Oruktu); the lowland farm belt below is ISEZ. Highland Chubar.",
   "wiki": null
  },
  {
