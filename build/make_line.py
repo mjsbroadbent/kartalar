@@ -172,10 +172,10 @@ region_north = (GY > 42.88) | ((GX > 73.3) & (GY > 42.72)) | ((GX < 71.4) & (GY 
 tc = irad & box & ((region_north & settled) | (~region_north & ~atr_south & ~atr_karatau))
 tc |= irad & sary_bulak & ~region_north
 # the lore's own ISEZ places pull the line around them; its tribal villages push it back
-SKIP_KINDS = {"park", "peak", "pass", "lake", "river-point", "other", "reservoir", "spring", "district", "zone-area"}
+SKIP_KINDS = {"park", "peak", "pass", "lake", "river-point", "other", "reservoir", "spring", "district", "zone-area", "checkpoint"}
 pin_in = np.zeros(GX.shape, bool); pin_out = np.zeros(GX.shape, bool)
 for p in P.values():
-    if p.get("kind") in SKIP_KINDS or p["lat"] < 41.95:
+    if p.get("kind") in SKIP_KINDS or p["lat"] < 41.95 or p["id"] in ("qara-chik",):
         continue
     j, i = cell(p["lon"], p["lat"])
     if p["zone"] == "ISEZ":
@@ -280,6 +280,12 @@ lab, n = ndimage.label(naryn)
 seed = [lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("tash-komur", "iyik-janyl") if k in P]
 naryn = np.isin(lab, [s for s in seed if s])
 naryn = ndimage.binary_fill_holes(ndimage.binary_opening(naryn, iterations=1))
+# Iyık Janyl fills the river flats above Tash-Kömür; its quarters and the lore's other ISEZ places in the salient stay inside
+for p in P.values():
+    if p["zone"] == "ISEZ" and p["lat"] < 41.95 and p.get("kind") not in SKIP_KINDS:
+        r_km = 6.0 if p["id"] == "iyik-janyl" else 1.5
+        naryn |= irad & (np.hypot((GX - p["lon"]) * KX, (GY - p["lat"]) * KY) < r_km)
+naryn = ndimage.binary_fill_holes(ndimage.binary_closing(naryn, iterations=2)) & irad
 # the last power station of the cascade, where the river leaves the hills
 uk = P.get("uch-kurgan-hps")
 if uk:

@@ -116,7 +116,7 @@
     map.addSource("districts", { type: "geojson", data: D.districts });
     map.addSource("qarachik", { type: "geojson", data: D.line });
     map.addSource("rwz", { type: "geojson", data: D.rwz });
-    map.addSource("routes", { type: "geojson", data: fc(D.routes.map(r => ({ type: "Feature", properties: { id: r.id, kind: r.kind, label: nameOf(r) }, geometry: { type: "LineString", coordinates: r.coords } }))) });
+    map.addSource("routes", { type: "geojson", data: fc(D.routes.map(r => ({ type: "Feature", properties: { id: r.id, kind: r.kind, label: nameOf(r) }, geometry: { type: "LineString", coordinates: r.coords } })).concat(D.routes.flatMap(r => (r.tunnels || []).map(t => ({ type: "Feature", properties: { id: r.id, kind: "tunnel", label: "" }, geometry: { type: "LineString", coordinates: t } }))))) });
     const bk = D.byId["boz-korgon"];
     map.addSource("restricted", { type: "geojson", data: fc(bk ? [circle([bk.lon, bk.lat], 3.2)] : []) });
     map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: PLACE_RANK[p.kind] || 6, pop: p.pop || 0 }))) });
@@ -151,6 +151,7 @@
           "line-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0.95, 13, 0.6] }, _g: "routes" },
       { id: "route-rail", type: "line", source: "routes", filter: ["==", ["get", "kind"], "railway"], paint: { "line-color": "#5a5650", "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1, 9, 2, 14, 3] }, _g: "routes" },
       { id: "route-rail-dash", type: "line", source: "routes", minzoom: 6.5, filter: ["==", ["get", "kind"], "railway"], paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 9, 1, 14, 1.6], "line-dasharray": [3, 3] }, _g: "routes" },
+      { id: "route-tunnel", type: "line", source: "routes", minzoom: 7, filter: ["==", ["get", "kind"], "tunnel"], paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["linear"], ["zoom"], 7, 1.5, 12, 3.5], "line-dasharray": [1.2, 1.2] }, _g: "routes" },
       { id: "route-label", type: "symbol", source: "routes", minzoom: 7.5, filter: ["in", ["get", "kind"], ["literal", ["highway", "railway", "road"]]],
         layout: { "symbol-placement": "line", "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": ["interpolate", ["linear"], ["zoom"], 8, 10.5, 14, 13], "symbol-spacing": 400, "symbol-sort-key": ["match", ["get", "kind"], "highway", 0, "railway", 1, 2] }, paint: { "text-color": "#6d5a3a", "text-opacity": ["interpolate", ["linear"], ["zoom"], 9.5, ["match", ["get", "kind"], "road", 0, 1], 10, 1], "text-halo-color": C.halo, "text-halo-width": 1.4 }, _g: "routes" },
       // labels: neighbours, planning zones, districts

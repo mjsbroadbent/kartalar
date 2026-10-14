@@ -22,7 +22,7 @@ for fn in ("data/settlements.json", "data/features.json"):
         if where(p["lon"], p["lat"], I) is None:
             print("OUTSIDE IRAD", fn, p["id"], p["lat"], p["lon"], p["confidence"]); continue
         z = z or "?"
-        if z != p["zone"]:
+        if z != p["zone"] and p["kind"] != "checkpoint":   # line checkpoints straddle the line
             n += 1
             print(f'{fn.split("/")[1][:4]} {p["id"]:38} said {p["zone"]:4} map {z:4} {p["confidence"]:10} {p["lat"]:.3f},{p["lon"]:.3f}')
             if fix and p["confidence"] == "placed": p["zone"] = z
