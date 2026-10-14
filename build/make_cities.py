@@ -36,7 +36,7 @@ CITIES = [
      # bend the plan along the river: the donor's river (upstream to downstream) is laid onto the Naryn, so the streets
      # along its banks follow the Naryn; the sacred hill on its left bank becomes Cathedral Hill on the Naryn's left (east) bank
      "warp": {"donor_river": "ww:river", "donor_river_min_pts": 100, "target_river": "Нарын", "target_flow": ((72.34, 41.486), (72.21, 41.336))},
-     "no_rail": True, "fill_houses": True,
+     "no_rail": True, "fill_houses": True, "trim_empty": True, "demote_major": True, "bridges": 4, "relay_only": ["iyik-janyl-branch-road"],
      "scale": 1.0, "donor_r_km": 10.5,
      # the river flats of the Naryn: no higher than ~110 m above the river, north of Tash-Kömür; Cathedral Hill itself
      "ellipse": ((72.23, 41.415), 9.5, 9.0), "above_river": 170, "max_slope": 0.15, "min_lat": 41.372,
@@ -249,6 +249,59 @@ def build(C):
                         if len(run) >= 2: feats.append((kind, {"k": sub}, [np.array(run)]))
                         run = []
                 if len(run) >= 2: feats.append((kind, {"k": sub}, [np.array(run)]))
+    if C.get("demote_major"):
+        # the donor's arterials are not the Iradi highways here: draw them as ordinary town streets
+        feats = [(k, ({"k": "mid"} if k == "road" and p_["k"] == "major" else p_), parts) for k, p_, parts in feats]
+    if C.get("bridges"):
+        # only a few streets bridge the river: pick the longest crossing streets, at least 1.2 km apart; cut the rest at the bank
+        bank, _ = ndimage.label(~riv)
+        def bank_at(x, y):
+            i = int(round((x - lons[0]) / GRID)); j = int(round((y - lats[0]) / GRID))
+            return bank[j, i] if 0 <= j < bank.shape[0] and 0 <= i < bank.shape[1] else 0
+        def crossings(T):
+            """runs of points near the river where the street really goes to the other bank: [(start, end)]"""
+            inr = cell_ok(T[:, 0], T[:, 1], near_river); out = []; m = 0
+            while m < len(T):
+                if not inr[m]: m += 1; continue
+                e = m
+                while e < len(T) and inr[e]: e += 1
+                if m > 0 and e < len(T):
+                    b0, b1 = bank_at(*T[m - 1]), bank_at(*T[e])
+                    if b0 and b1 and b0 != b1: out.append((m, e))
+                m = e
+            return out
+        cross = []
+        for n_, (k, p_, parts) in enumerate(feats):
+            if k != "road" or p_["k"] not in ("mid", "major"): continue
+            T = parts[0]
+            L = float(np.hypot(np.diff(T[:, 0]) * kt, np.diff(T[:, 1]) * KY).sum())
+            for m, e in crossings(T): cross.append((L, n_, T[(m + e - 1) // 2]))
+        cross.sort(key=lambda c_: -c_[0])
+        sites = []
+        for L, n_, q in cross:
+            if len(sites) >= C["bridges"]: break
+            if all(math.hypot((q[0] - s_[0]) * kt, (q[1] - s_[1]) * KY) > 1.2 for s_ in sites): sites.append(q)
+        new = []
+        for k, p_, parts in feats:
+            if k == "road" and p_["k"] in ("mid", "major"):
+                T = parts[0]; cr = crossings(T)
+                if cr:
+                    cut = np.zeros(len(T), bool)
+                    for m, e in cr:
+                        mid_ = T[(m + e - 1) // 2]
+                        if min((math.hypot((mid_[0] - s_[0]) * kt, (mid_[1] - s_[1]) * KY) for s_ in sites), default=9) > 0.15: cut[m:e] = True
+                    run = []
+                    for pt, c_ in zip(T, cut):
+                        if not c_: run.append(pt)
+                        else:
+                            if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+                            run = []
+                    if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+                    continue
+            new.append((k, p_, parts))
+        feats = new
+        print(f"  {C['name']}: {len(sites)} bridges kept of {len(cross)} crossings")
+
     if C.get("fill_houses"):
         # the donor's buildings are only partly mapped: line its side streets with courtyard houses where none are mapped
         H = 0.0001   # ~10 m
@@ -292,6 +345,27 @@ def build(C):
                         feats.append(("building", {"k": "building"}, [R_])); mark(R_, 1); added += 1
                     pos += w_ + rng.uniform(4, 9)
         print(f"  {C['name']}: {added} houses added along side streets")
+
+    if C.get("trim_empty"):
+        # streets that run out across empty ground (the donor's suburbs fell outside the site): cut them back to the houses
+        bpts = np.vstack([parts[0][:, :2] for k, _, parts in feats if k == "building"])
+        from scipy.spatial import cKDTree
+        bt = cKDTree(np.column_stack([bpts[:, 0] * kt, bpts[:, 1] * KY]))
+        new = []
+        for k, p_, parts in feats:
+            if k != "road":
+                new.append((k, p_, parts)); continue
+            T = parts[0]
+            d_, _ = bt.query(np.column_stack([T[:, 0] * kt, T[:, 1] * KY]))
+            keep = d_ < 0.18
+            run = []
+            for pt, kp in zip(T, keep):
+                if kp: run.append(pt)
+                else:
+                    if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+                    run = []
+            if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+        feats = new
 
     # footprint: built-up ground (buildings and streets), smoothed, inside the allowed ground
     fp = np.zeros(GX.shape, bool)
@@ -359,7 +433,7 @@ def thin_line(c, eps_m=4):
 # ---------- re-lay the lore routes inside each city along its borrowed main streets ----------
 def relay_routes(cities_out):
     routes = json.load(open(os.path.join(ROOT, "data/routes.json")))
-    for name, feats, footprint in cities_out:
+    for name, feats, footprint, relay_only in cities_out:
         fpath = [[Path(np.array(r)) for r in P] for P in footprint["coordinates"]]
         in_fp = lambda x, y: any(P[0].contains_point((x, y)) and not any(h.contains_point((x, y)) for h in P[1:]) for P in fpath)
         from scipy.spatial import cKDTree
@@ -426,6 +500,7 @@ def relay_routes(cities_out):
 
         for r in routes:
             if r["kind"] not in ("highway", "road", "railway"): continue
+            if relay_only is not None and r["id"] not in relay_only: continue
             G = G_rail if r["kind"] == "railway" else G_road
             if G is None: continue
             c = densify(r["coords"]); inside = [in_fp(*p) for p in c]
@@ -497,6 +572,6 @@ if __name__ == "__main__":
                 x = np.array([q[0] for q in r]) * kx(C["pivot"][1]); y = np.array([q[1] for q in r]) * KY
                 a_ = 0.5 * abs(np.dot(x[:-1], y[1:]) - np.dot(x[1:], y[:-1])); area += a_ if h == 0 else -a_
         print(f"{C['name']:11} from {C['donor']:9} {len(feats):6} features, {nb:6} buildings, {len(tl):3} tiles, {size/1e6:5.1f} MB, built-up {area:5.0f} km2")
-        outs.append((C["name"], feats, footprint))
+        outs.append((C["name"], feats, footprint, C.get("relay_only")))
     json.dump(index, open(os.path.join(OUT, "index.json"), "w"), separators=(",", ":"))
     relay_routes(outs)
