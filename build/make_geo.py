@@ -75,7 +75,11 @@ uz_rim = (A["UZ-NG"] & (GY >= 41.13)) | (A["UZ-AN"] & (GX >= 72.78) & (GY >= 40.
 jambyl = A["KZ-ZHA"] & (GX <= 75.0) & ~((GX >= 74.55) & (GY <= 43.28))
 # the western end of the Suusamyr valley, held by Talas Alatau clans
 suusamyr = mask_poly([[(72.95, 42.32), (73.75, 42.30), (73.80, 41.95), (73.20, 41.90), (72.95, 42.05)]])
-irad = (A["KG-T"] | A["KG-J"] | jambyl | turkistan_part | uz_rim | suusamyr) & (GX >= 68.0)
+# Jalal-Abad city stays with Kyrgyzstan, like the big Fergana cities on the Uzbek side
+import math as _m
+_ring = [(72.998 + 0.075 * _m.cos(t), 40.928 + 0.052 * _m.sin(t)) for t in [k * _m.pi / 18 for k in range(36)]]
+jalal_abad = mask_poly([_ring]) | mask_poly([[(73.03, 40.9), (73.12, 40.87), (73.2, 40.78), (73.08, 40.76), (72.99, 40.86)]])
+irad = (A["KG-T"] | A["KG-J"] | jambyl | turkistan_part | uz_rim | suusamyr) & (GX >= 68.0) & ~jalal_abad
 
 # ---------- ISEZ ----------
 R = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "data/routes.json")))}

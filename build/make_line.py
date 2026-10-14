@@ -273,13 +273,27 @@ for c in naryn_river:
     for x, y in c:
         if 41.16 <= y <= 41.585:
             j, i = cell(x, y); reach_g[j, i] = True
-naryn = naryn_dem[jj, ii] & irad & within_km(reach_g, 20)
-# the dam and the reservoir shore stay tribal; the switchyard stays ISEZ
-naryn &= ~((np.hypot((GX - dam["lon"]) * KX, (GY - dam["lat"]) * KY) < 2.2))
+# The Naryn below the dam: the river flats and the gorge floor only (the mountains either side of the gorge are tribal),
+# widening over the flats at Iyık Janyl and Tash-Kömür.
+reach_g = np.zeros(GX.shape, bool)
+for c in naryn_river:
+    for x, y in c:
+        if 41.1 <= y <= 41.66 and x <= 72.7:
+            j, i = cell(x, y); reach_g[j, i] = True
+d_r, (rj_, ri_) = ndimage.distance_transform_edt(~reach_g, return_indices=True)
+river_floor = E[rj_, ri_]
+naryn = irad & (d_r * CELL_KM <= 7) & (E < river_floor + 180) & (GY < 41.66)
+# the farm belt of the northern Fergana rim from Tash-Kömür east past Bazar-Korgon: the lowland below the foot of the hills,
+# along the main road; Mailuu-Suu, Arslanbob and the upper valleys stay with the clans
+rim_roads = raster_lines(ways(lambda w: w["k"] in ("road:trunk", "road:primary", "road:secondary")))
+rim = irad & (GY < 41.3) & (GX >= 72.05) & (GX <= 73.1) & (E < 950) & within_km(rim_roads & (GY < 41.3), 10)
+naryn |= rim
+naryn = ndimage.gaussian_filter(naryn.astype(float), 2.0) > 0.5
+naryn &= irad
 lab, n = ndimage.label(naryn)
 seed = [lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("tash-komur", "iyik-janyl") if k in P]
 naryn = np.isin(lab, [s for s in seed if s])
-naryn = ndimage.binary_fill_holes(ndimage.binary_opening(naryn, iterations=1))
+naryn = ndimage.binary_fill_holes(naryn)
 # Iyık Janyl fills the river flats above Tash-Kömür; its quarters and the lore's other ISEZ places in the salient stay inside
 for p in P.values():
     if p["zone"] == "ISEZ" and p["lat"] < 41.95 and p.get("kind") not in SKIP_KINDS:
