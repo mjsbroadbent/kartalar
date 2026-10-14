@@ -373,6 +373,18 @@ stream_x = np.interp(GY, st_lat, ndimage.uniform_filter1d(np.array(st_lon), 7))
 dist["Kara-Buura"] = rest & ((GX < fan_x) | (north_of_range & (GX < stream_x)))
 dist["Chu"] = rest & ~dist["Kara-Buura"] & (north_of_range | (GX > 73.3))
 dist["Talas"] = rest & ~dist["Kara-Buura"] & ~dist["Chu"]
+# stray bits (filled holes, slivers) join the district they touch most; each district keeps one piece
+for _ in range(2):
+    for k in list(dist):
+        lab_, n_ = ndimage.label(dist[k])
+        if n_ <= 1: continue
+        sizes = ndimage.sum(dist[k], lab_, range(1, n_ + 1)); main = 1 + int(np.argmax(sizes))
+        for c in range(1, n_ + 1):
+            if c == main: continue
+            piece = lab_ == c; ring_ = ndimage.binary_dilation(piece, iterations=2) & ~piece
+            best = max((o for o in dist if o != k), key=lambda o: (dist[o] & ring_).sum())
+            if (dist[best] & ring_).sum():
+                dist[k] &= ~piece; dist[best] |= piece
 for k, v in dist.items():
     print("  %-12s %.0f km2" % (k, area(v)))
 
