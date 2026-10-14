@@ -32,12 +32,20 @@ CITIES = [
      "ellipse": ((73.77, 43.60), 11.5, 10.5), "max_elev": 900, "max_slope": 0.08,
      "exclude": [], "donor_exclude": [[(69.715, 42.265), (69.77, 42.265), (69.77, 42.325), (69.715, 42.325)]],   # a tile that failed to download
      "rivers": ["Чу"]},
-    {"name": "iyik-janyl", "donor": "osh", "pivot_donor": (72.7856, 40.5274), "pivot": (72.2525, 41.3935), "rotate": 0, "mirror": False,
+    {"name": "iyik-janyl", "donor": "osh", "pivot_donor": (72.7856, 40.5274), "pivot": (72.222, 41.418), "rotate": 0, "mirror": False,
      # bend the plan along the river: the donor's river (upstream to downstream) is laid onto the Naryn, so the streets
      # along its banks follow the Naryn; the sacred hill on its left bank becomes Cathedral Hill on the Naryn's left (east) bank
-     "warp": {"donor_river": "ww:river", "donor_river_min_pts": 100, "target_river": "Нарын", "target_flow": ((72.34, 41.486), (72.21, 41.336))},
-     "no_rail": True, "fill_houses": True, "trim_empty": True, "demote_major": True, "bridges": 4, "relay_only": ["iyik-janyl-branch-road"],
-     "scale": 1.0, "donor_r_km": 10.5,
+     "warp": {"donor_river": "ww:river", "donor_river_min_pts": 100, "target_river": "Нарын", "target_flow": ((72.34, 41.486), (72.21, 41.336)),
+              # mirrored across the river: the donor's dense old centre goes to the wide western flats (the Lower Town, where
+              # most people live), its quieter far bank to the east bank below Cathedral Hill
+              "mirror": True},
+     "no_rail": True, "fill_houses": True, "trim_empty": True, "demote_major": True, "bridges": 4, "relay_only": [],
+     "scale": 1.0, "donor_r_km": 15.0, "connect_real_roads": True, "tight_footprint": True,
+     # archaeological sites kept open: the walled medieval town (~45 ha) and the citadel knoll
+     # Shar-i-Kuhna, the walled medieval town (~45 ha) on its terrace; Diz-i Safid's knoll, kept as a park
+     "keep_clear": [{"rect": (72.214, 41.394), "w": 0.78, "h": 0.58, "angle": 22, "k": "heritage"},
+                    {"knoll": (72.218, 41.4225), "r": 0.45, "above": 45, "k": "park"}],
+     "fill_gaps": True, "relay_minor_w": 10, "smooth_routes": ["fergana-mountain-transit-highway", "iyik-janyl-branch-road"],
      # the river flats of the Naryn: no higher than ~110 m above the river, north of Tash-Kömür; Cathedral Hill itself
      "ellipse": ((72.23, 41.415), 9.5, 9.0), "above_river": 170, "max_slope": 0.15, "min_lat": 41.372,
      "keep_round": [((72.2525, 41.3935), 0.9)],
@@ -120,7 +128,7 @@ def build(C):
             seg = np.hypot(*np.diff(L, axis=0).T); sarr = np.concatenate([[0], np.cumsum(seg)])
             ss = np.arange(0, sarr[-1], 0.05)
             R_ = np.column_stack([np.interp(ss, sarr, L[:, 0]), np.interp(ss, sarr, L[:, 1])])
-            R_ = ndimage.gaussian_filter1d(R_, 25, axis=0, mode="nearest")
+            R_ = ndimage.gaussian_filter1d(R_, 35, axis=0, mode="nearest")
             tan = np.gradient(R_, axis=0); tan /= np.hypot(*tan.T)[:, None]
             return R_, tan, ss, k_
         dpts = [p for f in donor["features"] if f["k"] == W["donor_river"] and len(f["c"]) >= W["donor_river_min_pts"] for p in f["c"]]
@@ -130,6 +138,15 @@ def build(C):
         (fx0, fy0), (fx1, fy1) = W["target_flow"]
         tpts = [p for p in tpts if fy1 - 0.05 <= p[1] <= fy0 + 0.05]
         Tr, Tt, Ts, Tk = centerline(tpts, W["target_flow"][0], ((fx1 - fx0) * kx(fy0), (fy1 - fy0) * KY))
+        # curvature of the target river line: on the inside of a bend, anything farther from the river than the bend radius
+        # would fold over itself, so it is dropped (and the gap filled later)
+        dT = np.gradient(Tt, axis=0) / 0.05
+        KAP = Tt[:, 0] * dT[:, 1] - Tt[:, 1] * dT[:, 0]
+        # normals from nearby stretches cross too: use the sharpest bend within ~3 km on each side
+        KAPMAX = ndimage.maximum_filter1d(KAP, 121, mode="nearest"); KAPMIN = ndimage.minimum_filter1d(KAP, 121, mode="nearest")
+        dD = np.gradient(Dt, axis=0) / 0.05
+        KAPD = Dt[:, 0] * dD[:, 1] - Dt[:, 1] * dD[:, 0]
+        FOLD = [None]
         from scipy.spatial import cKDTree
         DT = cKDTree(Dr)
         def frame(Rr, Tn, S_, q):
@@ -145,16 +162,21 @@ def build(C):
             off = q - Dr[i]; t_ = Dt[i]
             s_ = Ds[i] + np.einsum("ij,ij->i", off, t_) - s0d + s0t
             d_ = t_[:, 0] * off[:, 1] - t_[:, 1] * off[:, 0]          # left of the flow is positive
+            fold_d = d_ * KAPD[i] > 0.45                               # inside a donor bend: collapses onto a ray
+            if W.get("mirror"): d_ = -d_
             j = np.clip(np.searchsorted(Ts, s_), 0, len(Ts) - 1)
             base = Tr[j] + Tt[j] * (s_ - Ts[j])[:, None]
             nrm = np.column_stack([-Tt[j, 1], Tt[j, 0]])
             out = base + nrm * d_[:, None]
+            FOLD[0] = (np.where(d_ > 0, d_ * KAPMAX[j], d_ * KAPMIN[j]) > 0.5) | fold_d
             return np.column_stack([out[:, 0] / Tk, out[:, 1] / KY])
     else:
+      FOLD = [None]
       def tf(pts):
         P = np.asarray(pts, float)
         x = (P[:, 0] - pdx) * kd * mir; y = (P[:, 1] - pdy) * KY
         xr, yr = (x * ca - y * sa) * sc, (x * sa + y * ca) * sc
+        FOLD[0] = np.zeros(len(P), bool)
         return np.column_stack([tx + xr / kt, ty + yr / KY])
 
     # allowed ground at the target
@@ -193,6 +215,23 @@ def build(C):
     main = lab[j0, i0] or (1 + int(np.argmax(sizes)))
     ok = lab == main
     near_river = dr * GRID * KY * 1000 < 60      # no buildings or side streets in the river
+    CLEAR = []        # (kind, ring lon/lat array, raster mask)
+    for kc in C.get("keep_clear", []):
+        if "rect" in kc:
+            cx, cy = kc["rect"]; a_ = math.radians(kc["angle"]); w2, h2 = kc["w"] / 2, kc["h"] / 2
+            ring = np.array([(cx + (x * math.cos(a_) - y * math.sin(a_)) / kt, cy + (x * math.sin(a_) + y * math.cos(a_)) / KY)
+                             for x, y in ((-w2, -h2), (w2, -h2), (w2, h2), (-w2, h2), (-w2, -h2))])
+            m_ = Path(ring).contains_points(np.column_stack([GX.ravel(), GY.ravel()])).reshape(GX.shape)
+        else:
+            cx, cy = kc["knoll"]; near_ = np.hypot((GX - cx) * kt, (GY - cy) * KY) < kc["r"]
+            base_ = np.percentile(E[near_], 5)
+            m_ = near_ & (ndimage.gaussian_filter(E, 1.5) > base_ + kc["above"])
+            lab_, n_ = ndimage.label(m_); m_ = lab_ == lab_[int(round((cy - lats[0]) / GRID)), int(round((cx - lons[0]) / GRID))]
+            m_ = ndimage.binary_closing(m_, iterations=2)
+            import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+            fig_ = plt.figure(); cs_ = plt.contour(GX, GY, ndimage.gaussian_filter(m_.astype(float), 1), levels=[0.5]); sg = cs_.allsegs[0]; plt.close(fig_)
+            ring = max(sg, key=len)
+        CLEAR.append((kc["k"], ring, m_))
 
     def cell_ok(x, y, arr=ok):
         i = np.round((np.asarray(x) - lons[0]) / GRID).astype(int); j = np.round((np.asarray(y) - lats[0]) / GRID).astype(int)
@@ -216,7 +255,7 @@ def build(C):
             r = rr[0]
             if len(r) < 4: continue
             T = tf(r)
-            if not cell_ok(T[:, 0], T[:, 1]).all(): continue
+            if FOLD[0].any() or not cell_ok(T[:, 0], T[:, 1]).all(): continue
             if cell_ok(T[:, 0], T[:, 1], near_river).any(): continue
             lv = (f.get("t") or {}).get("building:levels")
             props = {"k": "building"}
@@ -228,7 +267,7 @@ def build(C):
             parts = []
             for r in rr:
                 if len(r) < 4: continue
-                T = tf(r); okv = cell_ok(T[:, 0], T[:, 1])
+                T = tf(r); okv = cell_ok(T[:, 0], T[:, 1]) & ~FOLD[0]
                 if okv.mean() >= 0.75: parts.append(T)
             if parts: feats.append(("land", {"k": sub}, parts))
         else:   # lines: roads and canals, cut where they leave the allowed ground
@@ -239,7 +278,7 @@ def build(C):
                 for (x1, y1), (x2, y2) in zip(r, r[1:]):
                     L = math.hypot((x2 - x1) * kd, (y2 - y1) * KY); n = max(1, int(L / 0.06))
                     for t in range(1, n + 1): pts.append([x1 + (x2 - x1) * t / n, y1 + (y2 - y1) * t / n])
-                T = tf(pts); okv = cell_ok(T[:, 0], T[:, 1])
+                T = tf(pts); okv = cell_ok(T[:, 0], T[:, 1]) & ~FOLD[0]
                 if not (kind == "road" and sub in ("major", "mid")):
                     okv &= ~cell_ok(T[:, 0], T[:, 1], near_river)   # only the main streets bridge the river
                 run = []
@@ -302,6 +341,55 @@ def build(C):
         feats = new
         print(f"  {C['name']}: {len(sites)} bridges kept of {len(cross)} crossings")
 
+    if C.get("fill_gaps"):
+        # open ground inside the town that the donor left empty (its parks and hills) gets ordinary blocks: a street grid
+        # aligned with the streets around it, joined to them, then houses along it like the rest
+        road_m = np.zeros(GX.shape, bool); segs = []
+        for k, p_, parts in feats:
+            if k == "road" and p_["k"] in ("mid", "major", "minor"):
+                T = parts[0]
+                i = np.round((T[:, 0] - lons[0]) / GRID).astype(int); j = np.round((T[:, 1] - lats[0]) / GRID).astype(int)
+                m = (i >= 0) & (i < GX.shape[1]) & (j >= 0) & (j < GX.shape[0]); road_m[j[m], i[m]] = True
+                for a_, b_ in zip(T, T[1:]): segs.append(((a_ + b_) / 2, b_ - a_))
+        clear_m = np.zeros(GX.shape, bool)
+        for _, _, m_ in CLEAR: clear_m |= ndimage.binary_dilation(m_, iterations=1)
+        dist_r = ndimage.distance_transform_edt(~road_m) * GRID * KY
+        town = ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_dilation(road_m, iterations=6), iterations=8))
+        gap = town & ok & (dist_r > 0.11) & ~clear_m & ~near_river
+        lab, n = ndimage.label(gap)
+        sizes = ndimage.sum(gap, lab, range(1, n + 1))
+        mids = np.array([m_ for m_, _ in segs]); dirs = np.array([d_ for _, d_ in segs])
+        from scipy.spatial import cKDTree
+        mt = cKDTree(np.column_stack([mids[:, 0] * kt, mids[:, 1] * KY]))
+        made = 0
+        for c in range(1, n + 1):
+            if sizes[c - 1] < 60: continue            # under ~0.12 km2
+            comp = lab == c
+            grow = ndimage.binary_dilation(comp, iterations=3) & ok & ~clear_m      # reach the surrounding streets
+            jj, ii = np.where(comp); cx, cy = lons[ii].mean(), lats[jj].mean()
+            near = mt.query_ball_point([cx * kt, cy * KY], 0.6)
+            v = dirs[near] * [kt, KY]; L = np.hypot(*v.T) + 1e-9; ang = np.arctan2(v[:, 1], v[:, 0])
+            th = 0.5 * math.atan2((L * np.sin(2 * ang)).sum(), (L * np.cos(2 * ang)).sum())
+            u = np.array([math.cos(th), math.sin(th)]); w = np.array([-u[1], u[0]])
+            gj_, gi_ = np.where(grow)
+            P = np.column_stack([(lons[gi_] - cx) * kt, (lats[gj_] - cy) * KY])
+            a0, a1 = (P @ u).min() - 0.1, (P @ u).max() + 0.1; b0, b1 = (P @ w).min() - 0.1, (P @ w).max() + 0.1
+            def add_line(o, along, frm, to, step=0.02):
+                ts = np.arange(frm, to, step); pts = o[None, :] + ts[:, None] * along[None, :]
+                X = cx + pts[:, 0] / kt; Y = cy + pts[:, 1] / KY
+                okp = cell_ok(X, Y, grow); run = []
+                out = 0
+                for x, y, o_ in zip(X, Y, okp):
+                    if o_: run.append((x, y))
+                    else:
+                        if len(run) >= 4: feats.append(("road", {"k": "minor"}, [np.array(run)])); out += 1
+                        run = []
+                if len(run) >= 4: feats.append(("road", {"k": "minor"}, [np.array(run)])); out += 1
+                return out
+            for b in np.arange(b0, b1, 0.11): made += add_line(b * w, u, a0, a1)        # streets every ~110 m
+            for a in np.arange(a0, a1, 0.24): made += add_line(a * u, w, b0, b1)        # cross streets every ~240 m
+        print(f"  {C['name']}: {made} streets laid out in empty ground")
+
     if C.get("fill_houses"):
         # the donor's buildings are only partly mapped: line its side streets with courtyard houses where none are mapped
         H = 0.0001   # ~10 m
@@ -346,6 +434,24 @@ def build(C):
                     pos += w_ + rng.uniform(4, 9)
         print(f"  {C['name']}: {added} houses added along side streets")
 
+    for kk, ring, m_ in CLEAR:
+        P_ = Path(ring); new = []
+        for k, p_, parts in feats:
+            T = parts[0]; inn = P_.contains_points(T[:, :2])
+            if not inn.any(): new.append((k, p_, parts)); continue
+            if k in ("road", "canal", "rail"):
+                if k == "canal": new.append((k, p_, parts)); continue
+                run = []
+                for pt, i_ in zip(T, inn):
+                    if not i_: run.append(pt)
+                    else:
+                        if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+                        run = []
+                if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+            elif k == "land" and inn.mean() < 0.3:
+                new.append((k, p_, parts))
+        feats = new + [("land", {"k": kk}, [np.asarray(ring)])]
+
     if C.get("trim_empty"):
         # streets that run out across empty ground (the donor's suburbs fell outside the site): cut them back to the houses
         bpts = np.vstack([parts[0][:, :2] for k, _, parts in feats if k == "building"])
@@ -374,12 +480,84 @@ def build(C):
             for T in parts:
                 i = np.round((T[:, 0] - lons[0]) / GRID).astype(int); j = np.round((T[:, 1] - lats[0]) / GRID).astype(int)
                 m = (i >= 0) & (i < GX.shape[1]) & (j >= 0) & (j < GX.shape[0]); fp[j[m], i[m]] = True
-    fp = ndimage.binary_closing(ndimage.binary_dilation(fp, iterations=3), iterations=6)
-    fp = ndimage.binary_fill_holes(fp) & ndimage.binary_dilation(ok, iterations=3)
-    lab, n = ndimage.label(fp)
-    sizes = ndimage.sum(fp, lab, range(1, n + 1))
-    fp = np.isin(lab, 1 + np.where(sizes >= 40)[0])
-    fp = ndimage.binary_fill_holes(fp)
+    if C.get("tight_footprint"):
+        fp = ndimage.binary_closing(ndimage.binary_dilation(fp, iterations=2), iterations=4)
+        fp = ndimage.binary_fill_holes(fp) & ndimage.binary_dilation(ok, iterations=2)
+        lab, n = ndimage.label(fp)
+        sizes = ndimage.sum(fp, lab, range(1, n + 1))
+        fp = lab == (1 + int(np.argmax(sizes)))            # one town: outlying scraps are dropped with their streets
+        fp = ndimage.binary_fill_holes(fp)
+        inside = lambda T: fp[np.clip(np.round((T[:, 1] - lats[0]) / GRID).astype(int), 0, fp.shape[0] - 1),
+                              np.clip(np.round((T[:, 0] - lons[0]) / GRID).astype(int), 0, fp.shape[1] - 1)]
+        new = []
+        for k, p_, parts in feats:
+            T = parts[0]
+            if k in ("road", "canal", "rail"):
+                m = inside(T); run = []
+                for pt, kp in zip(T, m):
+                    if kp: run.append(pt)
+                    else:
+                        if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+                        run = []
+                if len(run) >= 2: new.append((k, p_, [np.array(run)]))
+            elif inside(T).mean() > 0.5:
+                new.append((k, p_, parts))
+        feats = new
+        # stray street fragments (cut off by the river or the edge) that join nothing are removed
+        roads = [(n_, f) for n_, f in enumerate(feats) if f[0] == "road"]
+        key = lambda q: (round(float(q[0]), 4), round(float(q[1]), 4))
+        par = {}
+        def find(a):
+            while par.setdefault(a, a) != a: par[a] = par[par[a]]; a = par[a]
+            return a
+        node_of = {}
+        for n_, (k, p_, parts) in roads:
+            T = parts[0]
+            for q in T: node_of.setdefault(key(q), []).append(n_)
+            a = find(("r", n_))
+            for q in T: par[find(("p",) + key(q))] = a
+        comp_len = {}
+        for n_, (k, p_, parts) in roads:
+            T = parts[0]; L = float(np.hypot(np.diff(T[:, 0]) * kt, np.diff(T[:, 1]) * KY).sum())
+            r_ = find(("r", n_)); comp_len[r_] = comp_len.get(r_, 0) + L
+        drop = {n_ for n_, f in roads if comp_len[find(("r", n_))] < 0.6}
+        feats = [f for n_, f in enumerate(feats) if n_ not in drop]
+    else:
+        fp = ndimage.binary_closing(ndimage.binary_dilation(fp, iterations=3), iterations=6)
+        fp = ndimage.binary_fill_holes(fp) & ndimage.binary_dilation(ok, iterations=3)
+        lab, n = ndimage.label(fp)
+        sizes = ndimage.sum(fp, lab, range(1, n + 1))
+        fp = np.isin(lab, 1 + np.where(sizes >= 40)[0])
+        fp = ndimage.binary_fill_holes(fp)
+    if C.get("connect_real_roads"):
+        # real roads that run up to the town edge carry on into it until they meet its streets (instead of stopping at the mask)
+        from scipy.spatial import cKDTree
+        sp = np.vstack([parts[0] for k, p_, parts in feats if k == "road" and p_["k"] in ("mid", "major", "minor")])
+        st_ = cKDTree(np.column_stack([sp[:, 0] * kt, sp[:, 1] * KY]))
+        infp = lambda x, y: fp[min(max(int(round((y - lats[0]) / GRID)), 0), fp.shape[0] - 1), min(max(int(round((x - lons[0]) / GRID)), 0), fp.shape[1] - 1)]
+        added = 0
+        for w in OSM:
+            if w["k"] not in ("road:trunk", "road:primary", "road:secondary", "road:tertiary"): continue
+            c = w["c"]
+            if not any(lons[0] < x < lons[-1] and lats[0] < y < lats[-1] for x, y in c): continue
+            dense = [c[0]]
+            for (x1, y1), (x2, y2) in zip(c, c[1:]):
+                n_ = max(1, int(math.hypot((x2 - x1) * kt, (y2 - y1) * KY) / 0.03))
+                for t_ in range(1, n_ + 1): dense.append([x1 + (x2 - x1) * t_ / n_, y1 + (y2 - y1) * t_ / n_])
+            flags = [infp(x, y) for x, y in dense]
+            for direction in (1, -1):
+                seq = list(range(len(dense)))[::direction]
+                for a_, b_ in zip(seq, seq[1:]):
+                    if not flags[a_] and flags[b_]:        # enters the town here
+                        run = [dense[a_]]; m = b_
+                        idxs = seq[seq.index(b_):]
+                        for m in idxs:
+                            run.append(dense[m])
+                            d_, _ = st_.query([dense[m][0] * kt, dense[m][1] * KY])
+                            if d_ < 0.04 or not flags[m]: break
+                        if len(run) >= 2:
+                            feats.append(("road", {"k": "mid"}, [np.array(run)])); added += 1
+        print(f"  {C['name']}: {added} real roads joined to the town streets")
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
     fig = plt.figure(); cs = plt.contour(GX, GY, ndimage.gaussian_filter(fp.astype(float), 1.2), levels=[0.5]); segs = cs.allsegs[0]; plt.close(fig)
     rings = [s for s in segs if len(s) > 8]
@@ -405,6 +583,29 @@ def build(C):
                     if len(run) >= 2: rivers.append(run)
                     run = []
             if len(run) >= 2: rivers.append(run)
+    if C.get("smooth_routes"):
+        # lore highways that keep their own course through the town: smoothed inside it, and nothing built on them
+        routes_all = json.load(open(os.path.join(ROOT, "data/routes.json")))
+        for r in routes_all:
+            if r["id"] not in C["smooth_routes"]: continue
+            c = np.array(r["coords"]); inn = np.array([in_fp(x, y) for x, y in c])
+            if not inn.any(): continue
+            i0_, i1_ = int(np.argmax(inn)), len(inn) - 1 - int(np.argmax(inn[::-1]))
+            mid_ = c[max(i0_ - 1, 0): i1_ + 2]
+            sm = thin_line(mid_, 40)
+            for _ in range(3):
+                sm = np.vstack([sm[:1]] + [np.array([0.75 * a + 0.25 * b, 0.25 * a + 0.75 * b]) for a, b in zip(sm, sm[1:])] + [sm[-1:]])
+            r["coords"] = [[round(x, 5), round(y, 5)] for x, y in np.vstack([c[:max(i0_ - 1, 0)], sm, c[i1_ + 2:]])]
+            dense = []
+            for a, b in zip(sm, sm[1:]):
+                n_ = max(1, int(math.hypot((b[0] - a[0]) * kt, (b[1] - a[1]) * KY) / 0.01))
+                for t_ in range(n_): dense.append(a + (b - a) * t_ / n_)
+            from scipy.spatial import cKDTree
+            rt = cKDTree(np.array([(x * kt, y * KY) for x, y in dense]))
+            before = len(feats)
+            feats = [f for f in feats if not (f[0] == "building" and rt.query(np.column_stack([f[2][0][:, 0] * kt, f[2][0][:, 1] * KY]))[0].min() < 0.022)]
+            print(f"  {C['name']}: {r['id']} smoothed through the town, {before - len(feats)} buildings cleared from its line")
+        json.dump(routes_all, open(os.path.join(ROOT, "data/routes.json"), "w"), ensure_ascii=False, indent=1)
     return feats, footprint, rivers, (lons, lats, ok)
 
 
@@ -433,7 +634,7 @@ def thin_line(c, eps_m=4):
 # ---------- re-lay the lore routes inside each city along its borrowed main streets ----------
 def relay_routes(cities_out):
     routes = json.load(open(os.path.join(ROOT, "data/routes.json")))
-    for name, feats, footprint, relay_only in cities_out:
+    for name, feats, footprint, relay_only, minor_w in cities_out:
         fpath = [[Path(np.array(r)) for r in P] for P in footprint["coordinates"]]
         in_fp = lambda x, y: any(P[0].contains_point((x, y)) and not any(h.contains_point((x, y)) for h in P[1:]) for P in fpath)
         from scipy.spatial import cKDTree
@@ -470,7 +671,7 @@ def relay_routes(cities_out):
                 def query(s_, q): d, i = s_.t.query(q); return d, keep[i]
             return coords, adj, Tree(), kx(C[0, 1])
 
-        G_road = graph({("road", "major"): 1.0, ("road", "mid"): 1.3, ("road", "minor"): 3.5})
+        G_road = graph({("road", "major"): 1.0, ("road", "mid"): 1.3, ("road", "minor"): minor_w})
         G_rail = graph({("rail", "rail"): 1.0, ("rail", "siding"): 1.6})
 
         def path(G, a_pt, b_pt):
@@ -572,6 +773,6 @@ if __name__ == "__main__":
                 x = np.array([q[0] for q in r]) * kx(C["pivot"][1]); y = np.array([q[1] for q in r]) * KY
                 a_ = 0.5 * abs(np.dot(x[:-1], y[1:]) - np.dot(x[1:], y[:-1])); area += a_ if h == 0 else -a_
         print(f"{C['name']:11} from {C['donor']:9} {len(feats):6} features, {nb:6} buildings, {len(tl):3} tiles, {size/1e6:5.1f} MB, built-up {area:5.0f} km2")
-        outs.append((C["name"], feats, footprint, C.get("relay_only")))
+        outs.append((C["name"], feats, footprint, C.get("relay_only"), C.get("relay_minor_w", 3.5)))
     json.dump(index, open(os.path.join(OUT, "index.json"), "w"), separators=(",", ":"))
     relay_routes(outs)

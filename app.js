@@ -49,7 +49,6 @@
       { id: "landcover-ice", type: "fill", source: omt, "source-layer": "landcover", filter: ["==", ["get", "class"], "ice"], paint: { "fill-color": C.ice } },
       { id: "landuse-res", type: "fill", source: omt, "source-layer": "landuse", minzoom: 9, filter: ["in", ["get", "class"], ["literal", ["residential", "suburb", "neighbourhood", "commercial", "industrial", "retail"]]], paint: { "fill-color": C.res, "fill-opacity": 0.8 } },
       { id: "park", type: "fill", source: omt, "source-layer": "park", paint: { "fill-color": C.park, "fill-opacity": 0.5 } },
-      { id: "hillshade", type: "hillshade", source: "dem", paint: { "hillshade-exaggeration": 0.42, "hillshade-shadow-color": "#4d4535", "hillshade-highlight-color": "#ffffff", "hillshade-accent-color": "#6b6250" } },
       { id: "water", type: "fill", source: omt, "source-layer": "water", paint: { "fill-color": C.water } },
       { id: "waterway", type: "line", source: omt, "source-layer": "waterway", filter: ["!=", ["get", "brunnel"], "tunnel"], paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.6, 13, 2, 16, 5] } },
       { id: "aeroway", type: "line", source: omt, "source-layer": "aeroway", minzoom: 11, filter: ["==", ["geometry-type"], "LineString"], paint: { "line-color": "#d4d0dc", "line-width": ["interpolate", ["linear"], ["zoom"], 11, 2, 15, 20] } },
@@ -66,9 +65,11 @@
       { id: "rail-dash", type: "line", source: omt, "source-layer": "transportation", minzoom: 11, filter: ["==", ["get", "class"], "rail"], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
       // Iradi city plans (data/city): a mask hides the real base map inside each city, then its own streets are drawn
       { id: "city-mask", type: "fill", source: "citymask", paint: { "fill-color": C.land } },
+      // relief over the base map and the city masks alike (so the hills inside a city footprint still show)
+      { id: "hillshade", type: "hillshade", source: "dem", paint: { "hillshade-exaggeration": 0.42, "hillshade-shadow-color": "#4d4535", "hillshade-highlight-color": "rgba(255,255,255,0.35)", "hillshade-accent-color": "#6b6250" } },
       { id: "city-land", type: "fill", source: "cityov", filter: ["==", ["get", "t"], "land"],
         paint: { "fill-color": ["match", ["get", "k"], "residential", C.res, "commercial", "#efdcd6", "industrial", "#e3dbe6", "park", C.park, "grass", C.grass,
-          "farm", C.farm, "cemetery", "#d3dfca", "institution", "#efe6c8", "pitch", "#cfe5c0", "wood", C.wood, "parking", "#e7e3dc", C.res], "fill-opacity": 0.9 } },
+          "farm", C.farm, "cemetery", "#d3dfca", "institution", "#efe6c8", "pitch", "#cfe5c0", "wood", C.wood, "heritage", "#e6dcc3", "parking", "#e7e3dc", C.res], "fill-opacity": 0.9 } },
       { id: "city-river", type: "line", source: "cityov", filter: ["==", ["get", "t"], "river"], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.water, "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 9, 1.5, 13, 6, 16, 30] } },
       { id: "city-canal", type: "line", source: "cityov", filter: ["==", ["get", "t"], "canal"], minzoom: 11, paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 3] } },

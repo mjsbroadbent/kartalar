@@ -2512,9 +2512,9 @@
   "kind": "ruins",
   "city": null,
   "zone": "ISEZ",
-  "lat": 41.388,
-  "lon": 72.208,
-  "elev": 739,
+  "lat": 41.394,
+  "lon": 72.214,
+  "elev": 700,
   "confidence": "stated",
   "note": "11th-14th-c. walled Christian town (~45 ha, basilica 38x24 m) on a river terrace 3 km S of the city centre, west of the Naryn; UNESCO 2004.",
   "wiki": "Ruins of Old Iyık Janyl"
@@ -2527,11 +2527,11 @@
   "kind": "ruins",
   "city": null,
   "zone": "ISEZ",
-  "lat": 41.43,
-  "lon": 72.166,
-  "elev": 815,
+  "lat": 41.4225,
+  "lon": 72.218,
+  "elev": 790,
   "confidence": "placed",
-  "note": "Kara-Khanid hilltop citadel on a limestone knoll west of the river flats, refortified 1720s; overlooks the approaches up the Naryn valley.",
+  "note": "Kara-Khanid hilltop citadel on a limestone knoll rising ~140 m from the western flats in the middle of the city, refortified 1720s; overlooks the Lower Town and the Naryn.",
   "wiki": "Diz-i Safid"
  },
  {
