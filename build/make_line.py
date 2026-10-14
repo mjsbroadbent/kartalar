@@ -312,8 +312,10 @@ print("ISEZ %.0f km2 (Talas-Chu %.0f, Naryn %.0f), ATR %.0f" % (area(isez), area
 
 # ---------- districts ----------
 south_of_axis = GY < AXLAT
-dist = {"Lower Naryn": naryn, "Sary-Bulak": tc & sary_bulak & south_of_axis & (GY < AXLAT - 0.06)}
-rest = tc & ~dist["Sary-Bulak"]
+# the State Route 1 corridor belongs to Lower Naryn from the Otmek tunnel south; north of it, to Talas
+ln = naryn & ~tc & (GY < 42.28)
+dist = {"Lower Naryn": ln, "Sary-Bulak": tc & sary_bulak & south_of_axis & (GY < AXLAT - 0.06)}
+rest = isez & ~ln & ~dist["Sary-Bulak"]
 dist["Chu"] = rest & (GX >= 72.95) & (GY >= 42.72)
 dist["Kara-Buura"] = rest & ~dist["Chu"] & (GX < 71.92)
 dist["Talas"] = rest & ~dist["Chu"] & ~dist["Kara-Buura"]
