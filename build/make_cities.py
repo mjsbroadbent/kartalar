@@ -32,7 +32,11 @@ CITIES = [
      "ellipse": ((73.77, 43.60), 11.5, 10.5), "max_elev": 900, "max_slope": 0.08,
      "exclude": [], "donor_exclude": [[(69.715, 42.265), (69.77, 42.265), (69.77, 42.325), (69.715, 42.325)]],   # a tile that failed to download
      "rivers": ["Чу"]},
-    {"name": "iyik-janyl", "donor": "osh", "pivot_donor": (72.7856, 40.5274), "pivot": (72.2525, 41.3935), "rotate": 0, "mirror": True,
+    {"name": "iyik-janyl", "donor": "osh", "pivot_donor": (72.7856, 40.5274), "pivot": (72.2525, 41.3935), "rotate": 0, "mirror": False,
+     # bend the plan along the river: the donor's river (upstream to downstream) is laid onto the Naryn, so the streets
+     # along its banks follow the Naryn; the sacred hill on its left bank becomes Cathedral Hill on the Naryn's left (east) bank
+     "warp": {"donor_river": "ww:river", "donor_river_min_pts": 100, "target_river": "Нарын", "target_flow": ((72.34, 41.486), (72.21, 41.336))},
+     "no_rail": True, "fill_houses": True,
      "scale": 1.0, "donor_r_km": 10.5,
      # the river flats of the Naryn: no higher than ~110 m above the river, north of Tash-Kömür; Cathedral Hill itself
      "ellipse": ((72.23, 41.415), 9.5, 9.0), "above_river": 170, "max_slope": 0.15, "min_lat": 41.372,
@@ -101,7 +105,53 @@ def build(C):
     a = math.radians(C["rotate"]); ca, sa = math.cos(a), math.sin(a); sc = C["scale"]; mir = -1 if C["mirror"] else 1
     dex = [Path(np.array(p)) for p in C.get("donor_exclude", [])]
 
-    def tf(pts):
+    W = C.get("warp")
+    if W:
+        def centerline(pts, flow_from, flow_dir):
+            # order the river points from upstream, resample every 50 m, smooth over ~1.5 km
+            P = np.asarray(pts, float); k_ = kx(P[0, 1])
+            XY = np.column_stack([P[:, 0] * k_, P[:, 1] * KY])
+            # order along the general flow (the reaches used here run without loops); bins of 100 m, averaged
+            fdir = np.array(flow_dir, float); fdir /= np.hypot(*fdir)
+            proj = XY @ fdir
+            bins = np.floor((proj - proj.min()) / 0.1).astype(int)
+            L = np.array([XY[bins == k].mean(0) for k in np.unique(bins)])
+            order = None
+            seg = np.hypot(*np.diff(L, axis=0).T); sarr = np.concatenate([[0], np.cumsum(seg)])
+            ss = np.arange(0, sarr[-1], 0.05)
+            R_ = np.column_stack([np.interp(ss, sarr, L[:, 0]), np.interp(ss, sarr, L[:, 1])])
+            R_ = ndimage.gaussian_filter1d(R_, 25, axis=0, mode="nearest")
+            tan = np.gradient(R_, axis=0); tan /= np.hypot(*tan.T)[:, None]
+            return R_, tan, ss, k_
+        dpts = [p for f in donor["features"] if f["k"] == W["donor_river"] and len(f["c"]) >= W["donor_river_min_pts"] for p in f["c"]]
+        Dr, Dt, Ds, Dk = centerline(dpts, (72.858, 40.434), (-0.75, 0.66))
+        tpts = [p for w in OSM if w["k"] == "water:river" and (w.get("n") or "") == W["target_river"] for p in w["c"]
+                if abs(p[0] - tx) < 0.25 and abs(p[1] - ty) < 0.25]
+        (fx0, fy0), (fx1, fy1) = W["target_flow"]
+        tpts = [p for p in tpts if fy1 - 0.05 <= p[1] <= fy0 + 0.05]
+        Tr, Tt, Ts, Tk = centerline(tpts, W["target_flow"][0], ((fx1 - fx0) * kx(fy0), (fy1 - fy0) * KY))
+        from scipy.spatial import cKDTree
+        DT = cKDTree(Dr)
+        def frame(Rr, Tn, S_, q):
+            i = int(np.argmin(np.hypot(*(Rr - q).T))); off = q - Rr[i]
+            return S_[i] + off @ Tn[i], Tn[i, 0] * off[1] - Tn[i, 1] * off[0]
+        s0d, _ = frame(Dr, Dt, Ds, np.array([pdx * Dk, pdy * KY]))
+        s0t, _ = frame(Tr, Tt, Ts, np.array([tx * Tk, ty * KY]))
+
+        def tf(pts):
+            P = np.asarray(pts, float)
+            q = np.column_stack([P[:, 0] * Dk, P[:, 1] * KY])
+            _, i = DT.query(q)
+            off = q - Dr[i]; t_ = Dt[i]
+            s_ = Ds[i] + np.einsum("ij,ij->i", off, t_) - s0d + s0t
+            d_ = t_[:, 0] * off[:, 1] - t_[:, 1] * off[:, 0]          # left of the flow is positive
+            j = np.clip(np.searchsorted(Ts, s_), 0, len(Ts) - 1)
+            base = Tr[j] + Tt[j] * (s_ - Ts[j])[:, None]
+            nrm = np.column_stack([-Tt[j, 1], Tt[j, 0]])
+            out = base + nrm * d_[:, None]
+            return np.column_stack([out[:, 0] / Tk, out[:, 1] / KY])
+    else:
+      def tf(pts):
         P = np.asarray(pts, float)
         x = (P[:, 0] - pdx) * kd * mir; y = (P[:, 1] - pdy) * KY
         xr, yr = (x * ca - y * sa) * sc, (x * sa + y * ca) * sc
@@ -157,6 +207,7 @@ def build(C):
         cl = classify(f)
         if not cl: continue
         kind, sub = cl
+        if kind == "rail" and C.get("no_rail"): continue
         rr = rings_of(f)
         p0 = rr[0][0]
         if math.hypot((p0[0] - pdx) * kd, (p0[1] - pdy) * KY) > rd: continue
@@ -198,6 +249,50 @@ def build(C):
                         if len(run) >= 2: feats.append((kind, {"k": sub}, [np.array(run)]))
                         run = []
                 if len(run) >= 2: feats.append((kind, {"k": sub}, [np.array(run)]))
+    if C.get("fill_houses"):
+        # the donor's buildings are only partly mapped: line its side streets with courtyard houses where none are mapped
+        H = 0.0001   # ~10 m
+        hx0, hy0 = lons[0], lats[0]; hnx = int((lons[-1] - lons[0]) / H) + 2; hny = int((lats[-1] - lats[0]) / H) + 2
+        occ = np.zeros((hny, hnx), bool)
+        def mark(T, r=1):
+            i = np.round((T[:, 0] - hx0) / H).astype(int); j = np.round((T[:, 1] - hy0) / H).astype(int)
+            m = (i >= r) & (i < hnx - r) & (j >= r) & (j < hny - r)
+            for di in range(-r, r + 1):
+                for dj in range(-r, r + 1): occ[j[m] + dj, i[m] + di] = True
+        for kind, props, parts in feats:
+            if kind == "building": mark(parts[0], 1)
+            elif kind == "road":
+                T = parts[0]
+                dense = [T[0]]
+                for a_, b_ in zip(T, T[1:]):
+                    n_ = max(1, int(math.hypot((b_[0] - a_[0]) * kt, (b_[1] - a_[1]) * KY) / 0.008))
+                    for t_ in range(1, n_ + 1): dense.append(a_ + (b_ - a_) * t_ / n_)
+                mark(np.array(dense), 0 if props["k"] in ("minor", "service", "path") else 1)
+        rng = np.random.default_rng(7)
+        added = 0
+        for kind, props, parts in list(feats):
+            if kind != "road" or props["k"] != "minor": continue
+            T = parts[0]
+            for a_, b_ in zip(T, T[1:]):
+                dx, dy = (b_[0] - a_[0]) * kt * 1000, (b_[1] - a_[1]) * KY * 1000; L = math.hypot(dx, dy)
+                if L < 15: continue
+                ux, uy = dx / L, dy / L; nxv, nyv = -uy, ux
+                pos = 6.0
+                while pos < L - 6:
+                    w_, dpt = rng.uniform(9, 14), rng.uniform(10, 16)
+                    for side in (1, -1):
+                        cxm = pos * ux + side * (8 + dpt / 2) * nxv; cym = pos * uy + side * (8 + dpt / 2) * nyv
+                        corners = [(-w_ / 2, -dpt / 2), (w_ / 2, -dpt / 2), (w_ / 2, dpt / 2), (-w_ / 2, dpt / 2)]
+                        ring = [(a_[0] + (cxm + cx_ * ux + cy_ * nxv * side) / 1000 / kt, a_[1] + (cym + cx_ * uy + cy_ * nyv * side) / 1000 / KY) for cx_, cy_ in corners]
+                        R_ = np.array(ring + [ring[0]])
+                        i = np.round((R_[:, 0] - hx0) / H).astype(int); j = np.round((R_[:, 1] - hy0) / H).astype(int)
+                        if (i < 1).any() or (j < 1).any() or (i >= hnx - 1).any() or (j >= hny - 1).any(): continue
+                        if occ[j, i].any() or not cell_ok(R_[:, 0], R_[:, 1]).all() or cell_ok(R_[:, 0], R_[:, 1], near_river).any(): continue
+                        if rng.random() < 0.12: continue        # gardens and empty plots
+                        feats.append(("building", {"k": "building"}, [R_])); mark(R_, 1); added += 1
+                    pos += w_ + rng.uniform(4, 9)
+        print(f"  {C['name']}: {added} houses added along side streets")
+
     # footprint: built-up ground (buildings and streets), smoothed, inside the allowed ground
     fp = np.zeros(GX.shape, bool)
     for kind, props, parts in feats:
