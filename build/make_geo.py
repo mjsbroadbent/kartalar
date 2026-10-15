@@ -100,8 +100,59 @@ jalal_abad = mask_poly([_ring]) | mask_poly([[(73.03, 40.9), (73.12, 40.87), (73
 balkhash_notch = mask_poly([[(73.74, 45.30), (74.11, 45.30), (74.11, 45.03), (73.80, 45.03)]])
 irad = (A["KG-T"] | A["KG-J"] | jambyl | turkistan_part | uz_rim | suusamyr | balkhash_notch) & (GX >= 68.0) & ~jalal_abad
 
+# west of Uzak the frontier runs north of the Kandiyon - Salaman road (the road and its villages are Uzbek), so the road
+# does not weave across it (applied after the road rule below)
+_blue = [(71.5288, 41.2754), (71.5542, 41.2854), (71.5847, 41.2862), (71.6051, 41.2958), (71.6255, 41.3112), (71.6560, 41.3246),
+         (71.6814, 41.3304), (71.6967, 41.3285), (71.7171, 41.3258), (71.7629, 41.3258)]
+kandiyon_strip = mask_poly([_blue + [(71.7629, 41.20), (71.5288, 41.20)]])
+# the south-east corner below the Chu: the frontier runs along the foot of the hills north of Kökadyr and Muzbel to the
+# motorway crossing at the eastern frontier (the Chu Gate), so the corner's hill villages are left outside
+_se = [(74.6802, 43.2857), (74.7034, 43.2987), (74.7266, 43.3127), (74.7537, 43.3212), (74.7653, 43.3325), (74.7847, 43.3381),
+       (74.8001, 43.3448), (74.8311, 43.3465), (74.8582, 43.3493), (74.8814, 43.3550), (74.9085, 43.3634), (74.9279, 43.3690),
+       (74.9588, 43.3702), (74.9820, 43.3775), (74.9936, 43.3803)]
+chu_corner = mask_poly([_se + [(75.05, 43.3803), (75.05, 43.20), (74.6802, 43.20)]])
+
 # ---------- ISEZ ----------
 R = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "data/routes.json")))}
+# where an Irad road or railway runs along the frontier, the frontier keeps to the far side of it (the oblast lines
+# cross and recross the real roads): the land within ~1.5 km of the stretches of road inside Irad is Irad's
+_inside = lambda x, y: irad[min(max(int(round((y - LAT0) / STEP)), 0), irad.shape[0] - 1), min(max(int(round((x - LON0) / STEP)), 0), irad.shape[1] - 1)]
+hug = np.zeros(GX.shape, bool)
+for r in R.values():
+    if r.get("kind") not in ("highway", "road", "railway") or not r.get("coords"): continue
+    C = [tuple(q) for q in r["coords"]]
+    ins = [bool(_inside(x, y)) for x, y in C]
+    # an excursion out of Irad that comes back in (the road weaving across the oblast line) counts as inside;
+    # a road leaving Irad for good keeps its real exit
+    k = 0
+    while k < len(C):
+        if ins[k]: k += 1; continue
+        e = k
+        while e < len(C) and not ins[e]: e += 1
+        if k > 0 and e < len(C):
+            L = sum(np.hypot((C[q + 1][0] - C[q][0]) * 82, (C[q + 1][1] - C[q][1]) * 111) for q in range(k - 1, e))
+            if L < 25:
+                for q in range(k, e): ins[q] = True
+        k = e
+    run = []
+    for q, (x, y) in enumerate(C):
+        if ins[q]: run.append((x, y))
+        else:
+            if len(run) > 1: hug |= near_line(run, 1.5)
+            run = []
+    if len(run) > 1: hug |= near_line(run, 1.5)
+# real main roads along the frontier that the border should keep to the near side of (ROUTE_NET = make_network.py output)
+ROAD_HUG_BOXES = [(73.45, 42.98, 74.0, 43.2)]      # the Kum-Jol stretch of the Bishkek road below the Kyrgyz Range
+_net = os.environ.get("ROUTE_NET")
+if _net and os.path.exists(_net):
+    for w in json.load(open(_net))["ways"]:
+        if w["k"] not in ("road:motorway", "road:trunk", "road:primary"): continue
+        for x0_, y0_, x1_, y1_ in ROAD_HUG_BOXES:
+            pts = [(x, y) for x, y in w["c"] if x0_ <= x <= x1_ and y0_ <= y <= y1_]
+            if len(pts) > 1: hug |= near_line(pts, 1.5)
+added = hug & ~irad & (GX >= 68.0)
+print("frontier kept off the roads: %.0f km2 added" % float(((STEP * 111.32 * np.cos(np.radians(GY))) * (STEP * 110.57))[added].sum()))
+irad = (irad | added) & ~kandiyon_strip & ~chu_corner
 # Talas valley floor, the Taraz plain and the Kara-Buura corridor west to the frontier facing Shymkent
 valley = mask_poly([[(70.05, 42.38), (70.6, 42.46), (71.1, 42.58), (71.6, 42.46), (72.0, 42.36), (72.5, 42.32), (72.95, 42.38), (73.1, 42.55),
                      (73.2, 42.80), (72.6, 42.95), (72.0, 43.15), (71.4, 43.25), (71.1, 43.0), (70.6, 42.88), (70.1, 42.7)]])
@@ -154,9 +205,13 @@ def rdp(pts, eps):
     return [pts[0], pts[-1]]
 
 
-def trace(m, eps=0.004, min_km2=4):
+def trace(m, eps=0.004, min_km2=4, smooth=0):
     fig = plt.figure()
-    cs = plt.contour(GX, GY, m.astype(float), levels=[0.5])
+    f_ = m.astype(float)
+    if smooth:      # contour a slightly blurred mask: diagonal edges come out straight instead of in 0.01-degree steps
+        from scipy import ndimage
+        f_ = ndimage.gaussian_filter(f_, smooth)
+    cs = plt.contour(GX, GY, f_, levels=[0.5])
     rings = []
     for path in cs.allsegs[0]:
         if len(path) < 4:
@@ -193,7 +248,7 @@ def feat(geom, **props):
 
 
 out = os.path.join(ROOT, "data")
-json.dump({"type": "FeatureCollection", "features": [feat(trace(irad, 0.003), name="Irad", name_ir="Irad", name_ru="Ирад", area_km2=round(area(irad)))]},
+json.dump({"type": "FeatureCollection", "features": [feat(trace(irad, 0.003, smooth=1.0), name="Irad", name_ir="Irad", name_ru="Ирад", area_km2=round(area(irad)))]},
           open(os.path.join(out, "irad.geojson"), "w"))
 json.dump({"type": "FeatureCollection", "features": [
     feat(trace(isez, 0.003), zone="ISEZ", name="Irad Special Economic Zone", name_ir="Irad Atayın Ekonomikalık Zonası", name_ru="Особая экономическая зона Ирада", area_km2=round(area(isez))),
