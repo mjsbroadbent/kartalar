@@ -276,37 +276,55 @@ def river_crossings(pts):
     return n
 
 
-def hairpins(pts, gmax):
-    """replace stretches that climb faster than gmax with hairpin zigzags (legs up to ~350 m off the line)"""
-    out = [pts[0]]
-    for a, b_ in zip(pts, pts[1:]):
-        L = km(a, b_)
-        za, zb = dem_at([a[0], b_[0]], [a[1], b_[1]])
-        dz = abs(zb - za) / 1000
-        if L < 0.05 or dz < 0.08 or dz / L <= gmax:
-            out.append(b_); continue
+def hairpins(pts, gmax, window=0.4):
+    """replace climbs steeper than gmax with a flight of hairpins: legs of up to ~300 m across the slope with tight
+    turns, as few as the climb allows. Steep ~400 m windows next to each other are taken as one climb."""
+    n_pts = len(pts)
+    if n_pts < 2: return list(pts)
+    # cut the line into ~400 m windows and mark the steep ones
+    cuts = [0]; L = 0.0
+    for k in range(n_pts - 1):
+        L += km(pts[k], pts[k + 1])
+        if L >= window or k == n_pts - 2: cuts.append(k + 1); L = 0.0
+    zc = dem_at([pts[c][0] for c in cuts], [pts[c][1] for c in cuts])
+    steep = []
+    for a_, b_ in zip(range(len(cuts) - 1), range(1, len(cuts))):
+        Lw = sum(km(pts[k], pts[k + 1]) for k in range(cuts[a_], cuts[b_]))
+        steep.append(abs(zc[b_] - zc[a_]) / 1000 > gmax * max(Lw, 1e-6) and abs(zc[b_] - zc[a_]) > 40)
+    out = [pts[0]]; w_ = 0
+    while w_ < len(steep):
+        if not steep[w_]:
+            out += list(pts[cuts[w_] + 1:cuts[w_ + 1] + 1]); w_ += 1; continue
+        e_ = w_
+        while e_ + 1 < len(steep) and steep[e_ + 1]: e_ += 1          # one climb: windows w_..e_
+        ia, ib = cuts[w_], cuts[e_ + 1]; a, b_ = pts[ia], pts[ib]
+        dz = abs(zc[e_ + 1] - zc[w_]) / 1000; chord = km(a, b_)
+        if chord < 0.15:
+            out += list(pts[ia + 1:ib + 1]); w_ = e_ + 1; continue
         need = dz / gmax
-        vx, vy = (b_[0] - a[0]) * KX / L, (b_[1] - a[1]) * KY / L
+        vx, vy = (b_[0] - a[0]) * KX / chord, (b_[1] - a[1]) * KY / chord
         px, py = -vy, vx
         best = None
-        for w in (0.12, 0.2, 0.28, 0.35):
-            for n in range(2, 40):
-                adv = L / n
-                if adv < 0.06:
-                    break
-                tot = 2 * math.hypot(adv / 2, w) + (n - 2) * math.hypot(adv, 2 * w) if n > 1 else L
-                if tot >= need:
-                    best = (w, n); break
-            if best:
-                break
-        if not best:
-            w, n = 0.35, max(2, int(L / 0.06))
-        else:
-            w, n = best
+        for w in (0.3, 0.22, 0.15):                   # long legs first: few turns
+            for n in range(2, 60):
+                adv = chord / n
+                if adv < 0.04: break
+                if 2 * math.hypot(adv / 2, w) + (n - 2) * math.hypot(adv, 2 * w) >= need: best = (w, n); break
+            if best: break
+        w, n = best if best else (0.3, max(2, int(chord / 0.04)))
+        zl, zr = dem_at([a[0] + 0.15 * px / KX, a[0] - 0.15 * px / KX], [a[1] + 0.15 * py / KY, a[1] - 0.15 * py / KY])
+        side = -1 if abs(zr - zc[w_]) < abs(zl - zc[w_]) else 1        # first leg onto the gentler side
+        zz = [a]
         for k in range(1, n):
-            t = k / n; sgn = 1 if k % 2 else -1
-            out.append((a[0] + (b_[0] - a[0]) * t + sgn * w * px / KX, a[1] + (b_[1] - a[1]) * t + sgn * w * py / KY))
-        out.append(b_)
+            t = k / n; sgn = side if k % 2 else -side
+            zz.append((a[0] + (b_[0] - a[0]) * t + sgn * w * px / KX, a[1] + (b_[1] - a[1]) * t + sgn * w * py / KY))
+        zz.append(b_)
+        # round the turns a little (one corner-cutting pass keeps them tight)
+        rz = [zz[0]]
+        for p0, p1 in zip(zz, zz[1:]):
+            rz.append((0.85 * p0[0] + 0.15 * p1[0], 0.85 * p0[1] + 0.15 * p1[1])); rz.append((0.15 * p0[0] + 0.85 * p1[0], 0.15 * p0[1] + 0.85 * p1[1]))
+        rz.append(zz[-1])
+        out += rz[1:]; w_ = e_ + 1
     return out
 
 

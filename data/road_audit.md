@@ -19,17 +19,17 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 | irad-temir-jolu-chatkal-spur | 6 | 0% | 5% | 2 |
 | irad-temir-jolu-taez-siding | 2 | 0% | 7% | 1 |
 | talas-nurzhan-road | 336 | 97% | 10% | 2 |
-| kok-bel-road | 214 | 71% | 25% | 3 |
+| kok-bel-road | 218 | 70% | 35% | 3 |
 | chu-highway | 117 | 85% | 8% | 1 |
 | boz-korgon-branch | 42 | 3% | 5% | 2 |
-| sary-bulak-road | 25 | 8% | 25% | 1 |
+| sary-bulak-road | 28 | 7% | 30% | 2 |
 | chatkal-smelter-road | 45 | 60% | 20% | 2 |
-| qara-chik-road | 40 | 14% | 26% | 4 |
-| kenkol-military-road | 32 | 32% | 25% | 2 |
+| qara-chik-road | 44 | 13% | 29% | 4 |
+| kenkol-military-road | 32 | 32% | 24% | 3 |
 | karakol-road | 22 | 60% | 8% | 0 |
 | lower-naryn-uzbek-road | 39 | 94% | 10% | 1 |
-| fergana-rim-road | 97 | 93% | 9% | 1 |
-| mailuu-suu-road | 22 | 45% | 23% | 0 |
+| fergana-rim-road | 97 | 93% | 11% | 1 |
+| mailuu-suu-road | 23 | 43% | 20% | 0 |
 | arslanbob-road | 49 | 92% | 25% | 1 |
 
 ## Trans-Talas Highway (`trans-talas-highway`)
@@ -44,10 +44,10 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 353 km, 96% on real roads, highest 3389 m, steepest 500 m 32.4% (ruling 5%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
 - end: UNMI Lower Naryn sector HQ 0.2 km / route 0.0 km / real road 0.00 km
-- **GRADE 2.2 km over 7% (max 32%)**
+- **GRADE 2.3 km over 7% (max 32%)**
 - **PARALLEL 1.1 km new-built 40-250 m beside a real road**
 - **BRIDGES 1 new river/canal bridges**
-- **WATER 0.4 km across a lake or reservoir**
+- **WATER 0.5 km across a lake or reservoir**
 - **BEND 119 deg at 73.2517,42.2075**
 
 ## Cathedral Hill road (`iyik-janyl-branch-road`)
@@ -141,11 +141,11 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Kök-Bel road (`kok-bel-road`)
 
-214 km, 71% on real roads, highest 2743 m, steepest 500 m 25.0% (ruling 6%)
+218 km, 70% on real roads, highest 2778 m, steepest 500 m 34.6% (ruling 6%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
 - end: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
-- **GRADE 10.8 km over 8% (max 25%)**
-- **SIDE 5.1 km new-built on >30% slopes**
+- **GRADE 10.5 km over 8% (max 35%)**
+- **SIDE 8.5 km new-built on >30% slopes**
 - **PARALLEL 1.2 km new-built 40-250 m beside a real road**
 
 ## Chu highway (Nurzhan - Chu Gate) (`chu-highway`)
@@ -165,10 +165,11 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Sary-Bulak branch road (`sary-bulak-road`)
 
-25 km, 8% on real roads, highest 1967 m, steepest 500 m 24.6% (ruling 7%)
+28 km, 7% on real roads, highest 1967 m, steepest 500 m 29.8% (ruling 7%)
 - start: Talas 0.1 km / route 0.0 km / real road 0.02 km
 - end: Sary-Bulak Antimony Works (SBAW) 0.0 km / route 0.2 km / real road 7.33 km
-- **GRADE 4.7 km over 9% (max 25%)**
+- **GRADE 3.6 km over 9% (max 30%)**
+- **SIDE 1.1 km new-built on >30% slopes**
 
 ## Chatkal smelter road (`chatkal-smelter-road`)
 
@@ -180,21 +181,22 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Talas - Qara-Chik checkpoint road (`qara-chik-road`)
 
-40 km, 14% on real roads, highest 2538 m, steepest 500 m 26.1% (ruling 7%)
+44 km, 13% on real roads, highest 2545 m, steepest 500 m 28.9% (ruling 7%)
 - start: Talas 0.1 km / route 0.0 km / real road 0.02 km
 - end: Köl-Sai glacial lake 1.7 km / route 18.8 km / real road 8.33 km
-- **GRADE 7.0 km over 9% (max 26%)**
-- **SIDE 4.8 km new-built on >30% slopes**
+- **GRADE 7.9 km over 9% (max 29%)**
+- **SIDE 6.9 km new-built on >30% slopes**
 - **PARALLEL 1.6 km new-built 40-250 m beside a real road**
 - **END at 72.5100,42.3150 is 1.7 km from anything**
 
 ## Kenkol Pass road (`kenkol-military-road`)
 
-32 km, 32% on real roads, highest 2117 m, steepest 500 m 25.1% (ruling 9%)
+32 km, 32% on real roads, highest 2117 m, steepest 500 m 24.2% (ruling 9%)
 - start: Kara-Bulak kurgans 4.6 km / route 0.0 km / real road 0.00 km
 - end: Kenkol Pass 0.0 km / route 17.8 km / real road 4.16 km
 - **ZIGZAG crosses the same river twice within 0.5 km at 71.8183,42.4009**
-- **BRIDGES 3 new river/canal bridges**
+- **ZIGZAG crosses the same river twice within 0.5 km at 71.7575,42.3369**
+- **BRIDGES 5 new river/canal bridges**
 
 ## Western Karakol valley road (`karakol-road`)
 
@@ -211,14 +213,14 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Fergana rim road (Tash-Kömür – Bazar-Korgon) (`fergana-rim-road`)
 
-97 km, 93% on real roads, highest 812 m, steepest 500 m 8.9% (ruling 6%)
+97 km, 93% on real roads, highest 812 m, steepest 500 m 10.9% (ruling 6%)
 - start: UNMI Lower Naryn sector HQ 0.3 km / route 0.2 km / real road 0.12 km
 - end: Bazar-Korgon bazaar 0.1 km / route 0.0 km / real road 0.01 km
 - **PARALLEL 2.2 km new-built 40-250 m beside a real road**
 
 ## Mailuu-Suu road (`mailuu-suu-road`)
 
-22 km, 45% on real roads, highest 1215 m, steepest 500 m 22.6% (ruling 7%)
+23 km, 43% on real roads, highest 1214 m, steepest 500 m 20.0% (ruling 7%)
 - start: Korgoncho 1.4 km / route 0.2 km / real road 0.00 km
 - end: Mailuu-Suu 2.4 km / route 18.0 km / real road 0.40 km
 
