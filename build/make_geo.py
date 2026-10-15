@@ -124,6 +124,10 @@ aspara_e = mask_poly([_aspara + [(73.65, _aspara[-1][1]), (73.65, _aspara[0][1])
 ak_kolot = mask_poly([[(73.9771, 41.7545), (73.9776, 41.7517), (73.9814, 41.7479), (73.989, 41.7446), (74.0043, 41.7412), (74.031, 41.7412), (74.0539, 41.7403), (74.0666, 41.7384), (74.0768, 41.7361), (74.0844, 41.7327), (74.092, 41.727), (74.1002, 41.72), (74.0704, 41.7327), (74.0005, 41.7355), (73.9865, 41.7403)]])
 # on the Kazakh frontier at the Sayramsu crossing the line bends east round the town rather than through it
 sayramsu_bump = mask_poly([[(70.0225, 42.27), (70.0275, 42.2687), (70.0373, 42.2643), (70.0472, 42.2606), (70.0546, 42.2568), (70.0595, 42.253), (70.062, 42.248), (70.0608, 42.243), (70.0584, 42.2405), (70.0373, 42.2401), (70.0324, 42.2386), (70.0262, 42.2364), (70.025, 42.253)]])   # drawn a little wide: the smoothed outline rounds it off
+# Uch-Kurgan: the frontier keeps south of the road from Sadaf-Jar, then follows the Naryn up to the edge of Kum
+_uch = [(71.9986, 41.1786), (71.9992, 41.1774), (72.0038, 41.1756), (72.0078, 41.1732), (72.0084, 41.1707), (72.0084, 41.1459), (72.0098, 41.1434), (72.015, 41.141), (72.0256, 41.138), (72.0348, 41.1355), (72.044, 41.1337), (72.0533, 41.1301), (72.0599, 41.1271), (72.0658, 41.1227), (72.0697, 41.1187), (72.073, 41.1202), (72.0783, 41.1241), (72.0849, 41.1291), (72.0908, 41.1332), (72.0935, 41.136), (72.0941, 41.138), (72.0974, 41.1439), (72.1033, 41.1489), (72.1086, 41.1533), (72.1165, 41.1541), (72.1231, 41.1558), (72.1297, 41.1588), (72.1356, 41.1626), (72.1396, 41.1623), (72.1435, 41.1608), (72.1495, 41.1601), (72.1547, 41.1616), (72.16, 41.1632), (72.166, 41.1652), (72.1692, 41.1632), (72.1719, 41.1588), (72.1732, 41.1538), (72.1745, 41.1494)]
+uch_n = mask_poly([_uch + [(72.1745, 41.2232), (71.9986, 41.2232)]])
+uch_s = mask_poly([_uch + [(72.1745, 41.1043), (71.9986, 41.1043)]])
 
 # ---------- ISEZ ----------
 R = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "data/routes.json")))}
@@ -165,7 +169,7 @@ if _net and os.path.exists(_net):
             if len(pts) > 1: hug |= near_line(pts, 1.5)
 added = hug & ~irad & (GX >= 68.0)
 print("frontier kept off the roads: %.0f km2 added" % float(((STEP * 111.32 * np.cos(np.radians(GY))) * (STEP * 110.57))[added].sum()))
-irad = (irad | added | aspara_w | ak_kolot) & ~sayramsu_bump & ~kandiyon_strip & ~chu_corner & ~kg_valley & ~aspara_e
+irad = (irad | added | aspara_w | ak_kolot | uch_n) & ~uch_s & ~sayramsu_bump & ~kandiyon_strip & ~chu_corner & ~kg_valley & ~aspara_e
 # Talas valley floor, the Taraz plain and the Kara-Buura corridor west to the frontier facing Shymkent
 valley = mask_poly([[(70.05, 42.38), (70.6, 42.46), (71.1, 42.58), (71.6, 42.46), (72.0, 42.36), (72.5, 42.32), (72.95, 42.38), (73.1, 42.55),
                      (73.2, 42.80), (72.6, 42.95), (72.0, 43.15), (71.4, 43.25), (71.1, 43.0), (70.6, 42.88), (70.1, 42.7)]])

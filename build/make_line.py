@@ -474,17 +474,29 @@ near_border = within_km(border_cells, 2.0)
 rivers_all = raster_lines(ways(lambda w: w["k"] == "water:river"))
 near_river = within_km(rivers_all, 0.9)
 near_canal = within_km(canals, 0.9)
+border_d = ndimage.distance_transform_edt(~border_cells) * CELL_KM
 pieces = []
 for r in rings_of(isez):
-    cur = []
-    for x, y in r:
-        j, i = cell(x, y)
-        on_border = near_border[min(max(j, 0), GX.shape[0] - 1), min(max(i, 0), GX.shape[1] - 1)]
-        if on_border:
+    # the line runs right up to the frontier where it meets it: a piece is carried on through the near-border band
+    # until it is within ~0.4 km of the frontier; stretches running along the frontier itself are dropped
+    def bd(q):
+        j, i = cell(*q); return border_d[min(max(j, 0), GX.shape[0] - 1), min(max(i, 0), GX.shape[1] - 1)]
+    near = [bd(q) <= 2.0 for q in r]
+    cur, k = [], 0
+    while k < len(r):
+        if not near[k]:
+            if not cur and k > 0:         # coming off the frontier: start where the outline leaves it
+                b_ = k - 1
+                while b_ > 0 and near[b_] and bd(r[b_]) > 0.4: b_ -= 1
+                cur = [tuple(q) for q in r[b_:k]] if bd(r[b_]) <= 0.4 else []
+            cur.append(tuple(r[k])); k += 1; continue
+        if cur:                           # heading for the frontier: carry on until it is reached
+            e_ = k
+            while e_ < len(r) and near[e_] and bd(r[e_]) > 0.4: e_ += 1
+            if e_ < len(r) and bd(r[e_]) <= 0.4: cur += [tuple(q) for q in r[k:e_ + 1]]
             if len(cur) > 3: pieces.append(cur)
             cur = []
-        else:
-            cur.append((x, y))
+        k += 1
     if len(cur) > 3: pieces.append(cur)
 
 

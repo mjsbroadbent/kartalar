@@ -4297,8 +4297,8 @@
   "kind": "government",
   "city": null,
   "zone": "ISEZ",
-  "lat": 43.58188,
-  "lon": 74.25048,
+  "lat": 43.58218,
+  "lon": 74.25061,
   "elev": 890,
   "confidence": "anchor",
   "note": "\"Grey Fortress\" hardened continuity-of-government site: a walled ~116 ha compound on a spur crest (~890 m) 40 km E of Nurzhan, inside a fenced ~40 km² restricted area along the eastern road-rail corridor; Toktarov residence since 2011, de facto executive seat since 2023; UNMI barred.",
@@ -5597,6 +5597,22 @@
   "elev": null,
   "confidence": "placed",
   "note": "Qara-Chik line crossing on the Arslanbob road (southern sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
+  "wiki": "Qara-Chik Demarcation Line",
+  "auto_crossing": true
+ },
+ {
+  "id": "qarachik-crossing-kök-kamar",
+  "name": "Kök-Kamar crossing",
+  "name_ir": "Kök-Kamar ötkökü",
+  "name_ru": "КПП «Кёк-Камар»",
+  "kind": "checkpoint",
+  "city": null,
+  "zone": "ISEZ",
+  "lat": 41.03184,
+  "lon": 73.01794,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Qara-Chik line crossing on the Kök-Kamar road (southern sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
   "wiki": "Qara-Chik Demarcation Line",
   "auto_crossing": true
  }

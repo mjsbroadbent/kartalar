@@ -31,6 +31,14 @@ for r in routes:
             for p, q in zip(L, L[1:]):
                 x = inter(a, b, p, q)
                 if x: hits.append((x, r, lf["properties"]["sector"]))
+# a line that ends at the frontier right beside a road (the road running along the frontier) is crossed there too
+for lf in line:
+    L = lf["geometry"]["coordinates"]
+    for e in (L[0], L[-1]):
+        for r in routes:
+            if r["kind"] not in ("highway", "road", "railway"): continue
+            c = r["coords"]; d = [km(e, q) for q in c]; k = min(range(len(c)), key=d.__getitem__)
+            if d[k] < 0.6 and not any(km(h[0], c[k]) < 2 for h in hits): hits.append((tuple(c[k]), r, lf["properties"]["sector"]))
 existing = [f for f in F if f["kind"] in ("checkpoint", "border-crossing")]
 added = []
 for x, r, sector in hits:

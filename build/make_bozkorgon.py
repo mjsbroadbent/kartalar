@@ -45,6 +45,9 @@ for rid in ("boz-korgon-branch", "irad-temir-jolu-east-line"):
             corr |= np.hypot((GX - x) * KX, (GY - y) * KY) < 0.6
 zone = ndimage.binary_dilation(spur, iterations=3) | corr          # + ~500 m security strip
 zone = ndimage.binary_fill_holes(ndimage.binary_closing(zone, iterations=8))
+# the 1.2 km Boz-Korgon airstrip north-east of the compound is fenced in with it
+zone |= (GX > 74.2685) & (GX < 74.2915) & (GY > 43.598) & (GY < 43.6125)
+zone = ndimage.binary_fill_holes(zone)
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 
 
@@ -77,7 +80,7 @@ def annex(fence, x0, x1, top):
     return fence
 
 
-fence = annex(fence, 74.2685, 74.2915, 43.6125)   # the 1.2 km Boz-Korgon airstrip
+# (the airstrip is added to the zone mask above)
 # compound: the 120 ha around the crest point, its long axis along the spur (principal axis of the spur near the centre)
 near = spur & (D < 1.5)
 pts = np.column_stack([(GX[near] - cx) * KX, (GY[near] - cy) * KY])
