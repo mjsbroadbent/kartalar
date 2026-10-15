@@ -13,10 +13,12 @@ mkdir -p "$W/ext" "$W/cur" "$ROOT/tiles"
 python3 "$B/make_mask.py" "$W/mask.bin"
 rm -f "$W"/ext/*.ndjson; "$T/extract" "$W/mask.bin" "$W/ext" "$@"
 python3 "$B/curate.py" "$W/ext" "$W/cur"     # FINE_DEM=<make_fine_dem.py output> redraws reservoirs at their surface
+python3 "$B/../real_places.py" "$W/ext"      # the real towns and villages: data/real_places.json
+python3 "$B/../nature.py" "$W/ext" "$W/cur" $FINE_DEM   # named peaks, passes, lakes, rivers and ranges: data/nature.json
 TC="$T/tippecanoe/tippecanoe -q --force -Z3 --drop-densest-as-needed --simplification=4 --no-feature-limit --maximum-tile-bytes=1000000 --read-parallel -A ©OpenStreetMap"
 C="$W/cur"
 $TC -z12 --detect-shared-borders -o "$ROOT/tiles/area.pmtiles" -n "Kartalar areas" $C/water.ndjson $C/landcover.ndjson $C/landuse.ndjson $C/park.ndjson $C/aeroway.ndjson
-$TC -z14 -o "$ROOT/tiles/lines.pmtiles" -n "Kartalar lines" $C/transportation.ndjson $C/waterway.ndjson
+$TC -z14 -o "$ROOT/tiles/lines.pmtiles" -n "Kartalar lines" $C/transportation.ndjson $C/waterway.ndjson $C/waterlabel.ndjson
 $TC -z14 -o "$ROOT/tiles/detail.pmtiles" -n "Kartalar detail" $C/building.ndjson $C/city.ndjson
 if [ -n "$DEM" ]; then python3 "$B/make_dem.py" "$DEM" "$ROOT/tiles"; fi
 ls -la "$ROOT/tiles"

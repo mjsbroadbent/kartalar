@@ -13,6 +13,8 @@ import json, math, os, sys, glob
 import numpy as np
 from matplotlib.path import Path
 from scipy.spatial import cKDTree
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from translit import nature_name   # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC, OUT = sys.argv[1], sys.argv[2]
@@ -114,6 +116,66 @@ def prune_orphans(feats, route_d, count):
         if near_route and L < 3 and not any(con) and not all(onr): count("transportation orphan"); continue
         if near_route and L < 5 and ((onr[0] and not con[1] and not onr[1]) or (onr[1] and not con[0] and not onr[0])): count("transportation spur"); continue
         keep.append(f)
+    return keep
+
+
+def label_line(c, tol_km=0.12):
+    """a river's course with the meanders taken out (Douglas-Peucker, then Chaikin corner cutting), for its name to follow"""
+    P = np.array(c, float)
+    if len(P) < 2: return None
+    kx = 111.32 * math.cos(math.radians(P[:, 1].mean()))
+    Q = P * [kx, KY]
+    keep = np.zeros(len(Q), bool); keep[[0, -1]] = True; stack = [(0, len(Q) - 1)]
+    while stack:
+        i, j = stack.pop()
+        if j <= i + 1: continue
+        a, b = Q[i], Q[j]; ab = b - a; L = np.hypot(*ab)
+        seg = Q[i + 1:j]
+        d = np.abs(ab[0] * (seg[:, 1] - a[1]) - ab[1] * (seg[:, 0] - a[0])) / L if L > 0 else np.hypot(*(seg - a).T)
+        k = int(np.argmax(d))
+        if d[k] > tol_km: keep[i + 1 + k] = True; stack += [(i, i + 1 + k), (i + 1 + k, j)]
+    R = P[keep]
+    for _ in range(2):
+        if len(R) < 3: break
+        R = np.vstack([R[:1]] + [np.array([0.75 * a + 0.25 * b, 0.25 * a + 0.75 * b]) for a, b in zip(R, R[1:])] + [R[-1:]])
+    if np.hypot(*((R[-1] - R[0]) * [kx, KY])) < 0.5 and len(R) < 4: return None
+    return [[round(x, 5), round(y, 5)] for x, y in R]
+
+
+def merge_named(feats, count):
+    """join the OSM pieces of a named river end to end, so its name has room to be drawn along it"""
+    keep, groups = [], {}
+    for f in feats:
+        pr = f["properties"]
+        if pr.get("name") and pr.get("class") in ("river", "canal", "stream") and not pr.get("brunnel"): groups.setdefault((pr["class"], pr["name"]), []).append(f)
+        else: keep.append(f)
+    for (cls, nm), fs in groups.items():
+        lines = [list(map(tuple, c)) for f in fs for c in lines_of(f["geometry"])]
+        mz = min(f["tippecanoe"]["minzoom"] for f in fs)
+        k = lambda p: (round(p[0], 6), round(p[1], 6))
+        ends = {}
+        for i, c in enumerate(lines):
+            ends.setdefault(k(c[0]), []).append(i); ends.setdefault(k(c[-1]), []).append(i)
+        used = [False] * len(lines)
+        def take(i, at):          # line i, oriented to start at point key `at`
+            c = lines[i]; used[i] = True
+            return c if k(c[0]) == at else c[::-1]
+        out = []
+        for i in range(len(lines)):
+            if used[i]: continue
+            chain = take(i, k(lines[i][0]))
+            for direction in (1, 0):
+                while True:
+                    e = k(chain[-1])
+                    nxt = [j for j in ends.get(e, []) if not used[j]]
+                    if len(ends.get(e, [])) != 2 or not nxt: break     # stop at forks and confluences
+                    chain = chain + take(nxt[0], e)[1:]
+                chain = chain[::-1]
+            out.append(chain)
+        count("waterway named pieces merged", len(lines) - len(out))
+        for c in out:
+            keep.append({"type": "Feature", "tippecanoe": {"layer": "waterway", "minzoom": mz}, "properties": {"class": cls, "name": nm},
+                         "geometry": {"type": "LineString", "coordinates": [list(p) for p in c]}})
     return keep
 
 
@@ -291,7 +353,7 @@ def main():
         return m
 
     stats = {}
-    def count(k): stats[k] = stats.get(k, 0) + 1
+    def count(k, n=1): stats[k] = stats.get(k, 0) + n
 
     lake_fix = lake_levels()
     for layer in ["transportation", "waterway", "water", "landcover", "landuse", "park", "building", "aeroway"]:
@@ -302,6 +364,10 @@ def main():
                 g2 = lake_fix(g)
                 if g2 is None: count("water duplicate dropped"); continue
                 if g2 is not g: f["geometry"] = g = g2; count("water redrawn at its surface")
+            if layer in ("waterway", "water") or (layer == "landcover" and cls == "ice"):
+                nm = nature_name(f["properties"])
+                f["properties"] = {k: v for k, v in f["properties"].items() if not k.startswith("name")}
+                if nm: f["properties"]["name"] = nm
             if g["type"] in ("Polygon", "MultiPolygon"):
                 pts = np.array(first_ring_pts(g)); c0 = pts.mean(0)[None]
                 if layer != "water" and layer != "landcover" and in_city(c0)[0]: count(layer + " in city"); continue
@@ -337,6 +403,14 @@ def main():
             f["properties"] = props
             out.append(f)
         if layer == "transportation": out = prune_orphans(out, route_d, count)
+        if layer == "waterway":
+            out = merge_named(out, count)
+            with open(os.path.join(OUT, "waterlabel.ndjson"), "w") as fo:      # smoothed copies of the named rivers to hang their names on
+                for f in out:
+                    if f["properties"].get("name") and f["geometry"]["type"] == "LineString" and len(f["geometry"]["coordinates"]) > 3:
+                        c = label_line(f["geometry"]["coordinates"])
+                        if c: fo.write(json.dumps({"type": "Feature", "tippecanoe": {"layer": "waterlabel", "minzoom": max(8, f["tippecanoe"]["minzoom"])},
+                                                   "properties": f["properties"], "geometry": {"type": "LineString", "coordinates": c}}, separators=(",", ":"), ensure_ascii=False) + "\n")
         with open(os.path.join(OUT, layer + ".ndjson"), "w") as fo:
             for f in out: fo.write(json.dumps(f, separators=(",", ":")) + "\n")
         print(f"  {layer}: {len(out)}")

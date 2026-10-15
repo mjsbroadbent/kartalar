@@ -42,6 +42,18 @@ static bool is(const char* a, const char* b) { return std::strcmp(a, b) == 0; }
 
 struct Bounds { double x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; int n = 0, inmask = 0; };
 
+static std::string names(const osmium::TagList& t) {
+    std::string out;
+    for (const char* k : {"name", "name:en", "name:ru", "name:ky", "name:kk", "name:uz"}) {
+        const char* v = t.get_value_by_key(k);
+        if (!v || !*v) continue;
+        std::string key = k; for (auto& ch : key) if (ch == ':') ch = '_';
+        std::string e; for (const char* c = v; *c; c++) { if (*c == '"' || *c == '\\') e += '\\'; e += *c; }
+        out += ",\"" + key + "\":\"" + e + "\"";
+    }
+    return out;
+}
+
 class Handler : public osmium::handler::Handler {
 public:
     osmium::geom::GeoJSONFactory<> fac{6};
@@ -61,7 +73,16 @@ public:
 
     void node(const osmium::Node& n) {     // places, for checking the real towns against the lore (not tiled)
         const char* pl = tag(n.tags(), "place");
-        if (!(is(pl, "city") || is(pl, "town") || is(pl, "village") || is(pl, "hamlet"))) return;
+        const char* nat = tag(n.tags(), "natural");
+        std::string kind = pl;
+        if (is(nat, "peak") || is(nat, "volcano")) kind = "peak";
+        else if (is(tag(n.tags(), "mountain_pass"), "yes") || is(nat, "saddle")) kind = "pass";
+        else if (is(nat, "spring")) kind = "spring";
+        else if (is(nat, "glacier")) kind = "glacier";
+        else if (is(pl, "locality") && *tag(n.tags(), "name")) kind = "locality";
+        else if (!(is(pl, "city") || is(pl, "town") || is(pl, "village") || is(pl, "hamlet"))) return;
+        if (kind != pl && !*tag(n.tags(), "name")) return;      // unnamed peaks and passes are no use for labels
+        pl = kind.c_str();
         double x = n.location().lon(), y = n.location().lat();
         if (x < W || x > E || y < S || y > N) return;
         auto esc = [](const char* v) { std::string o; for (const char* c = v; *c; c++) { if (*c == '"' || *c == '\\') o += '\\'; o += *c; } return o; };
@@ -71,7 +92,7 @@ public:
             const char* v = tag(n.tags(), k);
             if (*v) { std::string key = k; for (auto& ch : key) if (ch == ':') ch = '_'; props += ",\"" + key + "\":\"" + esc(v) + "\""; }
         }
-        props += ",\"population\":\"" + std::string(tag(n.tags(), "population")).substr(0, 10) + "\",\"id\":" + std::to_string(n.id());
+        props += ",\"population\":\"" + std::string(tag(n.tags(), "population")).substr(0, 10) + "\",\"ele\":\"" + std::string(tag(n.tags(), "ele")).substr(0, 8) + "\",\"id\":" + std::to_string(n.id());
         emit("places", props, buf, 0);
     }
 
@@ -112,6 +133,7 @@ public:
         }
         if (detail && b.inmask == 0) return;
         std::string props = "\"class\":\"" + cls + "\",\"id\":" + std::to_string(w.id());
+        if (layer == "waterway" && (cls == "river" || cls == "canal" || cls == "stream")) props += names(t);
         if (is(tag(t, "bridge"), "yes")) props += ",\"brunnel\":\"bridge\"";
         else if (is(tag(t, "tunnel"), "yes") || is(tag(t, "tunnel"), "culvert")) props += ",\"brunnel\":\"tunnel\"";
         if (is(tag(t, "intermittent"), "yes")) props += ",\"intermittent\":1";
@@ -146,6 +168,7 @@ public:
         if (!in_box(b)) return;
         if (detail && b.inmask == 0) return;
         std::string props = "\"class\":\"" + cls + "\"";
+        if (layer == "water" || (layer == "landcover" && cls == "ice")) props += names(t);
         if (layer == "building") { const char* lv = tag(t, "building:levels"); if (*lv) props += ",\"levels\":\"" + std::string(lv).substr(0, 4) + "\""; }
         try { emit(layer, props, fac.create_multipolygon(a), mz); seen_areas.insert(a.id()); } catch (...) {}
     }

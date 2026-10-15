@@ -115,7 +115,7 @@
   const GROUP = {
     worship: ["church", "mosque", "mazar"], civic: ["government", "university", "school", "hospital", "museum", "un"],
     leisure: ["stadium", "hippodrome", "market"], transport: ["airport", "station", "bus-station", "border-crossing", "checkpoint", "terminal"],
-    industry: ["dam", "power", "mine", "industry", "oilfield"], nature: ["peak", "pass", "lake", "reservoir", "river-point", "spring", "park"],
+    industry: ["dam", "power", "mine", "industry", "oilfield"], nature: ["peak", "pass", "lake", "reservoir", "river-point", "spring", "park", "river", "canal", "glacier", "range", "valley", "desert"],
     heritage: ["ruins", "heritage", "landmark"], military: ["military"]
   };
   const GCOL = { worship: "#7b5ea7", civic: "#3f6fb0", leisure: "#e07b39", transport: "#1f8a9a", industry: "#6f6f6f", nature: "#3d8b4f", heritage: "#b0583a", military: "#8b2e2e", other: "#8a8a8a" };
@@ -126,12 +126,13 @@
   function fc(features) { return { type: "FeatureCollection", features }; }
   function pointFeat(p, extra) { return { type: "Feature", id: undefined, geometry: { type: "Point", coordinates: [p.lon, p.lat] }, properties: Object.assign({ id: p.id, label: nameOf(p), kind: p.kind }, extra) }; }
 
-  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson"), get("data/real_places.json").catch(() => [])])
-    .then(([pl, fe, ro, ir, zo, di, qc, rz, rp]) => {
+  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson"), get("data/real_places.json").catch(() => []), get("data/nature.json").catch(() => [])])
+    .then(([pl, fe, ro, ir, zo, di, qc, rz, rp, na]) => {
       D.line = qc; D.rwz = rz;
       pl = pl.concat(rp);      // the real towns and villages (build/real_places.py) after the lore's own places
       D.places = pl; D.feats = fe; D.routes = ro; D.irad = ir; D.zones = zo; D.districts = di;
-      D.all = pl.map(p => Object.assign({ _t: "place" }, p)).concat(fe.map(f => Object.assign({ _t: "feat" }, f)));
+      D.nature = na;       // named peaks, passes, lakes, rivers and ranges (build/nature.py)
+      D.all = pl.map(p => Object.assign({ _t: "place" }, p)).concat(fe.map(f => Object.assign({ _t: "feat" }, f)), na.map(f => Object.assign({ _t: "feat" }, f)));
       D.byId = Object.fromEntries(D.all.map(p => [p.id, p]));
       dataReady = true; maybeAdd();
     });
@@ -140,6 +141,15 @@
   function maybeAdd() { if (dataReady && styleReady && !added) { added = true; addOverlay(); } }
 
   function addOverlay() {
+    // little map symbols drawn here, so no icon font or sprite sheet is needed: a peak triangle and a pass mark
+    const sym = (name, draw) => {
+      if (map.hasImage(name)) return;
+      const r = window.devicePixelRatio > 1 ? 2 : 1, n = 12 * r, cv = document.createElement("canvas"); cv.width = cv.height = n;
+      const g = cv.getContext("2d"); g.scale(r, r); draw(g); map.addImage(name, g.getImageData(0, 0, n, n), { pixelRatio: r });
+    };
+    sym("kt-peak", g => { g.beginPath(); g.moveTo(6, 1.5); g.lineTo(11, 10.5); g.lineTo(1, 10.5); g.closePath(); g.fillStyle = "#7a6248"; g.fill(); g.strokeStyle = "#fff"; g.lineWidth = 1; g.stroke(); });
+    sym("kt-pass", g => { g.strokeStyle = "#fff"; g.lineWidth = 3; g.beginPath(); g.moveTo(2, 3); g.quadraticCurveTo(6, 7, 2, 11); g.moveTo(10, 3); g.quadraticCurveTo(6, 7, 10, 11); g.stroke();
+      g.strokeStyle = "#7a6248"; g.lineWidth = 1.6; g.stroke(); });
     // grey wash over the neighbours: a world box with Irad cut out
     const holes = [];
     D.irad.features[0].geometry.coordinates.forEach(poly => holes.push(poly[0]));
@@ -153,6 +163,8 @@
     const bk = D.byId["boz-korgon"];
     map.addSource("restricted", { type: "geojson", data: "data/boz_korgon.geojson" });
     map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: (PLACE_RANK[p.kind] || 6) + (p.confidence === "osm" ? 0.5 : 0), pop: p.pop || 0 }))) });
+    map.addSource("nature", { type: "geojson", data: fc(D.nature.filter(f => !f.line && !["river", "canal"].includes(f.kind)).map(f => pointFeat(f, { elev: f.elev ? f.elev.toLocaleString("en-GB") + " m" : "", area: f.area || 0, big: (f.area || 0) >= 3 ? 1 : 0 }))) });
+    map.addSource("landforms", { type: "geojson", data: fc(D.nature.filter(f => f.line).map(f => ({ type: "Feature", properties: { id: f.id, kind: f.kind, label: nameOf(f) }, geometry: { type: "LineString", coordinates: f.line } }))) });
     map.addSource("feats", { type: "geojson", data: fc(D.feats.map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "" }))) });
     map.addSource("neighbours", { type: "geojson", data: fc([
       ["Kazakhstan", "Kazakstan", "Казахстан", 75.9, 44.9], ["Kazakhstan", "Kazakstan", "Казахстан", 67.2, 45.6], ["Kyrgyzstan", "Kırgızstan", "Киргизия", 75.4, 41.95],
@@ -195,16 +207,38 @@
       { id: "district-label", type: "symbol", source: "places", minzoom: 7, maxzoom: 10.5, filter: ["==", ["get", "kind"], "district"],
         layout: { "text-field": ["upcase", ["get", "label"]], "text-font": textFont("i"), "text-size": 12, "text-letter-spacing": 0.15, "text-max-width": 8 },
         paint: { "text-color": "#8a7f6c", "text-halo-color": C.halo, "text-halo-width": 1.2 }, _g: "zones" },
+      // nature: ranges, valleys and deserts along their axes, river names along the rivers, then peaks, passes and lakes
+      { id: "landform-label", type: "symbol", source: "landforms", minzoom: 6, maxzoom: 11,
+        layout: { "symbol-placement": "line-center", "text-field": ["upcase", ["get", "label"]], "text-font": textFont("i"), "text-size": ["interpolate", ["linear"], ["zoom"], 6, 10, 9, 13],
+          "text-letter-spacing": ["match", ["get", "kind"], "range", 0.45, 0.3], "text-max-angle": 45, "text-keep-upright": true, "text-allow-overlap": false, "text-padding": 0 },
+        paint: { "text-color": ["match", ["get", "kind"], "range", "#8a6a48", "desert", "#a08350", "#5f8a5a"], "text-halo-color": C.halo, "text-halo-width": 1.2,
+          "text-opacity": ["interpolate", ["linear"], ["zoom"], 9.5, 1, 11, 0] }, _g: "poi" },
+      ...[["river-label", 9, ["river", "canal"]], ["stream-label", 12.5, ["stream"]]].map(([id, mz, cls]) => (
+        { id, type: "symbol", source: "lines", "source-layer": "waterlabel", minzoom: mz, filter: ["all", ["has", "name"], ["in", ["get", "class"], ["literal", cls]]],
+          layout: { "symbol-placement": "line", "text-field": ["get", "name"], "text-font": textFont("i"), "text-size": ["interpolate", ["linear"], ["zoom"], 9, 10.5, 14, 13], "symbol-spacing": 450, "text-max-angle": 35, "text-letter-spacing": 0.05 },
+          paint: { "text-color": "#3f78a8", "text-halo-color": C.halo, "text-halo-width": 1.3 }, _g: "poi" })),
+      ...[["nature-big", 7.5, ["==", ["get", "big"], 1]], ["nature-osm-label", 10.5, ["==", ["get", "kind"], "peak"]], ["nature-pass", 11.5, ["==", ["get", "kind"], "pass"]],
+          ["nature-small", 11, ["all", ["==", ["get", "big"], 0], ["!", ["in", ["get", "kind"], ["literal", ["peak", "pass"]]]]]]].map(([id, mz, filter]) => (
+        { id, type: "symbol", source: "nature", minzoom: mz, filter,
+          layout: { "icon-image": ["match", ["get", "kind"], "peak", "kt-peak", "pass", "kt-pass", ""],
+            "text-field": ["step", ["zoom"], ["get", "label"], 11.5, ["format", ["get", "label"], {}, ["case", ["!=", ["get", "elev"], ""], "\n", ""], {}, ["get", "elev"], { "font-scale": 0.85 }]],
+            "text-font": textFont("i"), "text-size": ["case", ["==", ["get", "big"], 1], 12, 10.5], "text-max-width": 8,
+            "text-anchor": ["match", ["get", "kind"], "peak", "top", "pass", "top", "center"], "text-offset": ["match", ["get", "kind"], "peak", ["literal", [0, 0.6]], "pass", ["literal", [0, 0.6]], ["literal", [0, 0]]],
+            "symbol-sort-key": ["-", 0, ["get", "area"]] },
+          paint: { "text-color": ["match", ["get", "kind"], "lake", "#3f78a8", "reservoir", "#3f78a8", "glacier", "#5a8fb0", "#6b5a44"], "text-halo-color": C.halo, "text-halo-width": 1.3 }, _g: "poi" })),
       // places of interest
       { id: "poi-dot", type: "circle", source: "feats", minzoom: 9,
         filter: POI_FILTER,
         paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6], "circle-color": ["match", ["get", "g"], ...Object.entries(GCOL).flat(), "#8a8a8a"],
           "circle-stroke-color": "#ffffff", "circle-stroke-width": 1.5, "circle-opacity": ["interpolate", ["linear"], ["zoom"], 9, ["case", ["==", ["get", "g"], "nature"], 1, 0], 11, 1] }, _g: "poi" },
       { id: "poi-label", type: "symbol", source: "feats", minzoom: 11,
-        layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": 11.5, "text-offset": [0, 0.9], "text-anchor": "top", "text-max-width": 9, "text-optional": true },
+        layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": 11.5, "text-offset": [0, 0.9], "text-anchor": "top", "text-max-width": 9, "text-optional": true,
+          "symbol-sort-key": ["match", ["get", "kind"], ["peak", "pass", "lake", "reservoir"], 0, 1] },
         paint: { "text-color": ["match", ["get", "g"], ...Object.entries(GCOL).flat(), "#555"], "text-halo-color": C.halo, "text-halo-width": 1.5 }, _g: "poi" },
       { id: "nature-label", type: "symbol", source: "feats", minzoom: 8, maxzoom: 11, filter: ["in", ["get", "kind"], ["literal", ["peak", "pass", "lake", "reservoir", "park"]]],
-        layout: { "text-field": ["case", ["==", ["get", "kind"], "peak"], ["concat", "▲ ", ["get", "label"]], ["get", "label"]], "text-font": textFont("i"), "text-size": 11, "text-max-width": 8 },
+        layout: { "text-field": ["get", "label"], "text-font": textFont("i"), "text-size": 11, "text-max-width": 8,
+          "icon-image": ["match", ["get", "kind"], "peak", "kt-peak", "pass", "kt-pass", ""], "text-anchor": ["match", ["get", "kind"], "peak", "top", "pass", "top", "center"],
+          "text-offset": ["match", ["get", "kind"], "peak", ["literal", [0, 0.6]], "pass", ["literal", [0, 0.6]], ["literal", [0, 0]]] },
         paint: { "text-color": "#4b7a55", "text-halo-color": C.halo, "text-halo-width": 1.4 }, _g: "poi" },
       { id: "restricted-label", type: "symbol", source: "restricted", minzoom: 9, filter: ["==", ["get", "kind"], "label"], layout: { "text-field": t("restricted"), "text-font": textFont("b"), "text-size": 11 }, paint: { "text-color": "#9b2c2c", "text-halo-color": C.halo, "text-halo-width": 1.5 } },
       // settlements
@@ -224,7 +258,9 @@
         paint: { "text-color": "#7b7468", "text-halo-color": C.halo, "text-halo-width": 1.5 } },
       { id: "place-label", type: "symbol", source: "places", filter: ["in", ["get", "kind"], ["literal", ["capital", "city", "town", "village"]]],
         layout: {
-          "text-field": ["get", "label"], "text-font": ["case", ["in", ["get", "kind"], ["literal", ["capital", "city"]]], ["literal", textFont("b")], ["literal", textFont("r")]],
+          // hidden labels get no text at all, so they do not keep other labels (ranges, rivers) off the map
+          "text-field": ["step", ["zoom"], ["match", ["get", "kind"], ["village", "town"], "", ["get", "label"]], 6.75, ["match", ["get", "kind"], "village", "", ["get", "label"]], 8.6, ["get", "label"]],
+          "text-font": ["case", ["in", ["get", "kind"], ["literal", ["capital", "city"]]], ["literal", textFont("b")], ["literal", textFont("r")]],
           "text-size": ["interpolate", ["linear"], ["zoom"], 5, ["match", ["get", "kind"], "capital", 15, "city", 13, "town", 11, 10], 12, ["match", ["get", "kind"], "capital", 22, "city", 20, "town", 15, 13]],
           "text-variable-anchor": ["left", "right", "top", "bottom"], "text-radial-offset": 0.6, "text-justify": "auto", "text-max-width": 9,
           "symbol-sort-key": ["get", "rank"]
@@ -371,7 +407,8 @@
   const ZOOM = { capital: 11, city: 11.5, town: 12.5, village: 13.5, suburb: 14, quarter: 14, neighbourhood: 14.5, district: 8.5, "zone-area": 7 };
   const wikiUrl = title => "https://irad.wiki/#" + encodeURIComponent(title.replace(/\s+/g, "_"));
   function openPlace(p, fly) {
-    if (fly) map.flyTo({ center: [p.lon, p.lat], zoom: p._t === "place" ? (ZOOM[p.kind] || 13) : (["peak", "pass", "lake", "reservoir", "park"].includes(p.kind) ? 11.5 : 15), speed: 1.6, essential: true });
+    if (fly && p.bbox) map.fitBounds([[p.bbox[0], p.bbox[1]], [p.bbox[2], p.bbox[3]]], { padding: 60, maxZoom: 11, speed: 1.6, essential: true });
+    else if (fly) map.flyTo({ center: [p.lon, p.lat], zoom: p._t === "place" ? (ZOOM[p.kind] || 13) : (["peak", "pass", "lake", "reservoir", "park", "glacier"].includes(p.kind) ? (p.area > 20 ? 9.5 : 11.5) : 15), speed: 1.6, essential: true });
     const others = [p.name, p.name_en, p.name_ir, p.name_ru].filter((n, i, a) => n && n !== nameOf(p) && a.indexOf(n) === i);
     const zone = p.zone === "ISEZ" ? t("isez") : p.zone === "ATR" ? t("atr") : "";
     const where = p._t === "place" ? (p.kind === "district" ? zone : [p.district && p.district !== p.name ? locName(p.district) : "", zone].filter(Boolean).join(" · "))
@@ -379,9 +416,12 @@
     const facts = [];
     if (p.pop) facts.push([t("population"), Number(p.pop).toLocaleString(LANG === "ru" ? "ru-RU" : "en-GB")]);
     if (p.elev) facts.push([t("elevation"), Number(p.elev).toLocaleString("en-GB") + " m"]);
+    if (p.length) facts.push([t("length"), p.length.toLocaleString("en-GB") + " km" + (p.kind === "river" || p.kind === "canal" ? " " + t("inIrad") : "")]);
+    if (p.area) facts.push([t("area"), (p.area < 10 ? p.area.toFixed(1) : Math.round(p.area)) + " km²"]);
     facts.push([t("coords"), `${p.lat.toFixed(4)}°N, ${p.lon.toFixed(4)}°E`]);
     let extra = "";
     if (p.id === "boz-korgon") extra = `<p class="warn">⚠ ${esc(t("restrictedText"))}</p>`;
+    else if (p.desc) extra = `<p class="info">${esc(p.desc)}</p>`;
     else if (p.zone === "ATR") extra = `<p class="info">${esc(t("atrText"))}</p>`;
     $("#cardBody").innerHTML = `<div class="c-kind" style="color:${dotColor(p)}">${kindIcon(p)} ${esc(kindLabel(p))}</div>
       <h2>${esc(nameOf(p))}</h2>${others.length ? `<p class="c-alt">${others.map(esc).join(" · ")}</p>` : ""}
@@ -437,7 +477,7 @@
   }
 
   /* ---------- map clicks ---------- */
-  const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "quarter-label", "district-label", "zone-area-label"];
+  const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "nature-big", "nature-osm-label", "nature-pass", "nature-small", "landform-label", "quarter-label", "district-label", "zone-area-label"];
   function openLine(f, ll) {
     const p = f.properties;
     if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });

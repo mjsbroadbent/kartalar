@@ -27,38 +27,7 @@ RENAME = {
                        "core. Gives its name to the Aulie-Ata cattle of the Talas valley."),
 }
 
-CYR = {"а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo", "ж": "j", "з": "z", "и": "i", "й": "y", "к": "k",
-       "л": "l", "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u", "ф": "f", "х": "kh", "ц": "ts",
-       "ч": "ch", "ш": "sh", "щ": "shch", "ъ": "", "ы": "y", "ь": "", "э": "e", "ю": "yu", "я": "ya",
-       # Kyrgyz and Kazakh letters
-       "ө": "ö", "ү": "ü", "ң": "ng", "қ": "k", "ғ": "g", "ұ": "u", "і": "i", "ә": "a", "һ": "h"}
-DROP_WORDS = {"ауылы", "аулы", "ауыл", "село", "селосу", "айылы", "кишлак", "qishlog'i", "qishlogi", "posyolok", "поселок", "посёлок",
-              "имени", "станция", "разъезд"}
-
-
-def latin(s):
-    """a native-script place name in Irad's Latin spelling"""
-    if not s: return ""
-    words = [w for w in re.split(r"(\s+)", s.strip()) if w.lower().strip() not in DROP_WORDS]
-    s = "".join(words).strip()
-    if re.search(r"[Ѐ-ӿ]", s):
-        out = []
-        for i, ch in enumerate(s):
-            lo = ch.lower(); t = CYR.get(lo)
-            if t is None: out.append(ch); continue
-            if lo == "е" and (i == 0 or s[i - 1] in " -"): t = "e"
-            out.append(t.capitalize() if ch != lo else t)
-        s = "".join(out)
-    else:   # Uzbek Latin and the Turkish-style spellings in OSM
-        s = (s.replace("o‘", "o").replace("g‘", "g").replace("oʻ", "o").replace("gʻ", "g").replace("O‘", "O").replace("Oʻ", "O")
-             .replace("G‘", "G").replace("Gʻ", "G").replace("'", "").replace("’", "").replace("ʼ", "")
-             .replace("ş", "sh").replace("Ş", "Sh").replace("ç", "ch").replace("Ç", "Ch").replace("ı", "y").replace("ğ", "g"))
-        s = re.sub(r"(?<![sScC])h", "h", s)
-        s = s.replace("x", "kh").replace("X", "Kh").replace("q", "k").replace("Q", "K")
-    s = s.replace("ngg", "ng").replace("Ngg", "Ng")
-    s = re.sub(r"\s+", " ", s).strip(" -")
-    s = "-".join(w[:1].upper() + w[1:] for w in s.split("-"))
-    return " ".join(w[:1].upper() + w[1:] for w in s.split(" "))
+from translit import CYR, DROP_WORDS, latin   # noqa: E402
 
 
 SOVIET = ("Кирова", "Киров", "Фрунзе", "Тельман", "Гагарин", "Панфилов", "Калинин", "Чапаев", "Ленин", "Свердлов", "Жамбыл", "Абай", "Абая")
@@ -118,6 +87,7 @@ def main():
     out, seen, dropped = [], [], {"lore place": 0, "city plan": 0, "duplicate": 0, "no name": 0}
     for line in open(os.path.join(EXT, "places.ndjson")):
         f = json.loads(line); pr = f["properties"]; x, y = f["geometry"]["coordinates"]
+        if pr["place"] not in ("city", "town", "village", "hamlet"): continue      # peaks, passes and localities are build/nature.py's
         native = pr.get("name") or pr.get("name_ky") or pr.get("name_kk") or pr.get("name_uz") or pr.get("name_ru")
         if not native: dropped["no name"] += 1; continue
         if re.search(r"\d|разъезд|айрығы|станция|пионерлагер|демалыс|зона отдыха|санатори|шипажай|кордон|подхоз|ПМК|лагерь", native + " " + (pr.get("name_ru") or ""), re.I):
