@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kartalar terrain export</title>
+  <style>
+    :root { --green: #1f7a2e; }
+    body { margin: 0; font: 15px/1.5 "Segoe UI", system-ui, sans-serif; background: #f4f3ef; color: #202124; }
+    main { max-width: 680px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    p { margin: 0 0 12px; color: #444; }
+    .box { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 11px 18px; background: var(--green); color: #fff; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: default; }
+    label { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+    progress { width: 100%; height: 14px; margin: 14px 0 6px; }
+    #log { font: 12.5px/1.5 ui-monospace, Consolas, monospace; background: #f6f6f4; border-radius: 8px; padding: 10px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; margin-top: 10px; }
+    #out a { display: block; margin-top: 10px; font-weight: 600; color: var(--green); }
+    small { color: #666; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Terrain export for Kartalar</h1>
+  <p>Downloads elevation tiles (Mapzen Terrarium, hosted on AWS) for Irad and its borderlands, 67.5–75.5° E, 40.2–46.5° N, and packs them into one file, <b>kartalar-terrain.bin</b>. Kartalar turns it into its own hill shading. Save the file to your Downloads folder.</p>
+  <div class="box">
+    <label><input type="radio" name="z" value="11" checked> Detailed, zoom 11 <small>(2,300 tiles, about 150–250 MB, 5–15 minutes)</small></label>
+    <label><input type="radio" name="z" value="10"> Lighter, zoom 10 <small>(575 tiles, about 40–60 MB)</small></label>
+    <button id="go">Start download</button>
+    <progress id="prog" value="0" max="1" hidden></progress>
+    <div id="status"></div>
+    <div id="out"></div>
+    <div id="log"></div>
+  </div>
+</main>
+<script>
+(function () {
+  const W = 67.5, E = 75.5, S = 40.2, N = 46.5;
+  const URL_ = (z, x, y) => `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
+  const $ = id => document.getElementById(id);
+  const log = s => { $("log").textContent += s + "\n"; $("log").scrollTop = 1e9; };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const tx = (lon, z) => Math.floor((lon + 180) / 360 * 2 ** z);
+  const ty = (lat, z) => { const r = lat * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * 2 ** z); };
+
+  async function get(z, x, y) {
+    for (let a = 0; a < 6; a++) {
+      try {
+        const r = await fetch(URL_(z, x, y));
+        if (r.status === 404) return null;
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return new Uint8Array(await r.arrayBuffer());
+      } catch (e) { log(`  ${z}/${x}/${y}: ${e.message}, retrying`); await sleep(2000 + a * 2000); }
+    }
+    throw new Error(`tile ${z}/${x}/${y} failed`);
+  }
+
+  $("go").addEventListener("click", async () => {
+    $("go").disabled = true; $("out").innerHTML = ""; $("log").textContent = "";
+    const z = +document.querySelector('input[name="z"]:checked').value;
+    const jobs = [];
+    for (let x = tx(W, z); x <= tx(E, z); x++) for (let y = ty(N, z); y <= ty(S, z); y++) jobs.push([x, y]);
+    $("prog").hidden = false; $("prog").max = jobs.length; $("prog").value = 0;
+    // file: "KTTILES1", then per tile: z u8, x u16, y u16, length u32, PNG bytes (little-endian)
+    const parts = [new TextEncoder().encode("KTTILES1")];
+    let done = 0, bytes = 0, failed = 0, next = 0;
+    async function worker() {
+      while (next < jobs.length) {
+        const [x, y] = jobs[next++];
+        try {
+          const png = await get(z, x, y);
+          if (png) {
+            const h = new DataView(new ArrayBuffer(9));
+            h.setUint8(0, z); h.setUint16(1, x, true); h.setUint16(3, y, true); h.setUint32(5, png.length, true);
+            parts.push(new Uint8Array(h.buffer), png); bytes += png.length;
+          }
+        } catch (e) { failed++; log("FAILED " + e.message); }
+        done++; $("prog").value = done;
+        $("status").textContent = `${done} of ${jobs.length} tiles · ${(bytes / 1048576).toFixed(0)} MB`;
+      }
+    }
+    await Promise.all(Array.from({ length: 6 }, worker));
+    const blob = new Blob(parts, { type: "application/octet-stream" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "kartalar-terrain.bin";
+    a.textContent = `Save kartalar-terrain.bin (${(blob.size / 1048576).toFixed(0)} MB${failed ? `, ${failed} tile(s) failed` : ""})`;
+    $("out").appendChild(a); a.click();
+    $("status").textContent = failed ? `Done, but ${failed} tile(s) failed; save the file anyway.` : "Done. Save the file (or click the link above).";
+    $("go").disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
