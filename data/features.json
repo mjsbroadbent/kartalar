@@ -4307,7 +4307,7 @@
   "lon": 74.25086,
   "elev": 890,
   "confidence": "anchor",
-  "note": "\"Grey Fortress\" hardened continuity-of-government site: a walled ~116 ha compound on a spur crest (~890 m) 40 km E of Nurzhan, inside a fenced ~40 km² restricted area along the eastern road-rail corridor; Toktarov residence since 2011, de facto executive seat since 2023; UNMI barred.",
+  "note": "\"Grey Fortress\" hardened continuity-of-government site: a walled ~116 ha compound on a spur crest (~890 m) 40 km E of Nurzhan, inside a fenced ~42 km² restricted area along the eastern road-rail corridor; Toktarov residence since 2011, de facto executive seat since 2023; UNMI barred.",
   "wiki": "Boz-Korgon"
  },
  {
@@ -5954,8 +5954,8 @@
   "kind": "border-crossing",
   "city": null,
   "zone": "ATR",
-  "lat": 44.20985,
-  "lon": 67.99595,
+  "lat": 41.14071,
+  "lon": 71.24771,
   "elev": null,
   "confidence": "placed",
   "note": "Minor tribal crossing on a village road about 3 km south-south-east of Karakurgan, above Chust; no fixed post; villagers and herders.",
