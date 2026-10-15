@@ -55,8 +55,8 @@
   "kind": "town",
   "zone": "ISEZ",
   "district": "Chu",
-  "lat": 43.58088,
-  "lon": 74.25014,
+  "lat": 43.58108,
+  "lon": 74.2502,
   "pop": null,
   "elev": 890,
   "confidence": "anchor",
@@ -472,7 +472,7 @@
   "zone": "ATR",
   "district": "Talas Alatau",
   "lat": 42.295,
-  "lon": 71.416,
+  "lon": 71.424,
   "pop": null,
   "elev": null,
   "confidence": "placed",
@@ -556,7 +556,7 @@
   "pop": null,
   "elev": 1940,
   "confidence": "placed",
-  "note": "Former Soviet agricultural research station, UNMI headquarters and Joint Liaison Committee venue, on the ISEZ side between Talas and the line, a short way from the Qara-Chik checkpoint.",
+  "note": "Former Soviet agricultural research station, UNMI headquarters and Joint Liaison Committee venue, on the ISEZ side between Talas and the line, at the end of the road up from Kalba, a short way from the Qara-Chik checkpoint.",
   "wiki": null
  },
  {
@@ -566,14 +566,15 @@
   "name_en": "Qara-Chik",
   "kind": "village",
   "zone": "ISEZ",
-  "district": "Talas",
-  "lat": 42.36869,
-  "lon": 72.49233,
+  "district": "Kara-Buura",
+  "lat": 42.52785,
+  "lon": 71.55617,
   "pop": null,
-  "elev": null,
+  "elev": 1130,
   "confidence": "placed",
-  "note": "Foothill village just below the Qara-Chik Border Checkpoint at the head of the Kara-Oi valley; gives its name to the ceasefire line.",
-  "wiki": null
+  "note": "Village at the mouth of the Kara-Buura valley, where the road from Kyzyl-Adyr into the Chatkal valley leaves the plain; the Qara-Chik Border Checkpoint stands just above it, and the ceasefire line is named after it. Called Chong-Kara-Buura on Soviet maps.",
+  "wiki": null,
+  "real_name": "Chong-Kara-Buura"
  },
  {
   "id": "kalba",
@@ -588,7 +589,7 @@
   "pop": 1290,
   "elev": null,
   "confidence": "real-place",
-  "note": "Village with livestock inspection pens on the road from Talas to the Qara-Chik Border Checkpoint.",
+  "note": "Village with livestock inspection pens on the road from Talas to Kara-Oi and the UNMI headquarters.",
   "wiki": "Kalba"
  },
  {

@@ -24,7 +24,8 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 | boz-korgon-branch | 42 | 3% | 5% | 2 |
 | sary-bulak-road | 28 | 7% | 30% | 2 |
 | chatkal-smelter-road | 45 | 60% | 20% | 2 |
-| qara-chik-road | 44 | 13% | 29% | 4 |
+| qara-chik-road | 23 | 81% | 22% | 0 |
+| kara-oi-road | 29 | 17% | 18% | 3 |
 | kenkol-military-road | 32 | 32% | 24% | 3 |
 | karakol-road | 22 | 60% | 8% | 0 |
 | lower-naryn-uzbek-road | 39 | 94% | 10% | 1 |
@@ -135,7 +136,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 336 km, 97% on real roads, highest 1235 m, steepest 500 m 10.2% (ruling 6%)
 - start: The Hunter's Vigil 0.1 km / route 0.0 km / real road 0.02 km
-- end: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
+- end: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
 - **BRIDGES 1 new river/canal bridges**
 - **WATER 0.3 km across a lake or reservoir**
 
@@ -143,7 +144,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 218 km, 70% on real roads, highest 2778 m, steepest 500 m 34.6% (ruling 6%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
-- end: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
+- end: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
 - **GRADE 10.5 km over 8% (max 35%)**
 - **SIDE 8.5 km new-built on >30% slopes**
 - **PARALLEL 1.2 km new-built 40-250 m beside a real road**
@@ -151,7 +152,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 ## Chu highway (Nurzhan - Chu Gate) (`chu-highway`)
 
 117 km, 85% on real roads, highest 1029 m, steepest 500 m 7.5% (ruling 5%)
-- start: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
+- start: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
 - end: Chu Gate crossing 0.0 km / route 38.7 km / real road 0.39 km
 - **PARALLEL 1.1 km new-built 40-250 m beside a real road**
 
@@ -179,15 +180,20 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 - **PARALLEL 2.0 km new-built 40-250 m beside a real road**
 - **SKEW new bridge crosses the river at 43 deg at 71.9794,42.3720**
 
-## Talas - Qara-Chik checkpoint road (`qara-chik-road`)
+## Qara-Chik road (Kyzyl-Adyr - Qara-Chik checkpoint) (`qara-chik-road`)
 
-44 km, 13% on real roads, highest 2545 m, steepest 500 m 28.9% (ruling 7%)
+23 km, 81% on real roads, highest 1497 m, steepest 500 m 21.8% (ruling 7%)
+- start: Kyzyl-Adyr district hospital 0.4 km / route 0.0 km / real road 0.02 km
+- end: Qara-Chik Border Checkpoint 5.0 km / route 15.4 km / real road 0.78 km
+
+## Talas - Kara-Oi road (`kara-oi-road`)
+
+29 km, 17% on real roads, highest 2004 m, steepest 500 m 17.7% (ruling 7%)
 - start: Talas 0.1 km / route 0.0 km / real road 0.02 km
-- end: Köl-Sai glacial lake 1.7 km / route 18.8 km / real road 8.33 km
-- **GRADE 7.9 km over 9% (max 29%)**
-- **SIDE 6.9 km new-built on >30% slopes**
+- end: UNMI Headquarters, Kara-Oi 0.0 km / route 11.2 km / real road 5.23 km
+- **GRADE 1.2 km over 9% (max 18%)**
+- **SIDE 1.7 km new-built on >30% slopes**
 - **PARALLEL 1.6 km new-built 40-250 m beside a real road**
-- **END at 72.5100,42.3150 is 1.7 km from anything**
 
 ## Kenkol Pass road (`kenkol-military-road`)
 

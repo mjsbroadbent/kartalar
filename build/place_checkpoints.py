@@ -7,7 +7,7 @@ KX = 111.32 * math.cos(math.radians(42.5)); KY = 110.57
 R = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "data/routes.json")))}
 L = [f["geometry"]["coordinates"] for f in json.load(open(os.path.join(ROOT, "data/qarachik.geojson")))["features"]]
 # checkpoint id -> (road, village that sits beside it, offset of the village along the road towards the ISEZ in km)
-ON_ROAD = {"qara-chik-border-checkpoint": ("qara-chik-road", "qara-chik", 0.8)}
+ON_ROAD = {"qara-chik-border-checkpoint": ("qara-chik-road", None, 0)}     # Qara-Chik village (the real Chong-Kara-Buura) stays where it is
 # checkpoints on tracks we don't draw: nearest point of the line
 ON_LINE = ["aksay-border-patrol-post"]
 

@@ -3172,18 +3172,6 @@
 "district": null
 },
 {
-"id": "osm-2637861125",
-"name": "Chong-Kara-Buura",
-"name_ru": "Чон-Кара-Буура",
-"kind": "village",
-"lon": 71.55617,
-"lat": 42.52785,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Kara-Buura"
-},
-{
 "id": "osm-2645099189",
 "name": "Ak-Tash",
 "name_ru": "Ак-Таш",

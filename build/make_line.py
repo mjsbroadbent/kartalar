@@ -175,7 +175,7 @@ tc |= irad & sary_bulak & ~region_north
 SKIP_KINDS = {"park", "peak", "pass", "lake", "river-point", "other", "reservoir", "spring", "district", "zone-area", "checkpoint"}
 pin_in = np.zeros(GX.shape, bool); pin_out = np.zeros(GX.shape, bool)
 for p in P.values():
-    if p.get("kind") in SKIP_KINDS or p["lat"] < 41.95 or p["id"] in ("qara-chik",):
+    if p.get("kind") in SKIP_KINDS or p["lat"] < 41.95:
         continue
     j, i = cell(p["lon"], p["lat"])
     if p["zone"] == "ISEZ":
@@ -200,8 +200,8 @@ hi = ndimage.gaussian_filter(within_km(hi, 1.5).astype(float), 3) > 0.5
 tc &= ~hi
 lab, n = ndimage.label(tc)
 keep = {lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("talas", "nurzhan", "kyzyl-adyr") if k in P} - {0}
-# the Qara-Chik road is ISEZ up to UNMI Kara-Oi and the checkpoint just above it (the main crossing is there)
-for rid, upto in (("qara-chik-road", (72.47, 42.385)),):
+# the Kara-Oi road is ISEZ up to UNMI Kara-Oi at its end; the Qara-Chik road is ISEZ through Qara-Chik to the valley mouth
+for rid, upto in (("kara-oi-road", (72.47, 42.385)), ("qara-chik-road", (71.556, 42.522))):
     if rid in R:
         C_ = np.array(R[rid]["coords"]); k_ = int(np.argmin(np.hypot((C_[:, 0] - upto[0]) * KX, (C_[:, 1] - upto[1]) * KY)))
         tc |= within_km(raster_lines([C_[:k_ + 1].tolist()]), 1.2) & irad
