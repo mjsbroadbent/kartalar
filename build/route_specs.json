@@ -6,8 +6,8 @@
   "build": 1.15,
   "via": [
    [
-    70.3,
-    42.47
+    70.0125,
+    42.5243
    ],
    [
     71.58,
@@ -49,7 +49,7 @@
   "id": "kok-bel-road",
   "kind": "road",
   "gmax": 0.065,
-  "build": 1.15,
+  "build": 1.5,
   "snowline": 2200,
   "via": [
    [
@@ -57,12 +57,8 @@
     42.519
    ],
    [
-    72.745,
-    42.58
-   ],
-   [
-    72.7,
-    42.93
+    72.80525,
+    42.57962
    ],
    [
     73.759,
@@ -116,7 +112,7 @@
   "id": "sary-bulak-road",
   "kind": "road",
   "gmax": 0.07,
-  "build": 1.2,
+  "build": 1.4,
   "via": [
    [
     72.239,
@@ -137,7 +133,7 @@
   "id": "chatkal-smelter-road",
   "kind": "road",
   "gmax": 0.07,
-  "build": 1.2,
+  "build": 1.4,
   "via": [
    [
     72.239,
@@ -162,7 +158,7 @@
   "id": "qara-chik-road",
   "kind": "road",
   "gmax": 0.07,
-  "build": 1.2,
+  "build": 1.4,
   "via": [
    [
     72.239,
@@ -191,25 +187,26 @@
   "id": "kenkol-military-road",
   "kind": "road",
   "gmax": 0.09,
-  "build": 1.1,
+  "build": 2.0,
   "snowline": 3000,
   "via": [
    [
-    71.725,
-    42.6
+    71.86,
+    42.57
    ],
    [
     71.74,
     42.33
    ]
   ],
-  "margin": 0.1
+  "margin": 0.1,
+  "start_on": "trans-talas-highway"
  },
  {
   "id": "karakol-road",
   "kind": "road",
   "gmax": 0.08,
-  "build": 1.1,
+  "build": 1.5,
   "snowline": 3000,
   "via": [
    [
@@ -221,7 +218,8 @@
     42.115
    ]
   ],
-  "margin": 0.08
+  "margin": 0.08,
+  "start_on": "fergana-mountain-transit-highway"
  },
  {
   "id": "boz-korgon-branch",
@@ -265,7 +263,7 @@
   "id": "mailuu-suu-road",
   "kind": "road",
   "gmax": 0.07,
-  "build": 1.5,
+  "build": 1.6,
   "via": [
    [
     72.46,
@@ -276,13 +274,14 @@
     41.267
    ]
   ],
-  "margin": 0.08
+  "margin": 0.08,
+  "start_on": "fergana-rim-road"
  },
  {
   "id": "arslanbob-road",
   "kind": "road",
   "gmax": 0.07,
-  "build": 1.5,
+  "build": 2.2,
   "via": [
    [
     72.746,
@@ -297,6 +296,7 @@
     41.333
    ]
   ],
-  "margin": 0.08
+  "margin": 0.08,
+  "start_on": "fergana-rim-road"
  }
 ]

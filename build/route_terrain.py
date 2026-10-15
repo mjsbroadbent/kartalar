@@ -22,12 +22,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEMF, OSMF = sys.argv[1], sys.argv[2]
 ONLY = set(sys.argv[3].split(",")) if len(sys.argv) > 3 else None
 KX = 111.32 * math.cos(math.radians(42.5)); KY = 110.57
-RES = 0.0025
+RES = float(os.environ.get("ROUTE_RES", "0.0015"))   # ~130 m grid (the terrain grid is ~90 m)
 
 b = open(DEMF, "rb").read()
 D_LON0, D_LAT0, D_STEP = struct.unpack("<3d", b[8:32]); D_NX, D_NY = struct.unpack("<2i", b[32:40])
 DEM = np.frombuffer(b[64:], dtype="<i2").reshape(D_NY, D_NX).astype(float)
-DEM = ndimage.median_filter(DEM, 3)   # the terrarium tiles have speckle
+DEM = ndimage.median_filter(DEM, 3) if D_STEP > 0.002 else ndimage.gaussian_filter(DEM, 0.8)   # the terrarium tiles have speckle
 OSM = json.load(open(OSMF))["ways"]
 
 
@@ -68,8 +68,10 @@ def chaikin(pts, n=2):
     return pts
 
 
-ROAD_F = {"road:motorway": 1.0, "road:trunk": 1.0, "road:primary": 1.05, "road:secondary": 1.2, "road:tertiary": 1.6,
-          "road:motorway_link": 1.3, "road:trunk_link": 1.3, "road:primary_link": 1.3}
+ROAD_F = {"road:motorway": 1.0, "road:trunk": 1.0, "road:primary": 1.05, "road:secondary": 1.2, "road:tertiary": 1.5,
+          "road:motorway_link": 1.3, "road:trunk_link": 1.3, "road:primary_link": 1.3,
+          "road:unclassified": 1.9, "road:track": 2.6}      # an old road or track up a valley is cheaper to upgrade than new road
+RIVERS = None   # rasterised real rivers: building across or along one costs a bridge
 RAIL_F = {"rail:rail": 1.0, "rail:narrow_gauge": 1.3}
 NB = [(0, 1), (1, 0), (1, 1), (1, -1), (1, 2), (2, 1), (1, -2), (2, -1)]   # half of a 16-neighbourhood
 
@@ -95,6 +97,25 @@ def route(spec):
     avoid = np.zeros_like(Z, bool)
     for poly in spec.get("avoid", []):
         avoid |= Path(np.asarray(poly)).contains_points(np.column_stack([GX.ravel(), GY.ravel()])).reshape(ny, nx)
+    # the side of the nearest river each cell lies on (+1 / -1 within ~300 m of a river, 0 elsewhere): a step from one
+    # side to the other is a river crossing and costs a bridge; running along the valley floor beside the river does not
+    side_r = np.zeros(Z.shape, np.int8)
+    rp, rt = [], []
+    for c in (RIVERS or []):
+        if c[:, 0].max() < x0 or c[:, 0].min() > x1 or c[:, 1].max() < y0 or c[:, 1].min() > y1: continue
+        P = c * [KX, KY]
+        for a_, b2 in zip(P[:-1], P[1:]):
+            L_ = math.hypot(*(b2 - a_)); n_ = max(1, int(L_ / 0.03)); t_ = (b2 - a_) / (L_ + 1e-12)
+            for k in range(n_): rp.append(a_ + (b2 - a_) * k / n_); rt.append(t_)
+    if rp:
+        rp = np.array(rp); rt = np.array(rt); tree_r = cKDTree(rp)
+        G2 = np.column_stack([GX.ravel() * KX, GY.ravel() * KY])
+        d_, k_ = tree_r.query(G2, distance_upper_bound=0.3)
+        near = np.isfinite(d_); kk = k_[near]
+        rel = G2[near] - rp[kk]
+        cr = rt[kk, 0] * rel[:, 1] - rt[kk, 1] * rel[:, 0]
+        sv = np.zeros(len(G2), np.int8); sv[near] = np.sign(cr).astype(np.int8)
+        side_r = sv.reshape(Z.shape)
     N = ny * nx
     idx = np.arange(N).reshape(ny, nx)
     rows, cols, wts = [], [], []
@@ -112,7 +133,8 @@ def route(spec):
             zm = 0.5 * (za + zb)
             fe = 1 + np.maximum(0, (zm - spec.get("snowline", 2600)) / 400.0)
             av = 1 + 50 * (avoid[j0:j1, i0:i1] | avoid[j0 + dj:j1 + dj, i0 + di:i1 + di])
-            w = L * build * fg * fs * fe * av
+            rv = spec.get("bridge_km", 0.8) * ((side_r[j0:j1, i0:i1].astype(np.int16) * side_r[j0 + dj:j1 + dj, i0 + di:i1 + di]) < 0)
+            w = L * build * fg * fs * fe * av + rv
             rows.append(A.ravel()); cols.append(B.ravel()); wts.append(w.ravel())
     rows = np.concatenate(rows); cols = np.concatenate(cols); wts = np.concatenate(wts)
     # real network nodes, numbered after the grid
@@ -190,7 +212,7 @@ def route(spec):
     runs.append((cur_real, cur))
     # very short new-built links between two real stretches are just junctions
     out = []
-    eps = spec.get("eps", 0.12)
+    eps = spec.get("eps", 0.06 if kind == "road" else 0.12)
     for real, pts in runs:
         if real:
             pts = rdp(pts, 0.012)
@@ -245,6 +267,20 @@ def hairpins(pts, gmax):
     return out
 
 
+def load_rivers():
+    fn = os.environ.get("ROUTE_RIVERS")
+    if not fn or not os.path.exists(fn): return []
+    out = []
+    for line in open(fn):
+        f = json.loads(line)
+        if f["properties"]["class"] != "river": continue
+        g = f["geometry"]
+        for c in ([g["coordinates"]] if g["type"] == "LineString" else g["coordinates"]): out.append(np.array(c))
+    return out
+
+
+RIVERS = load_rivers()
+
 if __name__ == "__main__":
     SPECS = json.load(open(os.path.join(ROOT, "build/route_specs.json")))
     routes = json.load(open(os.path.join(ROOT, "data/routes.json")))
@@ -255,6 +291,11 @@ if __name__ == "__main__":
             continue
         r = R[spec["id"]]
         before = km_len(r["coords"])
+        for key, k in (("start_on", 0), ("end_on", -1)):    # begin or end at a junction on another route
+            if spec.get(key) and R.get(spec[key], {}).get("coords"):
+                C = np.array(R[spec[key]]["coords"]); p = spec["via"][k]
+                d = np.hypot((C[:, 0] - p[0]) * KX, (C[:, 1] - p[1]) * KY); i = int(np.argmin(d))
+                spec["via"][k] = [float(C[i, 0]), float(C[i, 1])]
         coords, zmax, real_km = route(spec)
         r["coords"] = [list(p) for p in coords]
         r["snapped"] = "terrain"

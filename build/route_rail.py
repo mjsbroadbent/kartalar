@@ -23,7 +23,7 @@ KY = 110.57
 LINES = {
     # the old Turksib: real track from Nurzhan station west round the end of the Kyrgyz Range to the lowland junction
     "irad-temir-jolu-chu-line":        dict(R=0.6, R_town=0.35, parent=None, via=[[73.75927, 43.59738], [72.9, 42.95], [71.40724, 42.88695]], net_only=True),
-    "irad-temir-jolu-kara-buura-line": dict(R=0.6, R_town=0.35, parent=None, via=[[71.40724, 42.88695], [70.30064, 42.48905]], net_only=True),
+    "irad-temir-jolu-kara-buura-line": dict(R=0.6, R_town=0.35, parent=None, via=[[71.40724, 42.88695], [69.9975, 42.5488]], net_only=True),   # to the frontier (Talas North Terminal)
     # the Turksib east from Nurzhan to the Kazakh frontier (real track all the way): exchange station at the border
     "irad-temir-jolu-north-line":      dict(R=0.6, R_town=0.35, parent=None, via=[[73.75927, 43.59738], [74.04, 43.8647], [74.60, 43.79], [74.975, 43.623]], net_only=True),
     "irad-temir-jolu-talas-branch":    dict(R=0.4, R_town=0.3, parent="irad-temir-jolu-kara-buura-line",

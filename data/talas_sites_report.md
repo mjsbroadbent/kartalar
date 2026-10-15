@@ -2,78 +2,78 @@
 
 | site | moved | placed on |
 |---|---|---|
-| talas-municipal-cold-storage | 5900 m | donor anchor |
-| talas-pre-trial-detention | 5764 m | donor anchor |
-| talas-municipal-hospital-1 | 4454 m | donor anchor |
-| talas-municipal-bus-depot | 3719 m | donor anchor |
-| national-conservatory-folk-music | 3087 m | donor anchor |
-| church-st-tomas-talas | 2964 m | donor anchor |
-| bank-of-irad-head-office | 2319 m | donor anchor |
-| tsu-stadium | 2310 m | donor anchor |
-| state-archives-of-irad | 2307 m | near talas-state-university |
-| talas-state-university | 2239 m | donor anchor |
-| general-staff-complex | 2239 m | donor anchor |
-| silk-road-arena | 2186 m | donor anchor |
-| talas-philharmonic-hall | 1867 m | donor anchor |
-| talas-blood-services-center | 1630 m | donor anchor |
-| talas-regional-hospital | 1590 m | donor anchor |
-| talas-municipal-theater | 1437 m | donor anchor |
-| attelkom-park | 1427 m | donor anchor |
-| talas-landfill | 1341 m | industrial grounds |
-| talas-youth-soccer-academy | 1310 m | institution grounds |
-| talas-agribusiness-export-zone | 1238 m | industrial grounds |
-| talas-gymnasium-4 | 1205 m | donor anchor |
-| talas-opera-ballet | 1190 m | donor anchor |
-| talas-city-hall | 1174 m | donor anchor |
-| talas-central-cattle-mart | 1166 m | commercial grounds |
-| talas-pedagogical-institute | 982 m | donor anchor |
-| alikhan-media-center | 889 m | donor anchor |
-| talas-fire-brigade-hq | 831 m | donor anchor |
-| talas-central-park | 823 m | donor anchor |
-| talas-central-post-office | 807 m | donor anchor |
-| talas-customs-clearance-terminal | 781 m | industrial grounds |
-| irad-central-sports-complex | 742 m | donor anchor |
-| st-maryam-catholic-academy | 695 m | near church-st-tomas-talas |
-| hunters-vigil | 678 m | at talas-central-park |
-| irad-state-hippodrome | 664 m | grass grounds |
-| talas-free-economic-trade-zone | 561 m | industrial grounds |
-| talas-gendarmerie-academy | 557 m | institution grounds |
-| talas-dairy-combine | 434 m | industrial grounds |
-| talas-american-school | 352 m | institution grounds |
-| talas-hall-of-justice | 301 m | near talas-central-square |
-| talas-legislative-hall | 270 m | near talas-central-square |
-| talas-central-bus-station | 260 m | industrial grounds |
-| talas-water-treatment-works | 248 m | industrial grounds |
-| national-historical-museum | 227 m | donor anchor |
-| sukarne-feedlot | 206 m | building |
-| talas-drama-theatre | 189 m | donor anchor |
-| talasfilm-studios | 161 m | industrial grounds |
-| misgaron-coppersmiths-row | 152 m | commercial grounds |
-| talas-district-court | 119 m | near talas-hall-of-justice |
-| st-luka-hospital-talas | 99 m | donor anchor |
-| st-luka-clinic-talas | 98 m | near st-luka-hospital-talas |
-| temir-kapka-gate | 85 m | old town |
-| kalan-darwaza | 68 m | old town |
-| talas-government-house | 67 m | near talas-central-square |
-| talas-citadel | 67 m | old town |
-| communications-square | 56 m | building |
-| old-quarter-minaret-site | 55 m | building |
-| iradi-telegraph-office | 54 m | building |
-| talasfilm-archives | 47 m | near cinema-boulevard |
-| silk-road-financial-tower | 44 m | building |
-| bazar-i-kalan | 44 m | old town |
-| iradi-leatherworks-factory | 38 m | industrial grounds |
-| miners-hall-talas | 33 m | near talas-central-square |
-| widows-horse-memorial | 32 m | building |
-| talas-bazar-i-kalan | 28 m | old town |
-| cinema-boulevard | 25 m | building |
-| conagra-talas-beef | 24 m | building |
-| altyn-tower | 20 m | building |
-| sukarne-quality-labs | 18 m | building |
-| iradone-transmitter-mast | 12 m | building |
-| sukarne-irad-complex | 12 m | building |
-| talas-fire-station-2 | 12 m | building |
-| talas-veterinary-research-center | 11 m | building |
-| church-st-yuhanna-talas | 9 m | building |
-| juma-mosque-talas | 3 m | building |
-| jibek-jolu-market | 2 m | building |
+| conagra-talas-beef | 17 m | building |
+| juma-mosque-talas | 1 m | building |
+| st-maryam-catholic-academy | 1 m | near church-st-tomas-talas |
+| iradi-telegraph-office | 1 m | building |
+| iradone-transmitter-mast | 1 m | building |
+| national-historical-museum | 1 m | donor anchor |
+| talas-water-treatment-works | 1 m | industrial grounds |
+| talas-legislative-hall | 1 m | near talas-central-square |
+| sukarne-feedlot | 1 m | building |
+| talas-drama-theatre | 1 m | donor anchor |
+| talas-free-economic-trade-zone | 1 m | industrial grounds |
+| talas-customs-clearance-terminal | 1 m | industrial grounds |
+| sukarne-quality-labs | 1 m | building |
+| silk-road-arena | 1 m | donor anchor |
+| talas-philharmonic-hall | 1 m | donor anchor |
+| irad-central-sports-complex | 1 m | donor anchor |
+| sukarne-irad-complex | 1 m | building |
+| church-st-yuhanna-talas | 0 m | building |
+| talas-district-court | 0 m | near talas-hall-of-justice |
+| bank-of-irad-head-office | 0 m | donor anchor |
+| irad-state-hippodrome | 0 m | grass grounds |
+| talas-central-cattle-mart | 0 m | commercial grounds |
+| talas-fire-brigade-hq | 0 m | donor anchor |
+| talas-american-school | 0 m | institution grounds |
+| talas-pedagogical-institute | 0 m | donor anchor |
+| silk-road-financial-tower | 0 m | building |
+| talas-municipal-bus-depot | 0 m | donor anchor |
+| alikhan-media-center | 0 m | donor anchor |
+| talas-dairy-combine | 0 m | industrial grounds |
+| altyn-tower | 0 m | building |
+| talas-regional-hospital | 0 m | donor anchor |
+| talasfilm-archives | 0 m | near cinema-boulevard |
+| talas-gendarmerie-academy | 0 m | institution grounds |
+| general-staff-complex | 0 m | donor anchor |
+| talas-government-house | 0 m | near talas-central-square |
+| talas-central-post-office | 0 m | donor anchor |
+| communications-square | 0 m | building |
+| talas-city-hall | 0 m | donor anchor |
+| talas-hall-of-justice | 0 m | near talas-central-square |
+| talas-municipal-theater | 0 m | donor anchor |
+| misgaron-coppersmiths-row | 0 m | commercial grounds |
+| tsu-stadium | 0 m | donor anchor |
+| talas-municipal-cold-storage | 0 m | donor anchor |
+| attelkom-park | 0 m | donor anchor |
+| talas-opera-ballet | 0 m | donor anchor |
+| st-luka-hospital-talas | 0 m | donor anchor |
+| talas-pre-trial-detention | 0 m | donor anchor |
+| talas-municipal-hospital-1 | 0 m | donor anchor |
+| national-conservatory-folk-music | 0 m | donor anchor |
+| state-archives-of-irad | 0 m | near talas-state-university |
+| miners-hall-talas | 0 m | near talas-central-square |
+| talas-youth-soccer-academy | 0 m | institution grounds |
+| talas-state-university | 0 m | donor anchor |
+| talas-blood-services-center | 0 m | donor anchor |
+| talasfilm-studios | 0 m | industrial grounds |
+| talas-gymnasium-4 | 0 m | donor anchor |
+| cinema-boulevard | 0 m | building |
+| widows-horse-memorial | 0 m | building |
+| talas-fire-station-2 | 0 m | building |
+| st-luka-clinic-talas | 0 m | near st-luka-hospital-talas |
+| old-quarter-minaret-site | 0 m | building |
+| talas-agribusiness-export-zone | 0 m | industrial grounds |
+| church-st-tomas-talas | 0 m | donor anchor |
+| talas-central-park | 0 m | donor anchor |
+| iradi-leatherworks-factory | 0 m | industrial grounds |
+| talas-landfill | 0 m | industrial grounds |
+| talas-veterinary-research-center | 0 m | building |
+| talas-central-bus-station | 0 m | industrial grounds |
+| talas-citadel | 0 m | old town |
+| kalan-darwaza | 0 m | old town |
+| temir-kapka-gate | 0 m | old town |
+| bazar-i-kalan | 0 m | old town |
+| talas-bazar-i-kalan | 0 m | old town |
+| hunters-vigil | 0 m | at talas-central-park |
+| jibek-jolu-market | 0 m | building |
