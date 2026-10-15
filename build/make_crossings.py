@@ -34,12 +34,20 @@ for r in routes:
 # a line that ends at the frontier right beside a road (the road running along the frontier) is crossed there too
 for lf in line:
     L = lf["geometry"]["coordinates"]
-    for e in (L[0], L[-1]):
+    for end in (L[:], L[::-1]):           # the last ~3 km of the piece at each end
+        tail, acc = [end[0]], 0.0
+        for a_, b_ in zip(end, end[1:]):
+            n_ = max(1, int(km(a_, b_) / 0.1))
+            for t_ in range(1, n_ + 1):
+                tail.append((a_[0] + (b_[0] - a_[0]) * t_ / n_, a_[1] + (b_[1] - a_[1]) * t_ / n_))
+            acc += km(a_, b_)
+            if acc > 3: break
         for r in routes:
             if r["kind"] not in ("highway", "road", "railway"): continue
-            c = r["coords"]; d = [km(e, q) for q in c]; k = min(range(len(c)), key=d.__getitem__)
-            if d[k] < 0.6 and not any(km(h[0], c[k]) < 2 for h in hits): hits.append((tuple(c[k]), r, lf["properties"]["sector"]))
-existing = [f for f in F if f["kind"] in ("checkpoint", "border-crossing")]
+            c = r["coords"]
+            best = min(((km(t, q), q) for t in tail for q in c), key=lambda z: z[0])
+            if best[0] < 0.5 and not any(km(h[0], best[1]) < 2 for h in hits): hits.append((tuple(best[1]), r, lf["properties"]["sector"]))
+existing = [f for f in F if f["kind"] == "checkpoint" or (f["kind"] == "border-crossing" and not f["id"].startswith("xing-"))]   # the line crossings, not the frontier ones
 added = []
 for x, r, sector in hits:
     if any(km(x, (f["lon"], f["lat"])) < 5 for f in existing + added): continue
@@ -48,7 +56,7 @@ for x, r, sector in hits:
     f = {"id": "qarachik-crossing-" + (r.get("crossing_name", "").lower().replace(" ", "-").replace("-road", "") or near["id"]), "name": f"{nm} crossing", "name_ir": f"{nm} ötkölü", "name_ru": f"КПП «{r.get('crossing_name_ru') or near.get('name_ru') or nm}»",
          "kind": "checkpoint", "city": None, "zone": "ISEZ", "lat": round(x[1], 5), "lon": round(x[0], 5), "elev": None, "confidence": "placed",
          "note": f"Qara-Chik line crossing on the {r['name']} ({sector} sector): Gendarmerie checkpoint on the ISEZ side, El-Choro post on the tribal side.",
-         "wiki": "Qara-Chik Demarcation Line", "auto_crossing": True}
+         "wiki": "Qara-Chik Demarcation Line", "auto_crossing": True, "status": "line"}
     if any(g["id"] == f["id"] for g in F + added): f["id"] += "-2"
     added.append(f)
 F += added

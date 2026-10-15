@@ -124,8 +124,9 @@ aspara_e = mask_poly([_aspara + [(73.65, _aspara[-1][1]), (73.65, _aspara[0][1])
 ak_kolot = mask_poly([[(73.9771, 41.7545), (73.9776, 41.7517), (73.9814, 41.7479), (73.989, 41.7446), (74.0043, 41.7412), (74.031, 41.7412), (74.0539, 41.7403), (74.0666, 41.7384), (74.0768, 41.7361), (74.0844, 41.7327), (74.092, 41.727), (74.1002, 41.72), (74.0704, 41.7327), (74.0005, 41.7355), (73.9865, 41.7403)]])
 # on the Kazakh frontier at the Sayramsu crossing the line bends east round the town rather than through it
 sayramsu_bump = mask_poly([[(70.0225, 42.27), (70.0275, 42.2687), (70.0373, 42.2643), (70.0472, 42.2606), (70.0546, 42.2568), (70.0595, 42.253), (70.062, 42.248), (70.0608, 42.243), (70.0584, 42.2405), (70.0373, 42.2401), (70.0324, 42.2386), (70.0262, 42.2364), (70.025, 42.253)]])   # drawn a little wide: the smoothed outline rounds it off
-# Uch-Kurgan: the frontier keeps south of the road from Sadaf-Jar, then follows the Naryn up to the edge of Kum
-_uch = [(71.9986, 41.1786), (71.9992, 41.1774), (72.0038, 41.1756), (72.0078, 41.1732), (72.0084, 41.1707), (72.0084, 41.1459), (72.0098, 41.1434), (72.015, 41.141), (72.0256, 41.138), (72.0348, 41.1355), (72.044, 41.1337), (72.0533, 41.1301), (72.0599, 41.1271), (72.0658, 41.1227), (72.0697, 41.1187), (72.073, 41.1202), (72.0783, 41.1241), (72.0849, 41.1291), (72.0908, 41.1332), (72.0935, 41.136), (72.0941, 41.138), (72.0974, 41.1439), (72.1033, 41.1489), (72.1086, 41.1533), (72.1165, 41.1541), (72.1231, 41.1558), (72.1297, 41.1588), (72.1356, 41.1626), (72.1396, 41.1623), (72.1435, 41.1608), (72.1495, 41.1601), (72.1547, 41.1616), (72.16, 41.1632), (72.166, 41.1652), (72.1692, 41.1632), (72.1719, 41.1588), (72.1732, 41.1538), (72.1745, 41.1494)]
+# Uch-Kurgan: the frontier keeps south of the road from Sadaf-Jar, then follows the Naryn itself past Kyzyl-Jar up to the
+# edge of Kum (Kyzyl-Jar on the right bank in Irad, Uchkurgan across the river; the one bridge is the Kyzyl-Jar crossing)
+_uch = [(71.9986, 41.1786), (71.9992, 41.1774), (72.0038, 41.1756), (72.0078, 41.1732), (72.0084, 41.1707), (72.0084, 41.1459), (72.0098, 41.1434), (72.015, 41.141), (72.0256, 41.138), (72.0348, 41.1355), (72.044, 41.1337), (72.0533, 41.1301), (72.0599, 41.1271), (72.0615, 41.115), (72.0635, 41.1099), (72.0652, 41.1115), (72.0687, 41.1143), (72.07, 41.1155), (72.0714, 41.1171), (72.0743, 41.1211), (72.0755, 41.1225), (72.0778, 41.1239), (72.0796, 41.1246), (72.0816, 41.127), (72.0835, 41.1284), (72.0851, 41.1296), (72.0884, 41.1318), (72.0927, 41.1347), (72.0939, 41.1365), (72.0947, 41.1394), (72.095, 41.1409), (72.0971, 41.1443), (72.0992, 41.1464), (72.1018, 41.1482), (72.1052, 41.1514), (72.1065, 41.1525), (72.1082, 41.1535), (72.11, 41.1542), (72.1154, 41.1539), (72.1182, 41.1539), (72.1219, 41.1547), (72.1241, 41.1554), (72.1291, 41.1587), (72.1322, 41.1611), (72.134, 41.1622), (72.1358, 41.1627), (72.1376, 41.1626), (72.1409, 41.1613), (72.1432, 41.1607), (72.1454, 41.1601), (72.1482, 41.1597), (72.1504, 41.1597), (72.1535, 41.1599), (72.1556, 41.1602), (72.1638, 41.1641), (72.1657, 41.1656), (72.166, 41.1652), (72.1692, 41.1632), (72.1719, 41.1588), (72.1732, 41.1538), (72.1745, 41.1494)]
 uch_n = mask_poly([_uch + [(72.1745, 41.2232), (71.9986, 41.2232)]])
 uch_s = mask_poly([_uch + [(72.1745, 41.1043), (71.9986, 41.1043)]])
 
@@ -167,9 +168,34 @@ if _net and os.path.exists(_net):
         for x0_, y0_, x1_, y1_ in ROAD_HUG_BOXES:
             pts = [(x, y) for x, y in w["c"] if x0_ <= x <= x1_ and y0_ <= y <= y1_]
             if len(pts) > 1: hug |= near_line(pts, 1.5)
+# real main roads that clip the frontier: a stretch of under ~2.5 km that dips into Irad and straight out again (or out and
+# back in) is put wholly on the side the road runs on, so the road does not cross the frontier twice for nothing
+clip_in = np.zeros(GX.shape, bool); clip_out = np.zeros(GX.shape, bool)
+if _net and os.path.exists(_net):
+    for w in json.load(open(_net))["ways"]:
+        if w["k"] not in ("road:motorway", "road:trunk", "road:primary", "road:secondary", "road:tertiary"): continue
+        C = w["c"]
+        if len(C) < 3: continue
+        xs = [q[0] for q in C]; ys = [q[1] for q in C]
+        if max(xs) < LON0 or min(xs) > LON1 or max(ys) < LAT0 or min(ys) > LAT1: continue
+        ins = [bool(_inside(x, y)) for x, y in C]
+        k = 1
+        while k < len(C):
+            if ins[k] == ins[k - 1]: k += 1; continue
+            e = k
+            while e < len(C) and ins[e] == ins[k]: e += 1
+            if e < len(C):           # a run k..e-1 bounded by the other side on both ends
+                L = sum(np.hypot((C[q + 1][0] - C[q][0]) * 82, (C[q + 1][1] - C[q][1]) * 111) for q in range(k - 1, e))
+                if L < 2.5:
+                    seg = C[k - 1:e + 1]
+                    if ins[k]: clip_out |= near_line(seg, 0.7)      # dips in: give the strip back
+                    else: clip_in |= near_line(seg, 0.7)            # dips out: keep it
+            k = e
+print("road clips: %d cells kept in, %d given back" % (int((clip_in & ~irad).sum()), int((clip_out & irad).sum())))
 added = hug & ~irad & (GX >= 68.0)
 print("frontier kept off the roads: %.0f km2 added" % float(((STEP * 111.32 * np.cos(np.radians(GY))) * (STEP * 110.57))[added].sum()))
-irad = (irad | added | aspara_w | ak_kolot | uch_n) & ~uch_s & ~sayramsu_bump & ~kandiyon_strip & ~chu_corner & ~kg_valley & ~aspara_e
+irad = ((irad | (clip_in & (GX >= 68.0))) & ~(clip_out & ~hug)) | added
+irad = (irad | aspara_w | ak_kolot | uch_n) & ~uch_s & ~sayramsu_bump & ~kandiyon_strip & ~chu_corner & ~kg_valley & ~aspara_e
 # Talas valley floor, the Taraz plain and the Kara-Buura corridor west to the frontier facing Shymkent
 valley = mask_poly([[(70.05, 42.38), (70.6, 42.46), (71.1, 42.58), (71.6, 42.46), (72.0, 42.36), (72.5, 42.32), (72.95, 42.38), (73.1, 42.55),
                      (73.2, 42.80), (72.6, 42.95), (72.0, 43.15), (71.4, 43.25), (71.1, 43.0), (70.6, 42.88), (70.1, 42.7)]])
@@ -260,12 +286,93 @@ def trace(m, eps=0.004, min_km2=4, smooth=0):
     return {"type": "MultiPolygon", "coordinates": polys}
 
 
+def snap_to_lines(geom, lines, tol_km=1.0):
+    """frontier stretches that follow a river exactly: ring vertices within tol of one of these polylines move onto it,
+    and the polyline's own vertices are put in between, so the border follows the river and not the 0.01-degree grid"""
+    kx = 111.32 * np.cos(np.radians(41.5)); out = []
+    def proj(L, p):
+        best = None
+        for i in range(len(L) - 1):
+            a, b = np.array(L[i]), np.array(L[i + 1]); v = (b - a) * [kx, 110.57]; w = (np.array(p) - a) * [kx, 110.57]
+            t = float(np.clip(np.dot(w, v) / (np.dot(v, v) or 1e-12), 0, 1)); d = float(np.hypot(*(w - t * v)))
+            if best is None or d < best[0]: best = (d, i + t, a + t * (b - a))
+        return best
+    for poly in geom["coordinates"]:
+        newp = []
+        for ring in poly:
+            nr = []; prev = None
+            for p in ring:
+                hit = None
+                for li, L in enumerate(lines):
+                    d, par, q = proj(L, p)
+                    if d < tol_km and (hit is None or d < hit[0]): hit = (d, li, par, q)
+                if hit:
+                    _, li, par, q = hit
+                    if prev and prev[0] == li:          # fill in the river's own bends between two snapped vertices
+                        lo, hi = sorted((prev[1], par)); mids = [k for k in range(int(np.floor(lo)) + 1, int(np.ceil(hi))) if lo < k < hi]
+                        if par < prev[1]: mids = mids[::-1]
+                        nr += [[round(lines[li][k][0], 5), round(lines[li][k][1], 5)] for k in mids]
+                    nr.append([round(float(q[0]), 5), round(float(q[1]), 5)]); prev = (li, par)
+                else:
+                    nr.append(p); prev = None
+            newp.append(nr)
+        out.append(newp)
+    return {"type": "MultiPolygon", "coordinates": out}
+
+
+# rivers the frontier follows exactly (OSM courses): the Naryn past Kyzyl-Jar, the Aspara at Kichi-Korgon
+FRONTIER_RIVERS = [_uch[_uch.index(min(_uch, key=lambda q: abs(q[0] - 72.0635) + abs(q[1] - 41.1099))):
+                        _uch.index(min(_uch, key=lambda q: abs(q[0] - 72.1638) + abs(q[1] - 41.1641))) + 1], _aspara]
+
+
+def splice(geom, path, tol_km=0.6):
+    """replace the stretch of the outline between the two ends of path (each within tol of the outline) by path itself,
+    for small hand-drawn changes that the 0.01-degree grid cannot hold (taking the shorter way round the ring)"""
+    kx = 111.32 * np.cos(np.radians(path[0][1]))
+    for poly in geom["coordinates"]:
+        for ri, ring in enumerate(poly):
+            # put the two ends onto the outline as vertices of their own (projected onto the nearest edge)
+            for end in (path[0], path[-1]):
+                R = np.array(ring); A_, B_ = R[:-1], R[1:]; v = (B_ - A_) * [kx, 110.57]; w = (np.array(end) - A_) * [kx, 110.57]
+                t = np.clip((v * w).sum(1) / np.maximum((v * v).sum(1), 1e-12), 0, 1); dd = np.hypot(*(w - t[:, None] * v).T); e_ = int(dd.argmin())
+                if dd[e_] <= tol_km and 0 < t[e_] < 1:
+                    q = A_[e_] + t[e_] * (B_[e_] - A_[e_]); ring.insert(e_ + 1, [round(float(q[0]), 5), round(float(q[1]), 5)])
+            R = np.array(ring)
+            d0 = np.hypot((R[:, 0] - path[0][0]) * kx, (R[:, 1] - path[0][1]) * 110.57); d1 = np.hypot((R[:, 0] - path[-1][0]) * kx, (R[:, 1] - path[-1][1]) * 110.57)
+            i, j = int(d0[:-1].argmin()), int(d1[:-1].argmin())
+            if d0[i] > tol_km or d1[j] > tol_km or i == j: continue
+            n = len(ring) - 1; core = ring[:-1]
+            fwd = (j - i) % n; bwd = (i - j) % n
+            P = [[round(x, 5), round(y, 5)] for x, y in path]
+            if fwd <= bwd:      # replace i..j going forward
+                new = [core[(i + k) % n] for k in range(0)] + P + [core[(j + k) % n] for k in range(1, bwd)]
+            else:               # replace going backward: the ring runs j..i, so put the path in reversed
+                new = P[::-1] + [core[(i + k) % n] for k in range(1, fwd)]
+            new.append(new[0]); poly[ri] = new
+            return geom
+    print("  splice: no fit for", path[0], path[-1])
+    return geom
+
+
+# hand-drawn stretches spliced into the traced frontier
+SPLICES = [
+    # Kyzyl-Jar: the frontier stays on the Naryn down past the bridge, then turns up to the Sadaf-Jar road's line
+    [(72.0743, 41.1211), (72.0714, 41.1171), (72.07, 41.1155), (72.0687, 41.1143), (72.0652, 41.1115), (72.0635, 41.1099), (72.0615, 41.115), (72.0605, 41.1265)],
+    # Tash-Akyr: the Jalal-Abad–Osh boundary kept north of the trunk road it clipped
+    [(73.1375, 40.8502), (73.1445, 40.8503), (73.1495, 40.8525), (73.1535, 40.8543), (73.1585, 40.8553)],
+    # Makmal: the frontier below the road's last bend, so the road crosses it once
+    [(74.0790, 41.1580), (74.0815, 41.1585), (74.0850, 41.1600), (74.0880, 41.1612)],
+]
+
+
 def feat(geom, **props):
     return {"type": "Feature", "properties": props, "geometry": geom}
 
 
 out = os.path.join(ROOT, "data")
-json.dump({"type": "FeatureCollection", "features": [feat(trace(irad, 0.003, smooth=1.0), name="Irad", name_ir="Irad", name_ru="Ирад", area_km2=round(area(irad)))]},
+_spliced = snap_to_lines(trace(irad, 0.003, smooth=1.0), FRONTIER_RIVERS, 0.9)
+for _p in SPLICES: _spliced = splice(_spliced, _p)
+json.dump({"type": "FeatureCollection", "features": [feat(_spliced, name="Irad", name_ir="Irad", name_ru="Ирад", area_km2=round(area(irad)))]},
           open(os.path.join(out, "irad.geojson"), "w"))
 json.dump({"type": "FeatureCollection", "features": [
     feat(trace(isez, 0.003), zone="ISEZ", name="Irad Special Economic Zone", name_ir="Irad Atayın Ekonomikalık Zonası", name_ru="Особая экономическая зона Ирада", area_km2=round(area(isez))),

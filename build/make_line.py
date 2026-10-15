@@ -426,7 +426,8 @@ def rdp(pts, eps):
 
 
 def rings_of(m):
-    fig = plt.figure(); cs = plt.contour(GX, GY, m.astype(float), levels=[0.5]); segs = cs.allsegs[0]; plt.close(fig)
+    # contour a slightly blurred mask, so diagonal edges come out straight instead of in 0.01-degree steps (as make_geo does)
+    fig = plt.figure(); cs = plt.contour(GX, GY, ndimage.gaussian_filter(m.astype(float), 1.0), levels=[0.5]); segs = cs.allsegs[0]; plt.close(fig)
     return [[tuple(map(float, p)) for p in s] for s in segs if len(s) > 3]
 
 

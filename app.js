@@ -114,15 +114,18 @@
 
   const GROUP = {
     worship: ["church", "mosque", "mazar"], civic: ["government", "university", "school", "hospital", "museum", "un"],
-    leisure: ["stadium", "hippodrome", "market"], transport: ["airport", "station", "bus-station", "border-crossing", "checkpoint", "terminal"],
+    leisure: ["stadium", "hippodrome", "market"], transport: ["airport", "station", "bus-station", "terminal"], crossing: ["border-crossing", "checkpoint"],
     industry: ["dam", "power", "mine", "industry", "oilfield"], nature: ["peak", "pass", "lake", "reservoir", "river-point", "spring", "park", "river", "canal", "glacier", "range", "valley", "desert"],
     heritage: ["ruins", "heritage", "landmark"], military: ["military"]
   };
-  const GCOL = { worship: "#7b5ea7", civic: "#3f6fb0", leisure: "#e07b39", transport: "#1f8a9a", industry: "#6f6f6f", nature: "#3d8b4f", heritage: "#b0583a", military: "#8b2e2e", other: "#8a8a8a" };
+  const GCOL = { worship: "#7b5ea7", civic: "#3f6fb0", leisure: "#e07b39", transport: "#1f8a9a", industry: "#6f6f6f", nature: "#3d8b4f", heritage: "#b0583a", military: "#8b2e2e", crossing: "#9b2c2c", other: "#8a8a8a" };
   const groupOf = k => Object.keys(GROUP).find(g => GROUP[g].includes(k)) || "other";
   const PLACE_RANK = { capital: 1, city: 2, town: 3, village: 5, hamlet: 7, suburb: 6, quarter: 6, neighbourhood: 7, district: 4, "zone-area": 4, "foreign-city": 3, "foreign-town": 5 };
 
-  const POI_FILTER = ["!=", ["get", "kind"], "river-point"];
+  const POI_FILTER = ["!", ["in", ["get", "kind"], ["literal", ["river-point", "border-crossing", "checkpoint"]]]];     // crossings have their own layers
+  // crossing status (data/features.json "status"): colour and whether it shows from afar
+  const XCOL = { main: "#1f5fa8", "line-main": "#9b2c2c", line: "#9b2c2c", local: "#2a9d8f", clan: "#b5651d", minor: "#8a8a8a", closed: "#555555", internal: "#6a6a6a" };
+  const XMAJOR = ["main", "line-main", "clan", "line"];
   function fc(features) { return { type: "FeatureCollection", features }; }
   function pointFeat(p, extra) { return { type: "Feature", id: undefined, geometry: { type: "Point", coordinates: [p.lon, p.lat] }, properties: Object.assign({ id: p.id, label: nameOf(p), kind: p.kind }, extra) }; }
 
@@ -150,6 +153,15 @@
     sym("kt-peak", g => { g.beginPath(); g.moveTo(6, 1.5); g.lineTo(11, 10.5); g.lineTo(1, 10.5); g.closePath(); g.fillStyle = "#7a6248"; g.fill(); g.strokeStyle = "#fff"; g.lineWidth = 1; g.stroke(); });
     sym("kt-pass", g => { g.strokeStyle = "#fff"; g.lineWidth = 3; g.beginPath(); g.moveTo(2, 3); g.quadraticCurveTo(6, 7, 2, 11); g.moveTo(10, 3); g.quadraticCurveTo(6, 7, 10, 11); g.stroke();
       g.strokeStyle = "#7a6248"; g.lineWidth = 1.6; g.stroke(); });
+    // crossing marks: a gate bar across a road, coloured by status (closed ones crossed through)
+    Object.entries(XCOL).forEach(([st, col]) => sym("kt-x-" + st, g => {
+      const big = XMAJOR.includes(st); const w = big ? 10 : 8, o = (12 - w) / 2;
+      g.fillStyle = "#fff"; g.fillRect(o - 1, o - 1, w + 2, w + 2);
+      g.fillStyle = col; g.fillRect(o, o, w, w);
+      g.fillStyle = "#fff"; g.fillRect(o + 1.5, 5.2, w - 3, 1.6);
+      if (st === "closed") { g.strokeStyle = "#fff"; g.lineWidth = 1.4; g.beginPath(); g.moveTo(o + 1, o + 1); g.lineTo(o + w - 1, o + w - 1); g.moveTo(o + w - 1, o + 1); g.lineTo(o + 1, o + w - 1); g.stroke(); }
+      if (st === "clan") { g.fillStyle = "#fff"; g.beginPath(); g.arc(6, 6, 1.6, 0, 7); g.fill(); }
+    }));
     // grey wash over the neighbours: a world box with Irad cut out
     const holes = [];
     D.irad.features[0].geometry.coordinates.forEach(poly => holes.push(poly[0]));
@@ -165,7 +177,7 @@
     map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: (PLACE_RANK[p.kind] || 6) + (p.confidence === "osm" ? 0.5 : 0), pop: p.pop || 0 }))) });
     map.addSource("nature", { type: "geojson", data: fc(D.nature.filter(f => !f.line && !["river", "canal"].includes(f.kind)).map(f => pointFeat(f, { elev: f.elev ? f.elev.toLocaleString("en-GB") + " m" : "", area: f.area || 0, big: (f.area || 0) >= 3 ? 1 : 0 }))) });
     map.addSource("landforms", { type: "geojson", data: fc(D.nature.filter(f => f.line).map(f => ({ type: "Feature", properties: { id: f.id, kind: f.kind, label: nameOf(f) }, geometry: { type: "LineString", coordinates: f.line } }))) });
-    map.addSource("feats", { type: "geojson", data: fc(D.feats.map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "" }))) });
+    map.addSource("feats", { type: "geojson", data: fc(D.feats.map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "", st: f.status || "" }))) });
     map.addSource("neighbours", { type: "geojson", data: fc([
       ["Kazakhstan", "Kazakstan", "Казахстан", 75.9, 44.9], ["Kazakhstan", "Kazakstan", "Казахстан", 67.2, 45.6], ["Kyrgyzstan", "Kırgızstan", "Киргизия", 75.4, 41.95],
       ["Uzbekistan", "Özbekstan", "Узбекистан", 69.6, 41.25], ["Tajikistan", "Tajikstan", "Таджикистан", 70.2, 39.6]
@@ -235,6 +247,11 @@
         layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": 11.5, "text-offset": [0, 0.9], "text-anchor": "top", "text-max-width": 9, "text-optional": true,
           "symbol-sort-key": ["match", ["get", "kind"], ["peak", "pass", "lake", "reservoir"], 0, 1] },
         paint: { "text-color": ["match", ["get", "g"], ...Object.entries(GCOL).flat(), "#555"], "text-halo-color": C.halo, "text-halo-width": 1.5 }, _g: "poi" },
+      ...[["crossing-major", 6.5, 8, ["in", ["get", "st"], ["literal", XMAJOR]]], ["crossing-minor", 9.5, 11.5, ["!", ["in", ["get", "st"], ["literal", XMAJOR]]]]].map(([id, mz, lz, f]) => (
+        { id, type: "symbol", source: "feats", minzoom: mz, filter: ["all", ["in", ["get", "kind"], ["literal", ["border-crossing", "checkpoint"]]], f],
+          layout: { "icon-image": ["concat", "kt-x-", ["case", ["==", ["get", "st"], ""], "line", ["get", "st"]]], "icon-allow-overlap": true, "symbol-sort-key": 0,
+            "text-field": ["step", ["zoom"], "", lz, ["get", "label"]], "text-font": textFont("r"), "text-size": 11, "text-offset": [0, 0.9], "text-anchor": "top", "text-optional": true, "text-max-width": 9 },
+          paint: { "text-color": ["match", ["get", "st"], ...Object.entries(XCOL).flat(), "#9b2c2c"], "text-halo-color": C.halo, "text-halo-width": 1.4 }, _g: "poi" })),
       { id: "nature-label", type: "symbol", source: "feats", minzoom: 8, maxzoom: 11, filter: ["in", ["get", "kind"], ["literal", ["peak", "pass", "lake", "reservoir", "park"]]],
         layout: { "text-field": ["get", "label"], "text-font": textFont("i"), "text-size": 11, "text-max-width": 8,
           "icon-image": ["match", ["get", "kind"], "peak", "kt-peak", "pass", "kt-pass", ""], "text-anchor": ["match", ["get", "kind"], "peak", "top", "pass", "top", "center"],
@@ -364,7 +381,7 @@
   function pick(p) { $("#results").hidden = true; qEl.value = nameOf(p); $("#qClear").hidden = false; openPlace(p, true); qEl.blur(); }
 
   /* ---------- category chips ---------- */
-  const CHIPS = [["worship", "⛪"], ["leisure", "🏟️"], ["transport", "🚉"], ["civic", "🏛️"], ["heritage", "🏺"], ["nature", "⛰️"]];
+  const CHIPS = [["worship", "⛪"], ["leisure", "🏟️"], ["transport", "🚉"], ["civic", "🏛️"], ["heritage", "🏺"], ["nature", "⛰️"], ["crossing", "🛂"]];
   $("#chips").innerHTML = CHIPS.map(([g, e]) => `<button type="button" data-chip="${g}"><span>${e}</span>${esc(t("grp_" + g))}</button>`).join("");
   let chipOn = null;
   $("#chips").addEventListener("click", e => {
@@ -376,6 +393,7 @@
     if (chipOn) {
       const cb = $('[data-layer="poi"]'); if (!cb.checked) { cb.checked = true; setGroup("poi", true); }
       map.setLayerZoomRange("poi-dot", 5, 24); map.setLayerZoomRange("poi-label", 9, 24);
+      if (chipOn === "crossing") { map.setLayerZoomRange("crossing-major", 5, 24); map.setLayerZoomRange("crossing-minor", 5, 24); }
       map.setPaintProperty("poi-dot", "circle-opacity", 1);
       const pts = D.feats.filter(x => groupOf(x.kind) === chipOn);
       if (pts.length) {
@@ -385,6 +403,7 @@
       toast(t("chipShown", { n: pts.length, g: t("grp_" + chipOn).toLowerCase() }));
     } else {
       map.setLayerZoomRange("poi-dot", 9, 24); map.setLayerZoomRange("poi-label", 11, 24);
+      map.setLayerZoomRange("crossing-major", 6.5, 24); map.setLayerZoomRange("crossing-minor", 9.5, 24);
       map.setPaintProperty("poi-dot", "circle-opacity", ["interpolate", ["linear"], ["zoom"], 9, ["case", ["==", ["get", "g"], "nature"], 1, 0], 11, 1]);
     }
   });
@@ -415,6 +434,7 @@
       : [locName(p.city, true), zone].filter(Boolean).join(" · ");
     const facts = [];
     if (p.pop) facts.push([t("population"), Number(p.pop).toLocaleString(LANG === "ru" ? "ru-RU" : "en-GB")]);
+    if (p.status) facts.push([t("status"), t("st_" + p.status)]);
     if (p.elev) facts.push([t("elevation"), Number(p.elev).toLocaleString("en-GB") + " m"]);
     if (p.length) facts.push([t("length"), p.length.toLocaleString("en-GB") + " km" + (p.kind === "river" || p.kind === "canal" ? " " + t("inIrad") : "")]);
     if (p.area) facts.push([t("area"), (p.area < 10 ? p.area.toFixed(1) : Math.round(p.area)) + " km²"]);
@@ -477,7 +497,7 @@
   }
 
   /* ---------- map clicks ---------- */
-  const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "nature-big", "nature-osm-label", "nature-pass", "nature-small", "landform-label", "quarter-label", "district-label", "zone-area-label"];
+  const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "crossing-major", "crossing-minor", "nature-big", "nature-osm-label", "nature-pass", "nature-small", "landform-label", "quarter-label", "district-label", "zone-area-label"];
   function openLine(f, ll) {
     const p = f.properties;
     if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });

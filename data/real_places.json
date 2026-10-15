@@ -1344,6 +1344,18 @@
 "district": "Talas"
 },
 {
+"id": "osm-2000971506",
+"name": "Tömönkü Chüy",
+"name_ru": "Нижнечуйское",
+"kind": "village",
+"lon": 74.35123,
+"lat": 43.18918,
+"pop": null,
+"confidence": "osm",
+"zone": "ISEZ",
+"district": "Chu"
+},
+{
 "id": "osm-2000974488",
 "name": "Stepnoe",
 "name_ru": "Степное",
@@ -1500,18 +1512,6 @@
 "confidence": "osm",
 "zone": "ISEZ",
 "district": "Lower Naryn"
-},
-{
-"id": "osm-2300671875",
-"name": "Jengish",
-"name_ru": "Жеңиш",
-"kind": "village",
-"lon": 72.25881,
-"lat": 41.02176,
-"pop": null,
-"confidence": "osm",
-"zone": null,
-"district": null
 },
 {
 "id": "osm-2300671882",
@@ -2300,6 +2300,18 @@
 "kind": "hamlet",
 "lon": 72.91429,
 "lat": 40.93478,
+"pop": null,
+"confidence": "osm",
+"zone": "ISEZ",
+"district": "Lower Naryn"
+},
+{
+"id": "osm-2338025171",
+"name": "Tösh",
+"name_ru": "Тёш",
+"kind": "village",
+"lon": 72.62786,
+"lat": 40.87539,
 "pop": null,
 "confidence": "osm",
 "zone": "ISEZ",
@@ -4000,18 +4012,6 @@
 "district": null
 },
 {
-"id": "osm-11829276959",
-"name": "Uchkurgan",
-"name_ru": "Учкурган",
-"kind": "village",
-"lon": 72.56501,
-"lat": 40.93193,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
 "id": "osm-12694693968",
 "name": "Djalgyz Oruk",
 "name_ru": "Джалгыз Орук",
@@ -5227,8 +5227,8 @@
 "lat": 42.33252,
 "pop": null,
 "confidence": "osm",
-"zone": "ISEZ",
-"district": "Kara-Buura"
+"zone": "ATR",
+"district": null
 },
 {
 "id": "osm-1496101836",
@@ -10283,18 +10283,6 @@
 "kind": "village",
 "lon": 71.66158,
 "lat": 41.37328,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2507122771",
-"name": "Sarydala",
-"name_ru": "Сарыдала",
-"kind": "village",
-"lon": 70.44688,
-"lat": 41.15456,
 "pop": null,
 "confidence": "osm",
 "zone": "ATR",

@@ -17,6 +17,7 @@ if [ -n "$3" ]; then python3 build/place_sites.py "$3"; fi   # railways smoothed
 python3 build/make_line.py "$DEM" "$OSM"        # ISEZ/ATR, districts, Qara-Chik line, restricted zone
 python3 build/place_checkpoints.py              # named checkpoints onto the line
 python3 build/make_crossings.py                 # a crossing point wherever a road or railway crosses the line
+python3 build/place_frontier_crossings.py "$RNET"   # the international crossings onto the frontier
 python3 build/check_zones.py --fix              # placed places take the zone they fall in
 python3 build/tag_zones.py                      # tribal places tagged with their UN planning zone
 python3 build/make_bozkorgon.py "$DEM"                    # Boz-Korgon restricted area from the terrain

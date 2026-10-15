@@ -102,6 +102,21 @@ def main():
             ok = ~(np.convolve(tun.astype(float), np.ones(w + 1), "valid")[:len(gr)] > 0)
             gr = np.where(ok, gr, 0)
         real = real | tun
+        # hairpin flights: legs closer together than the terrain grid, so a 500 m window reads the slope across them, not
+        # along the road. Where the road zigzags (500 m of road covering under 60% of that in a straight line) the grade
+        # is the flight's climb over its whole length on the road
+        if len(z) > w:
+            chord = np.hypot((Q[w:, 0] - Q[:-w, 0]) * KX, (Q[w:, 1] - Q[:-w, 1]) * KY)
+            zig = chord < 0.6 * (ss[w:] - ss[:-w])
+            zig = np.convolve(zig.astype(float), np.ones(w), "same") > 0
+            k = 0
+            while k < len(zig):
+                if not zig[k]: k += 1; continue
+                e = k
+                while e < len(zig) and zig[e]: e += 1
+                a_, b_ = k, min(e + w, len(z) - 1)
+                gr[k:e] = abs(z[b_] - z[a_]) / max(ss[b_] - ss[a_], 0.05) / 1000
+                k = e
         # only new-built stretches count (a real road is where it is; in narrow gorges the grid misreads its grade)
         newb = np.convolve((~real).astype(float), np.ones(w) / w, "valid")[:len(gr)] > 0.5 if len(z) > w else np.zeros(1, bool)
         steep_km = float(((gr > gmax + 0.02) & newb).sum() * 0.05)
