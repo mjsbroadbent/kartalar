@@ -78,10 +78,13 @@ public:
         if (is(nat, "peak") || is(nat, "volcano")) kind = "peak";
         else if (is(tag(n.tags(), "mountain_pass"), "yes") || is(nat, "saddle")) kind = "pass";
         else if (is(nat, "spring")) kind = "spring";
+        else if (is(tag(n.tags(), "barrier"), "border_control")) kind = "border";
+        else if (is(tag(n.tags(), "aeroway"), "aerodrome")) kind = "aerodrome";
+        else if (is(tag(n.tags(), "man_made"), "mineshaft") || is(tag(n.tags(), "man_made"), "adit")) kind = "mine";
         else if (is(nat, "glacier")) kind = "glacier";
         else if (is(pl, "locality") && *tag(n.tags(), "name")) kind = "locality";
         else if (!(is(pl, "city") || is(pl, "town") || is(pl, "village") || is(pl, "hamlet"))) return;
-        if (kind != pl && !*tag(n.tags(), "name")) return;      // unnamed peaks and passes are no use for labels
+        if (kind != pl && !*tag(n.tags(), "name") && kind != "border" && kind != "aerodrome") return;      // unnamed peaks and passes are no use for labels
         pl = kind.c_str();
         double x = n.location().lon(), y = n.location().lat();
         if (x < W || x > E || y < S || y > N) return;
@@ -169,6 +172,10 @@ public:
         if (detail && b.inmask == 0) return;
         std::string props = "\"class\":\"" + cls + "\"";
         if (layer == "water" || (layer == "landcover" && cls == "ice")) props += names(t);
+        if (layer == "aeroway" || (layer == "landuse" && (cls == "military" || cls == "quarry" || cls == "industrial"))) {   // for the lore check (curate.py drops them from the tiles)
+            props += names(t);
+            for (const char* k : {"icao", "iata", "aerodrome:type", "military", "disused", "abandoned"}) { const char* v = tag(t, k); if (*v) { std::string key = k; for (auto& ch : key) if (ch == ':') ch = '_'; props += ",\"" + key + "\":\"" + std::string(v).substr(0, 20) + "\""; } }
+        }
         if (layer == "building") { const char* lv = tag(t, "building:levels"); if (*lv) props += ",\"levels\":\"" + std::string(lv).substr(0, 4) + "\""; }
         try { emit(layer, props, fac.create_multipolygon(a), mz); seen_areas.insert(a.id()); } catch (...) {}
     }

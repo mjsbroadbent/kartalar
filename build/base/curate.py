@@ -30,6 +30,42 @@ SHRINK = [
 ]
 SG = 0.0005   # ~45 m grid for the town masks
 DETAIL_LAYERS = {"building", "landuse", "park"}
+
+# real infrastructure inside Irad, against the lore (build/audit_infra.py lists it): (lon, lat, radius km, action)
+#   remove  - not there in Irad (a working open pit under the clans' mining moratorium, a Kazakh-Kyrgyz post, a cleared plant)
+#   disused - there, but closed since the Soviet years: drawn faint (runways, works, pits)
+SITES = [
+    (72.734, 42.293, 3.5, "remove"),    # Jerooy gold pit: tribal Talas Alatau, moratorium
+    (71.528, 42.184, 3.5, "remove"),    # "Vertex Gold" pit below Kök-Suu Peak
+    (71.764, 42.379, 2.0, "remove"),    # Shiraljin gold: the Karakoyun clan's own valley
+    (74.260, 43.619, 1.8, "remove"),    # Shatyrkul copper pit beside Boz-Korgon
+    (71.277, 42.933, 1.8, "remove"),    # Aulie-Ata machine works: demolished with the old city
+    (71.098, 42.948, 2.5, "remove"),    # phosphorus plant west of Aulie-Ata: demolished, back to fields
+    (71.499, 41.396, 0.5, "remove"), (71.678, 41.422, 0.5, "remove"), (73.183, 41.038, 0.5, "remove"),   # Kyrgyz army posts in tribal land
+    (71.301, 42.858, 3.0, "disused"),   # Aulie-Ata airfield, closed 1994
+    (72.726, 42.967, 3.0, "disused"),   # Kulan (Lugovoy) bomber dispersal field, closed 1992, in the restricted-weapons zone
+    (72.947, 44.272, 2.5, "disused"),   # Moiynkum reserve airfield
+    (71.710, 42.716, 1.5, "disused"), (70.506, 43.206, 1.5, "disused"),   # Semetey and Karatau strips
+    (71.069, 41.262, 2.0, "disused"), (71.054, 41.258, 1.0, "disused"),   # Bozymchak adits
+    (71.450, 42.025, 4.5, "disused"),   # Kuru-Tegerek copper prospect and its pads
+    (70.949, 41.481, 1.5, "disused"), (73.981, 41.177, 2.0, "disused"),   # Fullgold, Makmal
+    (71.150, 41.510, 3.5, "disused"),   # Terek-Sai mines
+    (71.139, 41.967, 1.8, "disused"), (71.174, 42.030, 2.5, "disused"),   # Chatkal highland workings
+    (72.705, 45.116, 4.0, "disused"),   # Akbakay pits
+    (69.615, 43.585, 14.0, "disused"), (70.140, 43.374, 4.0, "disused"), (70.468, 43.148, 1.8, "disused"), (70.527, 43.194, 1.5, "disused"),   # Karatau phosphorite
+    (71.081, 44.335, 5.0, "disused"), (71.264, 44.298, 2.0, "disused"), (71.552, 44.435, 2.5, "disused"),   # Amangeldy gas wells, capped
+    (73.959, 45.203, 2.0, "disused"),   # Ülken power-plant site, abandoned 1991
+    (72.652, 42.982, 1.0, "disused"),   # Kulan gas compressor station, dry since 1991
+    (72.705, 42.426, 1.2, "disused"),   # Kümüshtü tailings, capped
+]
+SITE_LAYERS = {"landuse": ("industrial", "quarry", "military"), "aeroway": None}
+
+
+def site_action(layer, cls, x, y):
+    if layer not in SITE_LAYERS or (SITE_LAYERS[layer] and cls not in SITE_LAYERS[layer]): return None
+    for sx, sy, r, act in SITES:
+        if math.hypot((x - sx) * 111.32 * math.cos(math.radians(sy)), (y - sy) * KY) < r: return act
+    return None
 DETAIL_ROADS = {"minor", "service", "track", "path", "transit"}
 
 
@@ -364,6 +400,13 @@ def main():
                 g2 = lake_fix(g)
                 if g2 is None: count("water duplicate dropped"); continue
                 if g2 is not g: f["geometry"] = g = g2; count("water redrawn at its surface")
+            if layer in SITE_LAYERS:
+                cc = np.array(first_ring_pts(g) if g["type"] in ("Polygon", "MultiPolygon") else lines_of(g)[0]).mean(0)
+                act = site_action(layer, cls, cc[0], cc[1])
+                if act == "remove": count(f"{layer} site removed"); continue
+                if act == "disused": f["properties"]["disused"] = 1; count(f"{layer} site disused")
+            if layer in ("landuse", "aeroway"):      # names and refs are kept in the extract for the lore check only
+                f["properties"] = {k: v for k, v in f["properties"].items() if k in ("class", "brunnel", "disused")}
             if layer in ("waterway", "water") or (layer == "landcover" and cls == "ice"):
                 nm = nature_name(f["properties"])
                 f["properties"] = {k: v for k, v in f["properties"].items() if not k.startswith("name")}
