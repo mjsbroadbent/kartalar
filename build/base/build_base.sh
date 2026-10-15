@@ -12,7 +12,7 @@ mkdir -p "$W/ext" "$W/cur" "$ROOT/tiles"
 [ -x "$T/extract" ] || g++ -O2 -std=c++17 -I "$T/libosmium/include" -I "$T/protozero/include" "$B/extract.cpp" -o "$T/extract" -lz -lexpat -lbz2 -pthread
 python3 "$B/make_mask.py" "$W/mask.bin"
 rm -f "$W"/ext/*.ndjson; "$T/extract" "$W/mask.bin" "$W/ext" "$@"
-python3 "$B/curate.py" "$W/ext" "$W/cur"
+python3 "$B/curate.py" "$W/ext" "$W/cur"     # FINE_DEM=<make_fine_dem.py output> redraws reservoirs at their surface
 TC="$T/tippecanoe/tippecanoe -q --force -Z3 --drop-densest-as-needed --simplification=4 --no-feature-limit --maximum-tile-bytes=1000000 --read-parallel -A ©OpenStreetMap"
 C="$W/cur"
 $TC -z12 --detect-shared-borders -o "$ROOT/tiles/area.pmtiles" -n "Kartalar areas" $C/water.ndjson $C/landcover.ndjson $C/landuse.ndjson $C/park.ndjson $C/aeroway.ndjson

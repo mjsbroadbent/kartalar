@@ -1,1 +1,1 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"k":"building","t":"building"},"geometry":{"type":"Polygon","coordinates":[[[72.17913,41.39996],[72.17917,41.40005],[72.17934,41.40001],[72.17931,41.39992],[72.17913,41.39996]]]}}]}
+{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"k":"building","t":"building"},"geometry":{"type":"Polygon","coordinates":[[[72.17913,41.39996],[72.17917,41.40005],[72.1793,41.40002],[72.17926,41.39993],[72.17913,41.39996]]]}}]}

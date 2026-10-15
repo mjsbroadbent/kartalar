@@ -456,7 +456,21 @@ def build(C):
             if k != "road" or p_["k"] not in ("mid", "major"): continue
             T = parts[0]
             L = float(np.hypot(np.diff(T[:, 0]) * kt, np.diff(T[:, 1]) * KY).sum())
-            for m, e in crossings(T): cross.append((L, n_, T[(m + e - 1) // 2]))
+            for m, e in crossings(T):
+                # the street across the river: straight and square to it (the river runs along the band's long axis)
+                a_, b_ = T[max(m - 1, 0)], T[min(e, len(T) - 1)]
+                span = math.hypot((b_[0] - a_[0]) * kt, (b_[1] - a_[1]) * KY)
+                q_ = T[(m + e - 1) // 2]
+                jj_ = int(round((q_[1] - lats[0]) / GRID)); ii_ = int(round((q_[0] - lons[0]) / GRID))
+                rj_, ri_ = rj[jj_, ii_], ri[jj_, ii_]
+                win = riv[max(rj_ - 4, 0):rj_ + 5, max(ri_ - 4, 0):ri_ + 5]
+                ys_, xs_ = np.nonzero(win)
+                if len(xs_) >= 3:
+                    cov = np.cov(np.vstack([xs_ * kt, ys_ * KY])); ev, evec = np.linalg.eigh(cov); tv = evec[:, -1]
+                    dv = np.array([(b_[0] - a_[0]) * kt, (b_[1] - a_[1]) * KY]); dv /= (np.hypot(*dv) + 1e-12)
+                    ang = math.degrees(math.asin(min(1.0, abs(dv[0] * tv[1] - dv[1] * tv[0]))))
+                else: ang = 90
+                if ang >= 70 and span < 0.25: cross.append((L, n_, q_))
         cross.sort(key=lambda c_: -c_[0])
         per = {}
         for L, n_, q in cross: per[n_] = per.get(n_, 0) + 1

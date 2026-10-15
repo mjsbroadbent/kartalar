@@ -117,6 +117,63 @@ def prune_orphans(feats, route_d, count):
     return keep
 
 
+def lake_levels():
+    """a lake or reservoir outline drawn above its own water (a reservoir mapped at full supply level, with dry shore
+    inside it) is redrawn at the water surface the terrain shows; a smaller outline of the same water inside a bigger one
+    is dropped. Needs FINE_DEM (build/base/make_fine_dem.py)."""
+    import struct
+    from scipy import ndimage
+    fn = os.environ.get("FINE_DEM")
+    if not fn or not os.path.exists(fn): return None
+    b = open(fn, "rb").read()
+    L0, A0, ST = struct.unpack("<3d", b[8:32]); NX, NY = struct.unpack("<2i", b[32:40])
+    D = np.frombuffer(b[64:], dtype="<i2").reshape(NY, NX)
+    big = []
+    for f in load("water"):
+        g = f["geometry"]
+        for poly in ([g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]):
+            R = np.array(poly[0])
+            if len(R) > 200: big.append(R)
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+
+    def fix(g):
+        polys = [g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]
+        R = np.array(polys[0][0])
+        if len(polys) == 1 and len(R) < 400:     # a small outline lying inside a bigger outline of the same water
+            for B in big:
+                if B is not R and len(B) > len(R) and Path(B).contains_points(R[::max(1, len(R) // 20)]).all(): return None
+        x0, x1, y0, y1 = R[:, 0].min(), R[:, 0].max(), R[:, 1].min(), R[:, 1].max()
+        if (x1 - x0) * (y1 - y0) * 9000 < 20.0 or x0 < L0 or y0 < A0 or x1 > L0 + NX * ST or y1 > A0 + NY * ST: return g
+        i0, i1, j0, j1 = int((x0 - L0) / ST) - 2, int((x1 - L0) / ST) + 3, int((y0 - A0) / ST) - 2, int((y1 - A0) / ST) + 3
+        X, Y = np.meshgrid(L0 + np.arange(i0, i1) * ST, A0 + np.arange(j0, j1) * ST)
+        Q = np.column_stack([X.ravel(), Y.ravel()]); inside = np.zeros(len(Q), bool)
+        for poly in polys:
+            m = Path(np.array(poly[0])).contains_points(Q)
+            for h in poly[1:]: m &= ~Path(np.array(h)).contains_points(Q)
+            inside |= m
+        inside = inside.reshape(X.shape); Z = D[j0:j1, i0:i1].astype(float)
+        if inside.sum() < 200: return g
+        z = Z[inside]; level = np.median(z)
+        if np.percentile(z, 95) - level < 10 or inside.sum() * (ST * 111) ** 2 * 0.75 < 20: return g     # at its surface already, or small
+        wet = inside & (Z <= level + 2)
+        wet = ndimage.binary_opening(wet, iterations=1)
+        lab, n = ndimage.label(wet)
+        if not n: return g
+        sizes = ndimage.sum(wet, lab, range(1, n + 1)); wet = np.isin(lab, 1 + np.where(sizes > 0.05 * sizes.max())[0])
+        fig = plt.figure(); cs = plt.contour(X, Y, ndimage.gaussian_filter(wet.astype(float), 0.8), levels=[0.5]); segs = cs.allsegs[0]; plt.close(fig)
+        rings = sorted([s_ for s_ in segs if len(s_) > 6], key=lambda s_: -abs(np.sum(s_[:-1, 0] * s_[1:, 1] - s_[1:, 0] * s_[:-1, 1])))
+        out = []
+        for s_ in rings:
+            r = [[round(float(x), 6), round(float(y), 6)] for x, y in s_]
+            if r[0] != r[-1]: r.append(r[0])
+            host = next((P_ for P_ in out if Path(np.array(P_[0])).contains_point(r[0])), None)
+            if host is not None: host.append(r)
+            else: out.append([r])
+        print(f"  lake at {np.mean(R[:, 0]):.3f},{np.mean(R[:, 1]):.3f}: outline at up to {np.percentile(z, 95):.0f} m, water at {level:.0f} m; redrawn")
+        return {"type": "MultiPolygon", "coordinates": out} if out else g
+    return fix
+
+
 def raster_polys(rings_list, x0, y0, nx, ny):
     M = np.zeros((ny, nx), bool)
     xs = x0 + np.arange(nx) * SG; ys = y0 + np.arange(ny) * SG
@@ -236,10 +293,15 @@ def main():
     stats = {}
     def count(k): stats[k] = stats.get(k, 0) + 1
 
+    lake_fix = lake_levels()
     for layer in ["transportation", "waterway", "water", "landcover", "landuse", "park", "building", "aeroway"]:
         out = []
         for f in load(layer):
             g = f["geometry"]; cls = f["properties"].get("class")
+            if layer == "water" and cls == "lake" and lake_fix:
+                g2 = lake_fix(g)
+                if g2 is None: count("water duplicate dropped"); continue
+                if g2 is not g: f["geometry"] = g = g2; count("water redrawn at its surface")
             if g["type"] in ("Polygon", "MultiPolygon"):
                 pts = np.array(first_ring_pts(g)); c0 = pts.mean(0)[None]
                 if layer != "water" and layer != "landcover" and in_city(c0)[0]: count(layer + " in city"); continue

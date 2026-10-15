@@ -49,14 +49,16 @@ def main():
     roads = [r for r in routes if r.get("kind") in ("road", "highway", "railway") and r.get("coords")]
     specs = {s["id"]: s for s in json.load(open(os.path.join(ROOT, "build/route_specs.json")))}
     # real network
-    net, bridges = [], []
+    net, bridges, railn = [], [], []
     for f in load("transportation"):
         cl = f["properties"]["class"]
+        if cl == "rail" and f["tippecanoe"]["minzoom"] <= 8:
+            for c in parts(f["geometry"]): railn.append(resample(c, 0.03)[0])
         if cl in ("path", "rail", "transit"): continue
         for c in parts(f["geometry"]):
             Q, _ = resample(c, 0.03); net.append(Q)
             if f["properties"].get("brunnel") == "bridge": bridges.append(Q)
-    NET = np.vstack(net); ntree = cKDTree(NET * [KX, KY])
+    NET = np.vstack(net); road_tree = cKDTree(NET * [KX, KY]); rail_tree = cKDTree(np.vstack(railn) * [KX, KY])
     btree = cKDTree(np.vstack(bridges) * [KX, KY]) if bridges else None
     global LAKES
     LAKES = []
@@ -82,7 +84,7 @@ def main():
     out = ["# Road audit (build/audit_roads.py)", "",
            "Grades are over 500 m windows from the ~90 m terrain grid; GRADE counts only new-built stretches. *Real* = within 40 m of an OpenStreetMap road or track.",
            "Flags: GRADE steeper than the road's ruling grade + 2 points for more than 1 km in all; SIDE new-built over 1 km on side slopes over 30%;",
-           "BRIDGES new bridges (no real road crossing within 200 m); ZIGZAG the same river or canal crossed twice within 3 km; WATER across a lake; BEND a turn over 100 degrees on easy ground;",
+           "BRIDGES new bridges (no real road crossing within 200 m); ZIGZAG the same river or canal crossed twice within 3 km; SKEW a new bridge less than 75 degrees to its river; WATER across a lake; BEND a turn over 100 degrees on easy ground;",
            "PARALLEL new road running close beside a real road; END an end more than 1 km from any settlement, feature, other route or real road; EXIT where the road leaves Irad with no real road carrying on.", ""]
     summary = []
     for r in roads:
@@ -91,6 +93,7 @@ def main():
         w = 10   # 10 x 50 m = 500 m
         gr = np.abs(z[w:] - z[:-w]) / (ss[w:] - ss[:-w]) / 1000 if len(z) > w else np.zeros(1)
         gmax = specs.get(r["id"], {}).get("gmax", 0.06 if r["kind"] == "road" else 0.05)
+        ntree = rail_tree if r["kind"] == "railway" else road_tree     # a railway's real line is real track
         d_real, _ = ntree.query(Q * [KX, KY]); real = d_real < 0.04
         # only new-built stretches count (a real road is where it is; in narrow gorges the grid misreads its grade)
         newb = np.convolve((~real).astype(float), np.ones(w) / w, "valid")[:len(gr)] > 0.5 if len(z) > w else np.zeros(1, bool)
@@ -120,6 +123,12 @@ def main():
                 x = P[i] + t[i, j] * (P[i + 1] - P[i])
                 hits.append((cum[i] + t[i, j] * seglen[i], x))
                 if not ntree.query_ball_point(x * [KX, KY], 0.2): nbridge[0] += 1
+                if ntree.query(x * [KX, KY])[0] > 0.04:     # a new bridge: how square it crosses
+                    dv = (P[i + 1] - P[i]) * [KX, KY]; tv = (Rv[j + 1] - Rv[j]) * [KX, KY]
+                    ang = math.degrees(math.asin(min(1, abs(dv[0] * tv[1] - dv[1] * tv[0]) / (np.hypot(*dv) * np.hypot(*tv) + 1e-12))))
+                    Wk = Rv * [KX, KY]; dd = dv / (np.hypot(*dv) + 1e-12)
+                    along = ang < 25 and all(np.hypot(*(Wk - (x * [KX, KY] + dd * s_)).T).min() < 0.05 for s_ in (-0.15, -0.075, 0.075, 0.15))
+                    if ang < 75 and not along: flags.append(f"SKEW new bridge crosses the {cls} at {ang:.0f} deg at {x[0]:.4f},{x[1]:.4f}")
             hits.sort(key=lambda h: h[0])
             newx = lambda x: ntree.query(x * [KX, KY])[0] > 0.04    # on a real road the crossings are the real road's
             for (s0, x0), (s1, x1) in zip(hits, hits[1:]):    # the same river crossed twice in a short way: a zigzag

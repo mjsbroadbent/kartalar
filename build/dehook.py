@@ -12,7 +12,7 @@ KY = 110.57
 
 
 DEM = None
-if len(sys.argv) > 1:      # a terrain grid: hairpins on a climb are left alone
+if len(sys.argv) > 1 and os.path.basename(sys.argv[0]) == "dehook.py":      # a terrain grid: hairpins on a climb are left alone
     b = open(sys.argv[1], "rb").read()
     L0, A0, ST = struct.unpack("<3d", b[8:32]); NX, NY = struct.unpack("<2i", b[32:40])
     DEM = np.frombuffer(b[64:], dtype="<i2").reshape(NY, NX).astype(np.float32)
@@ -85,6 +85,87 @@ def follow_real(c, a, b_, net, classes=("road:trunk", "road:primary", "road:seco
     return [list(p) for p in P[:ia]] + seg + [list(p) for p in P[ib + 1:]], True
 
 
+def load_water():
+    fn = os.environ.get("ROUTE_RIVERS")
+    out = []
+    if fn and os.path.exists(fn):
+        for line in open(fn):
+            f = json.loads(line)
+            if f["properties"]["class"] not in ("river", "canal"): continue
+            g = f["geometry"]
+            for c in ([g["coordinates"]] if g["type"] == "LineString" else g["coordinates"]): out.append(np.array(c, float))
+    return out
+
+
+def seg_hits(a, b_, Rv):
+    """crossings of segment a-b with polyline Rv: [(t along a-b, river segment index)]"""
+    C, D = Rv[:-1], Rv[1:]
+    den = (b_[0] - a[0]) * (D[:, 1] - C[:, 1]) - (b_[1] - a[1]) * (D[:, 0] - C[:, 0])
+    with np.errstate(divide="ignore", invalid="ignore"):
+        t = ((C[:, 0] - a[0]) * (D[:, 1] - C[:, 1]) - (C[:, 1] - a[1]) * (D[:, 0] - C[:, 0])) / den
+        u = ((C[:, 0] - a[0]) * (b_[1] - a[1]) - (C[:, 1] - a[1]) * (b_[0] - a[0])) / den
+    k = np.where((t >= 0) & (t <= 1) & (u >= 0) & (u <= 1))[0]
+    return [(float(t[i]), int(i)) for i in k]
+
+
+def along_bank(P, i, t, Rv, kx, span=0.15, tol=0.05):
+    """the road runs along this water for `span` km either side of the meeting point (the lines merely touch)"""
+    X = P[i] + t * (P[i + 1] - P[i]); d_ = (P[i + 1] - P[i]) * [kx, KY]; d_ /= (np.hypot(*d_) + 1e-12)
+    W = Rv * [kx, KY]
+    for s_ in (-span, -span / 2, span / 2, span):
+        q = X * [kx, KY] + d_ * s_
+        if np.hypot(*(W - q).T).min() > tol: return False
+    return True
+
+
+def square_bridges(c, water, real_pts, half=0.07, reach=0.35):
+    """every new bridge crosses its river square on and short: the road comes straight at the river for `half` km on
+    each side of it; real bridges (on a real road) are left as they are. Returns (coords, number squared)"""
+    P = np.array(c, float); kx = 111.32 * math.cos(math.radians(P[:, 1].mean())); n_sq = 0
+    x0, x1, y0, y1 = P[:, 0].min(), P[:, 0].max(), P[:, 1].min(), P[:, 1].max()
+    water = [Rv for Rv in water if not (Rv[:, 0].max() < x0 or Rv[:, 0].min() > x1 or Rv[:, 1].max() < y0 or Rv[:, 1].min() > y1)]
+    from scipy.spatial import cKDTree
+    rtree = cKDTree(np.asarray(real_pts) * [kx, KY]) if len(real_pts) else None
+    i = 0
+    while i < len(P) - 1:
+        a, b_ = P[i], P[i + 1]; hit = None
+        dv = (b_ - a) * [kx, KY]
+        for Rv in water:      # every crossing on this stretch; the first oblique new one is squared
+            if Rv[:, 0].max() < min(a[0], b_[0]) or Rv[:, 0].min() > max(a[0], b_[0]) or Rv[:, 1].max() < min(a[1], b_[1]) or Rv[:, 1].min() > max(a[1], b_[1]): continue
+            for t, k in seg_hits(a, b_, Rv):
+                X_ = a + t * (b_ - a)
+                if rtree is not None and rtree.query(X_ * [kx, KY])[0] < 0.04: continue      # a real bridge
+                tv_ = (Rv[k + 1] - Rv[k]) * [kx, KY]; tv_ /= (np.hypot(*tv_) + 1e-12)
+                sin_ = abs(dv[0] * tv_[1] - dv[1] * tv_[0]) / (np.hypot(*dv) + 1e-12)
+                if sin_ > math.sin(math.radians(80)): continue                              # square enough already
+                if sin_ < math.sin(math.radians(25)) and along_bank(P, i, t, Rv, kx): continue   # running along the bank, not across
+                if hit is None or t < hit[0]: hit = (t, Rv, k, tv_)
+        if not hit: i += 1; continue
+        t, Rv, k, tv = hit; X = a + t * (b_ - a)
+        nv = np.array([-tv[1], tv[0]])
+        if np.dot(dv, nv) < 0: nv = -nv                                  # point the normal the way the road goes
+        # braided channels and a canal beside the river go under the same bridge: the bridge spans them all
+        h_ = half
+        L0_ = X - nv * 0.3 / [kx, KY]; L1_ = X + nv * 0.3 / [kx, KY]
+        for Rv2 in water:
+            for t2, _k2 in seg_hits(L0_, L1_, Rv2):
+                d2 = abs(t2 - 0.5) * 0.6
+                if d2 < 0.25: h_ = max(h_, d2 + 0.04)
+        A = X - nv * h_ / [kx, KY]; B = X + nv * h_ / [kx, KY]
+        # the stretch of road within `reach` km either side of the crossing is replaced by: road -> A -> B -> road
+        seg = np.hypot(np.diff(P[:, 0]) * kx, np.diff(P[:, 1]) * KY); cum = np.concatenate([[0], np.cumsum(seg)])
+        sX = cum[i] + t * seg[i]
+        s0, s1 = max(0.0, sX - reach), min(cum[-1], sX + reach)
+        at = lambda s_: np.array([np.interp(s_, cum, P[:, 0]), np.interp(s_, cum, P[:, 1])])
+        k0 = int(np.searchsorted(cum, s0, side="right")); k1 = int(np.searchsorted(cum, s1, side="left"))
+        old_part = np.vstack([at(s0), P[k0:k1], at(s1)]); new_part = np.vstack([at(s0), A, B, at(s1)])
+        nx_ = lambda Q: sum(len(seg_hits(a2, b2, Rv2)) for Rv2 in water for a2, b2 in zip(Q[:-1], Q[1:]))
+        if nx_(new_part) > nx_(old_part): i += 1; continue        # squaring would cross more water (a gorge): leave it
+        P = np.vstack([P[:k0], at(s0), A, B, at(s1), P[k1:]]); n_sq += 1
+        i = k0 + 3
+    return [[round(float(x), 5), round(float(y), 5)] for x, y in P], n_sq
+
+
 RANK = ["fergana-mountain-transit-highway", "trans-talas-highway", "chu-highway", "talas-nurzhan-road", "kok-bel-road", "fergana-rim-road"]
 
 
@@ -136,4 +217,20 @@ if __name__ == "__main__":
         if r.get("kind") in ("road", "highway") and r.get("coords") and len(r["coords"]) > 3:
             r["coords"], n = dehook(r["coords"]); tot += n
             if n: print(f"  {r['id']}: {n} hooks straightened")
+    water = load_water()
+    if water and netf and os.path.exists(netf):
+        real_pts = []
+        for w in net:
+            if w["k"].startswith("road:"):
+                for a, b_ in zip(w["c"], w["c"][1:]):
+                    n_ = max(1, int(math.hypot((b_[0] - a[0]) * 82, (b_[1] - a[1]) * KY) / 0.02))
+                    real_pts += [[a[0] + (b_[0] - a[0]) * t / n_, a[1] + (b_[1] - a[1]) * t / n_] for t in range(n_)]
+        real_pts = np.array(real_pts)
+        for r in R:
+            if r.get("kind") in ("road", "highway") and r.get("coords") and len(r["coords"]) > 1:
+                tot_n = 0; c_ = r["coords"]
+                for _ in range(3):           # squaring one bridge can move the road onto the next bend: repeat
+                    c_, n = square_bridges(c_, water, real_pts); tot_n += n
+                    if not n: break
+                if tot_n: r["coords"] = c_; print(f"  {r['id']}: {tot_n} bridges squared to their river")
     json.dump(R, open(fn, "w"), ensure_ascii=False, indent=1)

@@ -72,13 +72,24 @@ def curvature(P, k=5):
     return kap
 
 
-def railify(P, Rmin, pin_start=1, pin_end=1, R_local=None, iters=600):
-    """smooth only where the curve is tighter than Rmin (R_local: per-point minimum radius), keeping pinned ends"""
+def on_segments(P, segs, tol=0.012):
+    m = np.zeros(len(P), bool)
+    for A, B in segs:
+        v = B - A; L2 = float(v @ v) + 1e-12
+        t = np.clip(((P - A) @ v) / L2, 0, 1); d = np.hypot(*(P - (A + t[:, None] * v)).T)
+        m |= d < tol
+    return m
+
+
+def railify(P, Rmin, pin_start=1, pin_end=1, R_local=None, iters=600, bridges=()):
+    """smooth only where the curve is tighter than Rmin (R_local: per-point minimum radius), keeping pinned ends and
+    the straight bridge approaches (bridges: [(A, B)] in km coordinates)"""
     P = resample(P)
     n = len(P)
     if n < 12: return P, 1e9
     Rl = np.full(n, Rmin) if R_local is None else R_local(P)
     pinned = np.zeros(n, bool); pinned[:pin_start] = True; pinned[n - pin_end:] = True
+    if bridges: pinned |= on_segments(P, bridges)
     sigma = 2.0
     for it in range(iters):
         kap = curvature(P)
@@ -92,6 +103,7 @@ def railify(P, Rmin, pin_start=1, pin_end=1, R_local=None, iters=600):
             P = resample(P); n = len(P)
             Rl = np.full(n, Rmin) if R_local is None else R_local(P)
             pinned = np.zeros(n, bool); pinned[:pin_start] = True; pinned[n - pin_end:] = True
+            if bridges: pinned |= on_segments(P, bridges)
     kap = curvature(P)
     free = ~pinned
     return P, (1 / kap[free].max() if (kap[free] > 0).any() else 1e9)
@@ -131,7 +143,22 @@ def town_radius(Rmain, Rtown, towns):
     return f
 
 
+import dehook as DH
+WATER = DH.load_water()
+SQUARE_RAIL = False   # squaring rail bridges after routing breaks the curve radii: the router's crossing cost does it instead
+REAL_RAIL = np.zeros((0, 2))
+
+
 def main():
+    global REAL_RAIL
+    if WATER:      # real track: its bridges are where they are
+        pts = []
+        for w in json.load(open(OSMF))["ways"]:
+            if w["k"].startswith("rail:"):
+                for a, b_ in zip(w["c"], w["c"][1:]):
+                    n_ = max(1, int(math.hypot((b_[0] - a[0]) * 82, (b_[1] - a[1]) * KY) / 0.02))
+                    pts += [[a[0] + (b_[0] - a[0]) * t / n_, a[1] + (b_[1] - a[1]) * t / n_] for t in range(n_)]
+        REAL_RAIL = np.array(pts) if pts else REAL_RAIL
     routes = json.load(open(os.path.join(ROOT, "data/routes.json"))); R = {r["id"]: r for r in routes}
     P = {p["id"]: p for p in json.load(open(os.path.join(ROOT, "data/settlements.json")))}
     lat0 = 43.0
@@ -168,7 +195,17 @@ def main():
             C = np.vstack([lead, Cr[1:]]) if len(lead) > 1 else Cr
             pin_s = 2                             # the switch itself stays on the parent's track
         rl = town_radius(L["R"], L.get("R_town", L["R"]), towns) if "R_town" in L else None
-        S, rmin = railify(C, L["R"], pin_start=pin_s, pin_end=1, R_local=rl)
+        # new bridges go straight across their river: a straight run of track either side, held while the curves are eased
+        bridges = []
+        if WATER and SQUARE_RAIL:
+            ll = np.array(to_ll(C, lat0)); sq, nsq = DH.square_bridges(ll.tolist(), WATER, REAL_RAIL, half=0.12, reach=0.9)
+            if nsq:
+                C2 = to_xy(sq, lat0); C = C2
+                for k_ in range(len(C2) - 1):
+                    a_, b_ = C2[k_], C2[k_ + 1]
+                    if abs(np.hypot(*(b_ - a_)) - 0.24) < 0.002 and k_ > 0: bridges.append((a_, b_))
+                print(f"  {lid}: {nsq} bridges squared to their river")
+        S, rmin = railify(C, L["R"], pin_start=pin_s, pin_end=1, R_local=rl, bridges=bridges)
         xy[lid] = S
         out = rdp(S, 0.0015)
         R[lid]["coords"] = to_ll(out, lat0)

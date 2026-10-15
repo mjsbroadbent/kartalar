@@ -99,14 +99,15 @@ def route(spec):
         avoid |= Path(np.asarray(poly)).contains_points(np.column_stack([GX.ravel(), GY.ravel()])).reshape(ny, nx)
     # the side of the nearest river each cell lies on (+1 / -1 within ~300 m of a river, 0 elsewhere): a step from one
     # side to the other is a river crossing and costs a bridge; running along the valley floor beside the river does not
-    side_r = np.zeros(Z.shape, np.int8)
-    rp, rt = [], []
-    for c in (RIVERS or []):
+    side_r = np.zeros(Z.shape, np.int8); tan_x = np.zeros(Z.shape, np.float32); tan_y = np.zeros(Z.shape, np.float32)
+    rp, rt, rw = [], [], []
+    wcell = np.zeros(Z.shape, np.float32)
+    for c, wgt in [(c_, 1.0) for c_ in (RIVERS or [])] + [(c_, 0.3) for c_ in (CANALS or [])]:   # a canal bridge is a small one
         if c[:, 0].max() < x0 or c[:, 0].min() > x1 or c[:, 1].max() < y0 or c[:, 1].min() > y1: continue
         P = c * [KX, KY]
         for a_, b2 in zip(P[:-1], P[1:]):
             L_ = math.hypot(*(b2 - a_)); n_ = max(1, int(L_ / 0.03)); t_ = (b2 - a_) / (L_ + 1e-12)
-            for k in range(n_): rp.append(a_ + (b2 - a_) * k / n_); rt.append(t_)
+            for k in range(n_): rp.append(a_ + (b2 - a_) * k / n_); rt.append(t_); rw.append(wgt)
     if rp:
         rp = np.array(rp); rt = np.array(rt); tree_r = cKDTree(rp)
         G2 = np.column_stack([GX.ravel() * KX, GY.ravel() * KY])
@@ -116,6 +117,10 @@ def route(spec):
         cr = rt[kk, 0] * rel[:, 1] - rt[kk, 1] * rel[:, 0]
         sv = np.zeros(len(G2), np.int8); sv[near] = np.sign(cr).astype(np.int8)
         side_r = sv.reshape(Z.shape)
+        tx_ = np.zeros(len(G2), np.float32); ty_ = np.zeros(len(G2), np.float32)
+        tx_[near] = rt[kk, 0]; ty_[near] = rt[kk, 1]
+        tan_x = tx_.reshape(Z.shape); tan_y = ty_.reshape(Z.shape)
+        wv = np.zeros(len(G2), np.float32); wv[near] = np.array(rw)[kk]; wcell = wv.reshape(Z.shape)
     # lakes and reservoirs: no new road across open water (real roads over dams and causeways stay usable)
     from matplotlib.path import Path as _P
     wet = np.zeros(Z.shape, bool)
@@ -143,7 +148,14 @@ def route(spec):
             zm = 0.5 * (za + zb)
             fe = 1 + np.maximum(0, (zm - spec.get("snowline", 2600)) / 400.0)
             av = 1 + 50 * (avoid[j0:j1, i0:i1] | avoid[j0 + dj:j1 + dj, i0 + di:i1 + di]) + 40 * (wet[j0:j1, i0:i1] | wet[j0 + dj:j1 + dj, i0 + di:i1 + di])
-            rv = spec.get("bridge_km", 0.8) * ((side_r[j0:j1, i0:i1].astype(np.int16) * side_r[j0 + dj:j1 + dj, i0 + di:i1 + di]) < 0)
+            # a bridge: costs more the more obliquely the step crosses the river (bridges go straight across, short)
+            crossing = (side_r[j0:j1, i0:i1].astype(np.int16) * side_r[j0 + dj:j1 + dj, i0 + di:i1 + di]) < 0
+            sx, sy = di * RES * KX / L, dj * RES * KY / L
+            tx2 = tan_x[j0:j1, i0:i1] + tan_x[j0 + dj:j1 + dj, i0 + di:i1 + di]; ty2 = tan_y[j0:j1, i0:i1] + tan_y[j0 + dj:j1 + dj, i0 + di:i1 + di]
+            tn = np.hypot(tx2, ty2) + 1e-9
+            sin_ = np.abs(sx * ty2 - sy * tx2) / tn
+            wq = np.maximum(wcell[j0:j1, i0:i1], wcell[j0 + dj:j1 + dj, i0 + di:i1 + di])
+            rv = spec.get("bridge_km", 0.8) * wq * crossing / np.maximum(sin_, 0.2) ** 2
             w = L * build * fg * fs * fe * av + rv
             rows.append(A.ravel()); cols.append(B.ravel()); wts.append(w.ravel())
     rows = np.concatenate(rows); cols = np.concatenate(cols); wts = np.concatenate(wts)
