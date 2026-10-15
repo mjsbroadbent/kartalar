@@ -1,1 +1,1 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"k":"path","t":"road"},"geometry":{"type":"LineString","coordinates":[[72.34827,42.54529],[72.34854,42.54475],[72.3494,42.54368]]}},{"type":"Feature","properties":{"k":"path","t":"road"},"geometry":{"type":"LineString","coordinates":[[72.35976,42.54087],[72.35954,42.54061]]}}]}
+{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"k":"path","t":"road"},"geometry":{"type":"LineString","coordinates":[[72.34897,42.54421],[72.3494,42.54368]]}}]}

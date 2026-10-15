@@ -46,7 +46,7 @@ def parts(g):
 
 def main():
     routes = json.load(open(os.path.join(ROOT, "data/routes.json")))
-    roads = [r for r in routes if r.get("kind") in ("road", "highway") and r.get("coords")]
+    roads = [r for r in routes if r.get("kind") in ("road", "highway", "railway") and r.get("coords")]
     specs = {s["id"]: s for s in json.load(open(os.path.join(ROOT, "build/route_specs.json")))}
     # real network
     net, bridges = [], []
@@ -58,6 +58,14 @@ def main():
             if f["properties"].get("brunnel") == "bridge": bridges.append(Q)
     NET = np.vstack(net); ntree = cKDTree(NET * [KX, KY])
     btree = cKDTree(np.vstack(bridges) * [KX, KY]) if bridges else None
+    global LAKES
+    LAKES = []
+    for f in load("water"):
+        if f["properties"]["class"] != "lake": continue
+        g = f["geometry"]
+        for poly in ([g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]):
+            R_ = np.array(poly[0])
+            if len(R_) > 8: LAKES.append((Path(R_), (R_[:, 0].min(), R_[:, 0].max(), R_[:, 1].min(), R_[:, 1].max())))
     rivers = []
     for f in load("waterway"):
         if f["properties"]["class"] in ("river", "canal"):
@@ -74,7 +82,7 @@ def main():
     out = ["# Road audit (build/audit_roads.py)", "",
            "Grades are over 500 m windows from the ~90 m terrain grid; GRADE counts only new-built stretches. *Real* = within 40 m of an OpenStreetMap road or track.",
            "Flags: GRADE steeper than the road's ruling grade + 2 points for more than 1 km in all; SIDE new-built over 1 km on side slopes over 30%;",
-           "BRIDGE a crossing of a river or canal with no real road crossing within 200 m; BEND a turn over 100 degrees on easy ground;",
+           "BRIDGES new bridges (no real road crossing within 200 m); ZIGZAG the same river or canal crossed twice within 3 km; WATER across a lake; BEND a turn over 100 degrees on easy ground;",
            "PARALLEL new road running close beside a real road; END an end more than 1 km from any settlement, feature, other route or real road; EXIT where the road leaves Irad with no real road carrying on.", ""]
     summary = []
     for r in roads:
@@ -98,7 +106,8 @@ def main():
             run = run + 1 if v else 0; best = max(best, run)
         if best * 0.05 > 1.0: flags.append(f"PARALLEL {best * 0.05:.1f} km new-built 40-250 m beside a real road")
         # river crossings
-        P = np.array(r["coords"])
+        P = np.array(r["coords"]); nbridge = [0]
+        seglen = np.hypot(*np.diff(P * [KX, KY], axis=0).T); cum = np.concatenate([[0], np.cumsum(seglen)])
         for cls, Rv in rivers:
             if Rv[:, 0].max() < P[:, 0].min() or Rv[:, 0].min() > P[:, 0].max() or Rv[:, 1].max() < P[:, 1].min() or Rv[:, 1].min() > P[:, 1].max(): continue
             A, B = P[:-1, None, :], P[1:, None, :]; C, D = Rv[None, :-1, :], Rv[None, 1:, :]
@@ -106,9 +115,23 @@ def main():
             with np.errstate(divide="ignore", invalid="ignore"):
                 t = ((C[..., 0] - A[..., 0]) * (D[..., 1] - C[..., 1]) - (C[..., 1] - A[..., 1]) * (D[..., 0] - C[..., 0])) / den
                 u = ((C[..., 0] - A[..., 0]) * (B[..., 1] - A[..., 1]) - (C[..., 1] - A[..., 1]) * (B[..., 0] - A[..., 0])) / den
+            hits = []
             for i, j in zip(*np.where((t >= 0) & (t <= 1) & (u >= 0) & (u <= 1))):
                 x = P[i] + t[i, j] * (P[i + 1] - P[i])
-                if not ntree.query_ball_point(x * [KX, KY], 0.2): flags.append(f"BRIDGE new {cls} crossing at {x[0]:.4f},{x[1]:.4f}")
+                hits.append((cum[i] + t[i, j] * seglen[i], x))
+                if not ntree.query_ball_point(x * [KX, KY], 0.2): nbridge[0] += 1
+            hits.sort(key=lambda h: h[0])
+            newx = lambda x: ntree.query(x * [KX, KY])[0] > 0.04    # on a real road the crossings are the real road's
+            for (s0, x0), (s1, x1) in zip(hits, hits[1:]):    # the same river crossed twice in a short way: a zigzag
+                if s1 - s0 < 3.0 and (newx(x0) or newx(x1)): flags.append(f"ZIGZAG crosses the same {cls} twice within {s1 - s0:.1f} km at {x0[0]:.4f},{x0[1]:.4f}")
+        if nbridge[0]: flags.append(f"BRIDGES {nbridge[0]} new river/canal bridges")
+        # over open water (a lake or reservoir) away from a real road
+        wet = np.zeros(len(Q), bool)
+        for pa, ex in LAKES:
+            sel = (Q[:, 0] >= ex[0]) & (Q[:, 0] <= ex[1]) & (Q[:, 1] >= ex[2]) & (Q[:, 1] <= ex[3])
+            if sel.any(): wet[sel] |= pa.contains_points(Q[sel])
+        wet &= ~real
+        if wet.sum() * 0.05 > 0.2: flags.append(f"WATER {wet.sum() * 0.05:.1f} km across a lake or reservoir")
         # bends on easy ground
         V = np.array(r["coords"], float) * [KX, KY]
         for i in range(1, len(V) - 1):

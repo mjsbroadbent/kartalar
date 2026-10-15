@@ -20,10 +20,13 @@ os.makedirs(OUT, exist_ok=True)
 KY = 110.57
 KX = 111.32 * math.cos(math.radians(43.0))
 
-# real towns with no (or a much smaller) Iradi town in the lore: keep a core of r_core km, clear the rest out to r_out km
+# real towns with no (or a much smaller) Iradi town in the lore: the town's own built-up area (its contiguous
+# residential land and buildings, not the villages round it) is cleared except a core of about core_km2, grown out from
+# the centre through the street fabric and rounded off to whole neighbourhoods, so the small town keeps a real shape
 SHRINK = [
-    dict(name="Taraz", center=(71.3769, 42.9016), r_core=1.4, r_out=10.0, r_tert=6.0),
+    dict(name="Taraz", center=(71.3769, 42.9016), core_km2=4.5, search_km=12.0),
 ]
+SG = 0.0005   # ~45 m grid for the town masks
 DETAIL_LAYERS = {"building", "landuse", "park"}
 DETAIL_ROADS = {"minor", "service", "track", "path", "transit"}
 
@@ -80,6 +83,100 @@ def cut_line(c, drop):
     return out
 
 
+def prune_orphans(feats, route_d, count):
+    """main-road pieces the cuts left hanging: an isolated piece, or a spur from an Irad route that ends in the fields
+    (a main road does not just stop), are dropped"""
+    MAJOR = ("motorway", "trunk", "primary", "secondary")
+    split = []
+    for f in feats:     # one feature per piece, so each piece of a cut road is judged on its own
+        if f["geometry"]["type"] == "MultiLineString" and f["properties"].get("class") in MAJOR:
+            for c in f["geometry"]["coordinates"]: split.append({**f, "geometry": {"type": "LineString", "coordinates": c}})
+        else: split.append(f)
+    feats = split
+    verts, owner = [], []
+    for n, f in enumerate(feats):
+        for c in lines_of(f["geometry"]):
+            for p in c: verts.append(p); owner.append(n)
+    V = np.array(verts) * [KX, KY]; owner = np.array(owner); tree = cKDTree(V)
+    cls_of = [f["properties"].get("class") for f in feats]
+    def connected(p, n):      # joined to another real main road (a track or field lane does not count)
+        for i in tree.query_ball_point(np.array(p) * [KX, KY], 0.025):
+            if owner[i] != n and cls_of[owner[i]] in MAJOR + ("tertiary",): return True
+        return False
+    keep = []
+    for n, f in enumerate(feats):
+        if f["properties"].get("class") not in MAJOR or f["geometry"]["type"] != "LineString": keep.append(f); continue
+        C = np.array(f["geometry"]["coordinates"]); L = float(np.hypot(*np.diff(C * [KX, KY], axis=0).T).sum())
+        ends = [C[0], C[-1]]
+        con = [connected(e, n) for e in ends]; onr = [route_d(np.array([e]))[0] < 0.08 for e in ends]
+        near_route = np.median(route_d(C)) < 1.5
+        if not any(con) and not any(onr) and L < 2: count("transportation orphan"); continue
+        if near_route and L < 3 and not any(con) and not all(onr): count("transportation orphan"); continue
+        if near_route and L < 5 and ((onr[0] and not con[1] and not onr[1]) or (onr[1] and not con[0] and not onr[0])): count("transportation spur"); continue
+        keep.append(f)
+    return keep
+
+
+def raster_polys(rings_list, x0, y0, nx, ny):
+    M = np.zeros((ny, nx), bool)
+    xs = x0 + np.arange(nx) * SG; ys = y0 + np.arange(ny) * SG
+    for R in rings_list:
+        R = np.asarray(R)
+        i0, i1 = max(0, int((R[:, 0].min() - x0) / SG)), min(nx, int((R[:, 0].max() - x0) / SG) + 2)
+        j0, j1 = max(0, int((R[:, 1].min() - y0) / SG)), min(ny, int((R[:, 1].max() - y0) / SG) + 2)
+        if i1 <= i0 or j1 <= j0: continue
+        GX, GY = np.meshgrid(xs[i0:i1], ys[j0:j1])
+        M[j0:j1, i0:i1] |= Path(R).contains_points(np.column_stack([GX.ravel(), GY.ravel()])).reshape(GX.shape)
+    return M
+
+
+def town_mask(s_):
+    """cells of the town's built-up area to clear: (x0, y0, mask)"""
+    from scipy import ndimage
+    cx, cy = s_["center"]; r = s_["search_km"]
+    x0, y0 = cx - r / KX, cy - r / KY; nx, ny = int(2 * r / KX / SG) + 1, int(2 * r / KY / SG) + 1
+    inbox = lambda R: x0 < R[:, 0].mean() < x0 + nx * SG and y0 < R[:, 1].mean() < y0 + ny * SG
+    land = []
+    for f in load("landuse"):
+        if f["properties"]["class"] not in ("residential", "commercial", "industrial", "retail"): continue
+        R = np.array(first_ring_pts(f["geometry"]))
+        if inbox(R): land.append(R)
+    LM = raster_polys(land, x0, y0, nx, ny)
+    B = np.zeros((ny, nx), bool)
+    for f in load("building"):
+        R = np.array(first_ring_pts(f["geometry"])); c = R.mean(0)
+        i, j = int((c[0] - x0) / SG), int((c[1] - y0) / SG)
+        if 0 <= i < nx and 0 <= j < ny: B[j, i] = True
+    urban = ndimage.binary_closing(LM | ndimage.binary_dilation(B, iterations=1), iterations=3)
+    lab, n = ndimage.label(urban)
+    jc, ic = int((cy - y0) / SG), int((cx - x0) / SG)
+    if not lab[jc, ic]:
+        d, (jj, ii) = ndimage.distance_transform_edt(lab == 0, return_indices=True); jc, ic = jj[jc, ic], ii[jc, ic]
+    town = lab == lab[jc, ic]
+    # grow the core through the built-up cells from the centre (geodesic, so it follows the town's own shape)
+    from collections import deque
+    want = s_["core_km2"] / (SG * KX * SG * KY); core = np.zeros_like(town); q = deque([(jc, ic)]); core[jc, ic] = True; got = 1
+    while q and got < want:
+        j, i = q.popleft()
+        for dj, di in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            a, b_ = j + dj, i + di
+            if 0 <= a < ny and 0 <= b_ < nx and town[a, b_] and not core[a, b_]:
+                core[a, b_] = True; got += 1; q.append((a, b_))
+    # whole neighbourhoods: a land-use block mostly inside the core joins it, one mostly outside leaves it
+    for R in land:
+        m = raster_polys([R], x0, y0, nx, ny)
+        if m.sum() == 0: continue
+        frac = (m & core).sum() / m.sum()
+        if frac >= 0.5: core |= m
+        else: core &= ~m
+    core = ndimage.binary_opening(ndimage.binary_closing(core, iterations=2), iterations=1)
+    lab2, n2 = ndimage.label(core)
+    if n2: core = lab2 == (1 + int(np.argmax(ndimage.sum(core, lab2, range(1, n2 + 1)))))
+    clear = town & ~ndimage.binary_dilation(core, iterations=1)
+    print(f"  {s_['name']}: built-up area {town.sum() * SG * KX * SG * KY:.0f} km2, kept core {core.sum() * SG * KX * SG * KY:.1f} km2")
+    return x0, y0, clear
+
+
 def main():
     # ---------- cities ----------
     ix = json.load(open(os.path.join(ROOT, "data/city/index.json")))
@@ -118,17 +215,22 @@ def main():
         (rl if r.get("kind") in ("railway", "rail") else rd).append(P)
     road_tree = cKDTree(np.vstack(rd)); rail_tree = cKDTree(np.vstack(rl))
     near_road = lambda P: road_tree.query(np.asarray(P) * [KX, KY], distance_upper_bound=0.045)[0] < 0.045
+    near_road_wide = lambda P: road_tree.query(np.asarray(P) * [KX, KY], distance_upper_bound=0.09)[0] < 0.09   # main roads: a route smoothed off their line
+    route_d = lambda P: road_tree.query(np.asarray(P) * [KX, KY])[0]
     near_rail = lambda P: rail_tree.query(np.asarray(P) * [KX, KY], distance_upper_bound=0.06)[0] < 0.06
 
     g = json.load(open(os.path.join(ROOT, "data/irad.geojson")))["features"][0]["geometry"]
     irad = [Path(np.array(p[0])) for p in ([g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"])]
     in_irad = lambda pts: np.any([P.contains_points(np.asarray(pts)) for P in irad], axis=0)
 
-    def shrunk(pts, key="r_out"):
+    masks = [town_mask(s_) for s_ in SHRINK]
+
+    def shrunk(pts, key=None):
         pts = np.asarray(pts, float); m = np.zeros(len(pts), bool)
-        for s in SHRINK:
-            d = np.hypot((pts[:, 0] - s["center"][0]) * KX, (pts[:, 1] - s["center"][1]) * KY)
-            m |= (d > s["r_core"]) & (d < s.get(key, 0))
+        for (x0, y0, M) in masks:
+            i = np.round((pts[:, 0] - x0) / SG).astype(int); j = np.round((pts[:, 1] - y0) / SG).astype(int)
+            ok = (i >= 0) & (i < M.shape[1]) & (j >= 0) & (j < M.shape[0])
+            m[ok] |= M[j[ok], i[ok]]
         return m
 
     stats = {}
@@ -146,13 +248,23 @@ def main():
                 out.append(f); continue
             # lines
             drops = [in_city]
-            if layer == "transportation" and cls in DETAIL_ROADS: drops.append(shrunk)
-            if layer == "transportation" and cls == "tertiary": drops.append(lambda P: shrunk(P, "r_tert"))   # the old city's own streets
-            if layer == "transportation" and cls in ("motorway", "trunk", "primary", "secondary", "tertiary", "minor"): drops.append(near_road)
+            if layer == "transportation" and (cls in DETAIL_ROADS or (cls == "rail" and f["tippecanoe"]["minzoom"] > 8)): drops.append(shrunk)   # yards too
+            if layer == "transportation" and cls == "tertiary": drops.append(shrunk)   # the old city's own streets
+            if layer == "transportation" and cls in ("motorway", "trunk", "primary"): drops.append(near_road_wide)
+            elif layer == "transportation" and cls in ("secondary", "tertiary", "minor"): drops.append(near_road)
             if layer == "transportation" and cls == "rail": drops.append(near_rail)
             drop = lambda P: np.any([d(P) for d in drops], axis=0)
             pieces = []
             for c in lines_of(g): pieces += cut_line(c, drop)
+            whole = len(pieces) == 1 and len(pieces[0]) == len(lines_of(g)[0])
+            if not whole and layer == "transportation":    # stubs left over by the cuts (hooks beside a route) go
+                pieces = [q for q in pieces if sum(math.hypot((a[0] - b_[0]) * KX, (a[1] - b_[1]) * KY) for a, b_ in zip(q, q[1:])) > 0.3]
+            if layer == "transportation" and cls in ("motorway", "trunk", "primary", "secondary"):
+                # slip roads and loops of an interchange the route has taken over: short pieces with both ends on the route
+                def ramp(q):
+                    Q = np.array(q); L = float(np.hypot(*np.diff(Q * [KX, KY], axis=0).T).sum())
+                    return L < 1.5 and route_d(Q[[0, -1]]).min() < 0.25 and np.median(route_d(Q)) < 0.4
+                pieces = [q for q in pieces if not ramp(q)]
             if not pieces: count(layer + " dropped"); continue
             if len(pieces) > 1 or len(pieces[0]) != len(lines_of(g)[0]): count(layer + " cut")
             props = dict(f["properties"])
@@ -162,6 +274,7 @@ def main():
             f["geometry"] = {"type": "LineString", "coordinates": pieces[0]} if len(pieces) == 1 else {"type": "MultiLineString", "coordinates": pieces}
             f["properties"] = props
             out.append(f)
+        if layer == "transportation": out = prune_orphans(out, route_d, count)
         with open(os.path.join(OUT, layer + ".ndjson"), "w") as fo:
             for f in out: fo.write(json.dumps(f, separators=(",", ":")) + "\n")
         print(f"  {layer}: {len(out)}")

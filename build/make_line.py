@@ -200,6 +200,25 @@ hi = ndimage.gaussian_filter(within_km(hi, 1.5).astype(float), 3) > 0.5
 tc &= ~hi
 lab, n = ndimage.label(tc)
 keep = {lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("talas", "nurzhan", "kyzyl-adyr") if k in P} - {0}
+# the Qara-Chik road is ISEZ up to UNMI Kara-Oi and the checkpoint just above it (the main crossing is there)
+for rid, upto in (("qara-chik-road", (72.47, 42.385)),):
+    if rid in R:
+        C_ = np.array(R[rid]["coords"]); k_ = int(np.argmin(np.hypot((C_[:, 0] - upto[0]) * KX, (C_[:, 1] - upto[1]) * KY)))
+        tc |= within_km(raster_lines([C_[:k_ + 1].tolist()]), 1.2) & irad
+lab, n = ndimage.label(tc)
+# an ISEZ village's pocket cut off from the main body (a side valley) is joined to it by a corridor up the valley,
+# rather than dropped (which would hand the lore's ISEZ places to the clans)
+mainm = np.isin(lab, list(keep))
+_, (mj, mi) = ndimage.distance_transform_edt(~mainm, return_indices=True)
+for lb in set(np.unique(lab[pin_in])) - keep - {0}:
+    comp = lab == lb; js, is_ = np.where(comp & pin_in)
+    j0_, i0_ = js[0], is_[0]; j1_, i1_ = mj[j0_, i0_], mi[j0_, i0_]
+    if math.hypot(j1_ - j0_, i1_ - i0_) * CELL_KM > 12: continue
+    line_ = np.zeros(tc.shape, bool)
+    for t in np.linspace(0, 1, 200): line_[int(round(j0_ + (j1_ - j0_) * t)), int(round(i0_ + (i1_ - i0_) * t))] = True
+    tc |= within_km(line_, 1.0) & irad
+lab, n = ndimage.label(tc)
+keep = {lab[cell(P[k]["lon"], P[k]["lat"])] for k in ("talas", "nurzhan", "kyzyl-adyr") if k in P} - {0}
 tc = np.isin(lab, list(keep))
 
 # the trunk roads and the lore's ISEZ routes stay inside the zone end to end, so the line crosses them only where

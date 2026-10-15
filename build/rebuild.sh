@@ -10,7 +10,8 @@ RDEM="${ROUTE_DEM:-$DEM}"; RNET="${ROUTE_NET:-$OSM}"
 python3 build/route_terrain.py "$RDEM" "$RNET"   # roads over the terrain (build/route_specs.json)
 python3 build/route_rail.py "$RDEM" "$RNET"     # railways: real track, new track over the terrain, turnouts, minimum radii
 python3 build/derive_lines.py                   # Otmek tunnel; pipelines and power lines along their routes
-if [ -n "$3" ]; then python3 build/make_cities.py "$DEM" "$OSM" "$3"; fi   # borrowed city plans; routes re-laid along their streets
+if [ -n "$3" ]; then python3 build/make_cities.py "$RDEM" "$OSM" "$3"; fi   # borrowed city plans; routes re-laid along their streets
+python3 build/dehook.py "$RDEM"                 # no hooks or jogs left by the city re-lay
 python3 build/route_rail.py "$RDEM" "$RNET" --smooth
 if [ -n "$3" ]; then python3 build/place_sites.py "$3"; fi   # railways smoothed again after the city re-lay; stations onto the track
 python3 build/make_line.py "$DEM" "$OSM"        # ISEZ/ATR, districts, Qara-Chik line, restricted zone

@@ -116,6 +116,16 @@ def route(spec):
         cr = rt[kk, 0] * rel[:, 1] - rt[kk, 1] * rel[:, 0]
         sv = np.zeros(len(G2), np.int8); sv[near] = np.sign(cr).astype(np.int8)
         side_r = sv.reshape(Z.shape)
+    # lakes and reservoirs: no new road across open water (real roads over dams and causeways stay usable)
+    from matplotlib.path import Path as _P
+    wet = np.zeros(Z.shape, bool)
+    GP = None
+    for R_ in (LAKES or []):
+        if R_[:, 0].max() < x0 or R_[:, 0].min() > x1 or R_[:, 1].max() < y0 or R_[:, 1].min() > y1: continue
+        if GP is None: GP = np.column_stack([GX.ravel(), GY.ravel()])
+        sel = (GP[:, 0] >= R_[:, 0].min()) & (GP[:, 0] <= R_[:, 0].max()) & (GP[:, 1] >= R_[:, 1].min()) & (GP[:, 1] <= R_[:, 1].max())
+        if sel.any():
+            w_ = wet.ravel(); w_[sel] |= _P(R_).contains_points(GP[sel]); wet = w_.reshape(Z.shape)
     N = ny * nx
     idx = np.arange(N).reshape(ny, nx)
     rows, cols, wts = [], [], []
@@ -132,7 +142,7 @@ def route(spec):
             fs = 1 + spec.get("side_w", 3.0) * np.maximum(0, s - 0.18)
             zm = 0.5 * (za + zb)
             fe = 1 + np.maximum(0, (zm - spec.get("snowline", 2600)) / 400.0)
-            av = 1 + 50 * (avoid[j0:j1, i0:i1] | avoid[j0 + dj:j1 + dj, i0 + di:i1 + di])
+            av = 1 + 50 * (avoid[j0:j1, i0:i1] | avoid[j0 + dj:j1 + dj, i0 + di:i1 + di]) + 40 * (wet[j0:j1, i0:i1] | wet[j0 + dj:j1 + dj, i0 + di:i1 + di])
             rv = spec.get("bridge_km", 0.8) * ((side_r[j0:j1, i0:i1].astype(np.int16) * side_r[j0 + dj:j1 + dj, i0 + di:i1 + di]) < 0)
             w = L * build * fg * fs * fe * av + rv
             rows.append(A.ravel()); cols.append(B.ravel()); wts.append(w.ravel())
@@ -217,8 +227,13 @@ def route(spec):
         if real:
             pts = rdp(pts, 0.012)
         else:
-            pts = rdp(pts, eps)
-            pts = chaikin(pts, spec.get("chaikin", 2 if kind == "road" else 3))
+            raw = pts
+            n_raw = river_crossings(raw)
+            for e_, ch_ in ((eps, spec.get("chaikin", 2 if kind == "road" else 3)), (0.02, 1), (0.008, 0)):
+                pts = chaikin(rdp(raw, e_), ch_)
+                if river_crossings(pts) <= n_raw: break      # smoothing must not add river crossings
+            else:
+                pts = list(raw)
             if kind == "road" and spec.get("hairpins", True):
                 pts = hairpins(pts, gmax * spec.get("hairpin_grade", 1.25))
         out += pts if not out else pts[1:]
@@ -231,6 +246,22 @@ def route(spec):
     zs = dem_at([p[0] for p in clean], [p[1] for p in clean])
     real_km = sum(km(a, b_) for real, pts in runs if real for a, b_ in zip(pts, pts[1:]))
     return clean, float(zs.max()), real_km
+
+
+def river_crossings(pts):
+    """how many times a line crosses the real rivers (and lake shores do not count)"""
+    if not RIVERS or len(pts) < 2: return 0
+    P = np.asarray(pts, float); n = 0
+    x0, x1, y0, y1 = P[:, 0].min(), P[:, 0].max(), P[:, 1].min(), P[:, 1].max()
+    for Rv in RIVERS + CANALS:
+        if Rv[:, 0].max() < x0 or Rv[:, 0].min() > x1 or Rv[:, 1].max() < y0 or Rv[:, 1].min() > y1: continue
+        A, B = P[:-1, None, :], P[1:, None, :]; C, D = Rv[None, :-1, :], Rv[None, 1:, :]
+        den = (B[..., 0] - A[..., 0]) * (D[..., 1] - C[..., 1]) - (B[..., 1] - A[..., 1]) * (D[..., 0] - C[..., 0])
+        with np.errstate(divide="ignore", invalid="ignore"):
+            t = ((C[..., 0] - A[..., 0]) * (D[..., 1] - C[..., 1]) - (C[..., 1] - A[..., 1]) * (D[..., 0] - C[..., 0])) / den
+            u = ((C[..., 0] - A[..., 0]) * (B[..., 1] - A[..., 1]) - (C[..., 1] - A[..., 1]) * (B[..., 0] - A[..., 0])) / den
+        n += int(((t >= 0) & (t <= 1) & (u >= 0) & (u <= 1)).sum())
+    return n
 
 
 def hairpins(pts, gmax):
@@ -267,19 +298,38 @@ def hairpins(pts, gmax):
     return out
 
 
-def load_rivers():
+def load_rivers(classes=("river",)):
     fn = os.environ.get("ROUTE_RIVERS")
     if not fn or not os.path.exists(fn): return []
     out = []
     for line in open(fn):
         f = json.loads(line)
-        if f["properties"]["class"] != "river": continue
+        if f["properties"]["class"] not in classes: continue
         g = f["geometry"]
         for c in ([g["coordinates"]] if g["type"] == "LineString" else g["coordinates"]): out.append(np.array(c))
     return out
 
 
 RIVERS = load_rivers()
+CANALS = load_rivers(("canal",))
+
+
+def load_lakes():
+    fn = os.environ.get("ROUTE_RIVERS")
+    fn = fn and os.path.join(os.path.dirname(fn), "water.ndjson")
+    if not fn or not os.path.exists(fn): return []
+    out = []
+    for line in open(fn):
+        f = json.loads(line)
+        if f["properties"]["class"] != "lake": continue
+        g = f["geometry"]
+        for poly in ([g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]):
+            R_ = np.array(poly[0])
+            if len(R_) > 8: out.append(R_)
+    return out
+
+
+LAKES = load_lakes()
 
 if __name__ == "__main__":
     SPECS = json.load(open(os.path.join(ROOT, "build/route_specs.json")))
@@ -297,6 +347,13 @@ if __name__ == "__main__":
                 d = np.hypot((C[:, 0] - p[0]) * KX, (C[:, 1] - p[1]) * KY); i = int(np.argmin(d))
                 spec["via"][k] = [float(C[i, 0]), float(C[i, 1])]
         coords, zmax, real_km = route(spec)
+        if spec.get("prefix") and R.get(spec["prefix"]["route"], {}).get("coords"):
+            # the road begins along another (one road, one line): that road's stretch is put in front
+            B = np.array(R[spec["prefix"]["route"]]["coords"])
+            nr = lambda q: int(np.argmin(np.hypot((B[:, 0] - q[0]) * KX, (B[:, 1] - q[1]) * KY)))
+            i0, i1 = nr(spec["prefix"]["from"]), nr(coords[0])
+            seg = B[i0:i1 + 1] if i0 <= i1 else B[i1:i0 + 1][::-1]
+            coords = [tuple(p) for p in seg[:-1]] + list(coords)
         r["coords"] = [list(p) for p in coords]
         r["snapped"] = "terrain"
         L = km_len(coords)

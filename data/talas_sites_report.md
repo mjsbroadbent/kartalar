@@ -2,7 +2,6 @@
 
 | site | moved | placed on |
 |---|---|---|
-| conagra-talas-beef | 17 m | building |
 | juma-mosque-talas | 1 m | building |
 | st-maryam-catholic-academy | 1 m | near church-st-tomas-talas |
 | iradi-telegraph-office | 1 m | building |
@@ -70,6 +69,7 @@
 | talas-landfill | 0 m | industrial grounds |
 | talas-veterinary-research-center | 0 m | building |
 | talas-central-bus-station | 0 m | industrial grounds |
+| conagra-talas-beef | 0 m | building |
 | talas-citadel | 0 m | old town |
 | kalan-darwaza | 0 m | old town |
 | temir-kapka-gate | 0 m | old town |

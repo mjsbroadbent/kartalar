@@ -27,10 +27,6 @@
   "build": 1.6,
   "via": [
    [
-    72.239,
-    42.519
-   ],
-   [
     71.58,
     42.62
    ],
@@ -43,7 +39,15 @@
     43.6
    ]
   ],
-  "margin": 0.12
+  "margin": 0.12,
+  "prefix": {
+   "route": "trans-talas-highway",
+   "from": [
+    72.239,
+    42.519
+   ]
+  },
+  "start_on": "trans-talas-highway"
  },
  {
   "id": "kok-bel-road",
@@ -53,8 +57,8 @@
   "snowline": 2200,
   "via": [
    [
-    72.239,
-    42.519
+    72.587,
+    42.48
    ],
    [
     72.80525,
@@ -65,7 +69,15 @@
     43.6
    ]
   ],
-  "margin": 0.3
+  "margin": 0.3,
+  "prefix": {
+   "route": "fergana-mountain-transit-highway",
+   "from": [
+    72.239,
+    42.519
+   ]
+  },
+  "start_on": "fergana-mountain-transit-highway"
  },
  {
   "id": "chu-highway",
@@ -165,8 +177,8 @@
     42.519
    ],
    [
-    72.44,
-    42.445
+    72.39731,
+    42.45181
    ],
    [
     72.49,

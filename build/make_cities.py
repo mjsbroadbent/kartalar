@@ -26,7 +26,7 @@ CITIES = [
      # the Talas valley floor below the foothills, off Talas Air Base
      "ellipse": ((72.225, 42.515), 12.5, 8.5), "max_elev": 1420, "max_slope": 0.09,
      "exclude": [[(72.055, 42.517), (72.13, 42.517), (72.13, 42.548), (72.055, 42.548)]],
-     "rivers": ["Талас"],
+     "rivers": ["Талас"], "bridges": 8, "tight_footprint": True, "relay_minor_w": 10,
      # the Kokand-era Old City (Köhne Diz, ~64 ha) west of the Russian grid: citadel mound, gates, bazaar, mahalla lanes
      "old_town": {"center": (72.2290, 42.5275), "a": 0.60, "b": 0.42, "angle": 12, "citadel": (72.2266, 42.5276), "citadel_r": (0.13, 0.10),
                   "bazaar": (72.2338, 42.5262), "gates": [(72.2268, 42.5298), (72.2264, 42.5254)], "seed": 11}},
@@ -34,7 +34,7 @@ CITIES = [
      "scale": 0.92, "donor_r_km": 11.5,
      "ellipse": ((73.77, 43.60), 11.5, 10.5), "max_elev": 900, "max_slope": 0.08,
      "exclude": [], "donor_exclude": [[(69.715, 42.265), (69.77, 42.265), (69.77, 42.325), (69.715, 42.325)]],   # a tile that failed to download
-     "rivers": ["Чу"]},
+     "rivers": ["Чу"], "bridges": 10, "tight_footprint": True, "relay_minor_w": 10},
     {"name": "iyik-janyl", "donor": "osh", "pivot_donor": (72.7856, 40.5274), "pivot": (72.222, 41.418), "rotate": 0, "mirror": False,
      # bend the plan along the river: the donor's river (upstream to downstream) is laid onto the Naryn, so the streets
      # along its banks follow the Naryn; the sacred hill on its left bank becomes Cathedral Hill on the Naryn's left (east) bank
@@ -70,6 +70,11 @@ OSM = json.load(open(OSMF))["ways"]
 
 
 def kx(lat): return 111.32 * math.cos(math.radians(lat))
+
+
+def is_river(w, C):
+    """the rivers a city's streets must not wander across: every real river in it, named or not"""
+    return w["k"] == "water:river" and (C.get("all_rivers", True) or (w.get("n") or "") in C["rivers"])
 KY = 110.57
 
 
@@ -304,20 +309,23 @@ def build(C):
     slope = np.hypot(gx_, gy_)
     ok = (((GX - ex) * kt / ea) ** 2 + ((GY - ey) * KY / eb) ** 2 <= 1) & (slope <= C["max_slope"])
     if "max_elev" in C: ok &= E <= C["max_elev"]
-    riv_pts = np.array([p for w in OSM if w["k"] == "water:river" and (w.get("n") or "") in C["rivers"] for p in w["c"]
+    riv_pts = np.array([p for w in OSM if is_river(w, C) for p in w["c"]
                         if lons[0] - 0.05 < p[0] < lons[-1] + 0.05 and lats[0] - 0.05 < p[1] < lats[-1] + 0.05])
-    riv = np.zeros(GX.shape, bool)
+    riv = np.zeros(GX.shape, bool); riv_main = np.zeros(GX.shape, bool)
     for w in OSM:
-        if w["k"] == "water:river" and (w.get("n") or "") in C["rivers"]:
-            c = w["c"]
+        if is_river(w, C):
+            c = w["c"]; main_ = (w.get("n") or "") in C["rivers"]
             for (x1, y1), (x2, y2) in zip(c, c[1:]):
                 n = int(max(abs(x2 - x1), abs(y2 - y1)) / (GRID / 2)) + 1
                 for t in np.linspace(0, 1, n + 1):
                     i = int(round((x1 + (x2 - x1) * t - lons[0]) / GRID)); j = int(round((y1 + (y2 - y1) * t - lats[0]) / GRID))
-                    if 0 <= j < GX.shape[0] and 0 <= i < GX.shape[1]: riv[j, i] = True
+                    if 0 <= j < GX.shape[0] and 0 <= i < GX.shape[1]:
+                        riv[j, i] = True
+                        if main_: riv_main[j, i] = True
     dr, (rj, ri) = ndimage.distance_transform_edt(~riv, return_indices=True)
-    if "above_river" in C:
-        ok &= E <= E[rj, ri] + C["above_river"]
+    if "above_river" in C:     # height above the town's own river (not above a tributary up a side valley)
+        _, (mj, mi) = ndimage.distance_transform_edt(~riv_main, return_indices=True)
+        ok &= E <= E[mj, mi] + C["above_river"]
     if "min_lat" in C: ok &= GY >= C["min_lat"]
     for poly in C["exclude"]:
         ok &= ~Path(np.array(poly)).contains_points(np.column_stack([GX.ravel(), GY.ravel()])).reshape(GX.shape)
@@ -450,6 +458,9 @@ def build(C):
             L = float(np.hypot(np.diff(T[:, 0]) * kt, np.diff(T[:, 1]) * KY).sum())
             for m, e in crossings(T): cross.append((L, n_, T[(m + e - 1) // 2]))
         cross.sort(key=lambda c_: -c_[0])
+        per = {}
+        for L, n_, q in cross: per[n_] = per.get(n_, 0) + 1
+        cross = [c_ for c_ in cross if per[c_[1]] == 1]       # a street that crosses a meander twice is no bridge street
         sites = []
         for L, n_, q in cross:
             if len(sites) >= C["bridges"]: break
@@ -492,7 +503,7 @@ def build(C):
         for _, _, m_ in CLEAR: clear_m |= ndimage.binary_dilation(m_, iterations=1)
         dist_r = ndimage.distance_transform_edt(~road_m) * GRID * KY
         town = ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_dilation(road_m, iterations=6), iterations=8))
-        gap = town & ok & (dist_r > 0.11) & ~clear_m & ~near_river
+        gap = town & ok & (dist_r > 0.11) & ~clear_m & ~near_river & (slope < C.get("fill_max_slope", 0.07))   # new streets only on easy ground
         lab, n = ndimage.label(gap)
         sizes = ndimage.sum(gap, lab, range(1, n + 1))
         mids = np.array([m_ for m_, _ in segs]); dirs = np.array([d_ for _, d_ in segs])
@@ -712,7 +723,7 @@ def build(C):
     # the real river inside the city (the base map is hidden there)
     rivers = []
     for w in OSM:
-        if w["k"] == "water:river" and (w.get("n") or "") in C["rivers"]:
+        if is_river(w, C):
             run = []
             for p in w["c"]:
                 if in_fp(*p) or (run and in_fp(*run[-1])): run.append(p)
@@ -729,8 +740,8 @@ def build(C):
             if not inn.any(): continue
             i0_, i1_ = int(np.argmax(inn)), len(inn) - 1 - int(np.argmax(inn[::-1]))
             mid_ = c[max(i0_ - 1, 0): i1_ + 2]
-            sm = thin_line(mid_, 40)
-            for _ in range(3):
+            sm = thin_line(mid_, 12)     # gently: a highway through a town keeps to its valley and its bridges
+            for _ in range(1):
                 sm = np.vstack([sm[:1]] + [np.array([0.75 * a + 0.25 * b, 0.25 * a + 0.75 * b]) for a, b in zip(sm, sm[1:])] + [sm[-1:]])
             r["coords"] = [[round(x, 5), round(y, 5)] for x, y in np.vstack([c[:max(i0_ - 1, 0)], sm, c[i1_ + 2:]])]
             dense = []
@@ -769,6 +780,9 @@ def thin_line(c, eps_m=4):
 
 
 # ---------- re-lay the lore routes inside each city along its borrowed main streets ----------
+def tree_keep(tree): return tree.keep
+
+
 def relay_routes(cities_out):
     routes = json.load(open(os.path.join(ROOT, "data/routes.json")))
     for name, feats, footprint, relay_only, minor_w in cities_out:
@@ -804,16 +818,40 @@ def relay_routes(cities_out):
             keep = [i for i in range(len(coords)) if comp[i] == best[1]]
             C = np.array([coords[i] for i in keep])
             class Tree:
-                def __init__(s_): s_.t = cKDTree(np.column_stack([C[:, 0] * kx(C[0, 1]), C[:, 1] * KY]))
+                def __init__(s_): s_.t = cKDTree(np.column_stack([C[:, 0] * kx(C[0, 1]), C[:, 1] * KY])); s_.keep = keep
                 def query(s_, q): d, i = s_.t.query(q); return d, keep[i]
             return coords, adj, Tree(), kx(C[0, 1])
 
         G_road = graph({("road", "major"): 1.0, ("road", "mid"): 1.3, ("road", "minor"): minor_w})
         G_rail = graph({("rail", "rail"): 1.0, ("rail", "siding"): 1.6})
 
+        bb = np.array([p for P in footprint["coordinates"] for p in P[0]])
+        RIV = [np.array(w["c"]) for w in OSM if w["k"] in ("water:river", "water:canal") and
+               any(bb[:, 0].min() - 0.05 < x < bb[:, 0].max() + 0.05 and bb[:, 1].min() - 0.05 < y < bb[:, 1].max() + 0.05 for x, y in w["c"])]
+
+        def crosses(a_, b_):
+            a_ = np.asarray(a_, float); b_ = np.asarray(b_, float)
+            for Rv in RIV:
+                C_, D_ = Rv[:-1], Rv[1:]
+                den = (b_[0] - a_[0]) * (D_[:, 1] - C_[:, 1]) - (b_[1] - a_[1]) * (D_[:, 0] - C_[:, 0])
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    t = ((C_[:, 0] - a_[0]) * (D_[:, 1] - C_[:, 1]) - (C_[:, 1] - a_[1]) * (D_[:, 0] - C_[:, 0])) / den
+                    u = ((C_[:, 0] - a_[0]) * (b_[1] - a_[1]) - (C_[:, 1] - a_[1]) * (b_[0] - a_[0])) / den
+                if ((t >= 0) & (t <= 1) & (u >= 0) & (u <= 1)).any(): return True
+            return False
+
+        def snap(G, pt):
+            """the nearest street node that is on the same side of every river as the point"""
+            coords, adj, tree, k_ = G
+            d, i = tree.t.query([pt[0] * k_, pt[1] * KY], k=40)
+            for dd, ii in zip(d, i):
+                n_ = tree_keep(tree)[ii]
+                if not crosses(pt, coords[n_]): return dd, n_
+            return tree.query([pt[0] * k_, pt[1] * KY])
+
         def path(G, a_pt, b_pt):
             coords, adj, tree, k_ = G
-            da, a = tree.query([a_pt[0] * k_, a_pt[1] * KY]); db, b_ = tree.query([b_pt[0] * k_, b_pt[1] * KY])
+            da, a = snap(G, a_pt); db, b_ = snap(G, b_pt)
             lim = 3.0 if G is G_rail else 1.5
             if da > lim or db > lim or a == b_: return None
             dist = {a: 0.0}; prev = {}; pq = [(0.0, a)]
@@ -849,7 +887,10 @@ def relay_routes(cities_out):
                 j = i
                 while j < len(c) and inside[j]: j += 1
                 pth = path(G, c[i], c[j - 1])
-                if pth and len(pth) >= 2:
+                ncross = lambda L_: sum(crosses(a_, b_) for a_, b_ in zip(L_, L_[1:]))
+                before_ = [c[max(i - 1, 0)]] + c[i:j] + ([c[j]] if j < len(c) else [])
+                after_ = [c[max(i - 1, 0)]] + (pth or []) + ([c[j]] if j < len(c) else [])
+                if pth and len(pth) >= 2 and ncross(after_) <= ncross(before_):   # the streets must not add river crossings
                     out += pth; did = True
                 else:
                     out += c[i:j]
