@@ -240,18 +240,6 @@
 "district": null
 },
 {
-"id": "osm-299469136",
-"name": "Oktyabrskoe",
-"name_ru": "Октябрьское",
-"kind": "village",
-"lon": 73.10035,
-"lat": 41.0432,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-300814170",
 "name": "Balykty",
 "name_ru": "Балыкты",
@@ -1136,8 +1124,8 @@
 "lat": 40.95974,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-1934853857",
@@ -1148,8 +1136,8 @@
 "lat": 41.01352,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-1934853862",
@@ -1160,8 +1148,8 @@
 "lat": 40.97579,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-1934853864",
@@ -1172,8 +1160,8 @@
 "lat": 41.02278,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-1934853869",
@@ -1196,8 +1184,8 @@
 "lat": 41.03904,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-1934853893",
@@ -1208,8 +1196,8 @@
 "lat": 40.97591,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-1934872456",
@@ -2234,18 +2222,6 @@
 "district": null
 },
 {
-"id": "osm-2330164638",
-"name": "Kümüsh-Aziz",
-"name_ru": "Кюмюш-Азиз",
-"kind": "village",
-"lon": 72.95168,
-"lat": 40.88426,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
 "id": "osm-2330330177",
 "name": "Bel-Terek",
 "name_ru": "Бель-Терек",
@@ -2306,6 +2282,18 @@
 "district": "Lower Naryn"
 },
 {
+"id": "osm-2337922785",
+"name": "Kamysh-Bashy",
+"name_ru": "Камыш-Башы",
+"kind": "hamlet",
+"lon": 72.93072,
+"lat": 40.93832,
+"pop": null,
+"confidence": "osm",
+"zone": "ISEZ",
+"district": "Lower Naryn"
+},
+{
 "id": "osm-2337922786",
 "name": "Saada",
 "name_ru": "Саада",
@@ -2318,138 +2306,6 @@
 "district": "Lower Naryn"
 },
 {
-"id": "osm-2337922787",
-"name": "Shirin",
-"name_ru": "Ширин",
-"kind": "hamlet",
-"lon": 72.8735,
-"lat": 40.8554,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
-"id": "osm-2346938806",
-"name": "Aral",
-"name_ru": "Арал",
-"kind": "village",
-"lon": 72.91764,
-"lat": 40.86891,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
-"id": "osm-2346938809",
-"name": "Jiyde",
-"name_ru": "Джийде",
-"kind": "village",
-"lon": 72.92087,
-"lat": 40.84097,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
-"id": "osm-2346938811",
-"name": "Kyrgyz-Abad",
-"name_ru": "Кыргыз-Абад",
-"kind": "hamlet",
-"lon": 72.95721,
-"lat": 40.85388,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
-"id": "osm-2346938812",
-"name": "Munduz",
-"name_ru": "Мундуз",
-"kind": "village",
-"lon": 72.89389,
-"lat": 40.85347,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
-"id": "osm-2346938814",
-"name": "Özbek-Abad",
-"name_ru": "Узбек-Абад",
-"kind": "hamlet",
-"lon": 72.94238,
-"lat": 40.85778,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
-},
-{
-"id": "osm-2347457522",
-"name": "Bagysh",
-"name_ru": "Багыш",
-"kind": "village",
-"lon": 73.08935,
-"lat": 41.01592,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457525",
-"name": "Orto-Say",
-"name_ru": "Орто-Сай",
-"kind": "village",
-"lon": 73.0453,
-"lat": 41.04182,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457528",
-"name": "Taygaraev",
-"name_ru": "Тайгараев",
-"kind": "village",
-"lon": 73.03579,
-"lat": 41.0101,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457530",
-"name": "Kedey-Aryk",
-"name_ru": "Кедей-Арык",
-"kind": "village",
-"lon": 73.06362,
-"lat": 41.00311,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457547",
-"name": "Kyzyl-Kyrgyzstan",
-"name_ru": "Кызыл-Кыргызстан",
-"kind": "village",
-"lon": 73.01329,
-"lat": 40.99702,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-2347457553",
 "name": "Orto-Aziya",
 "name_ru": "Орто-Азия",
@@ -2458,56 +2314,8 @@
 "lat": 40.991,
 "pop": null,
 "confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457556",
-"name": "Sary-Bulak",
-"name_ru": "Сары-Булак",
-"kind": "hamlet",
-"lon": 73.113,
-"lat": 41.02542,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457559",
-"name": "Safarovka",
-"name_ru": "Сафаровка",
-"kind": "village",
-"lon": 73.12175,
-"lat": 41.03539,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457562",
-"name": "Tash-Kutchu",
-"name_ru": "Таш-Кутчу",
-"kind": "village",
-"lon": 73.0444,
-"lat": 40.97764,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347457565",
-"name": "Jygach-Korgon",
-"name_ru": "Жыгач-Коргон",
-"kind": "village",
-"lon": 73.07972,
-"lat": 41.05913,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
+"zone": "ISEZ",
+"district": "Lower Naryn"
 },
 {
 "id": "osm-2347534492",
@@ -2528,18 +2336,6 @@
 "kind": "hamlet",
 "lon": 73.06644,
 "lat": 41.07551,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2347554632",
-"name": "Gulistan",
-"name_ru": "Гулистан",
-"kind": "hamlet",
-"lon": 73.01232,
-"lat": 40.98144,
 "pop": null,
 "confidence": "osm",
 "zone": "ATR",
@@ -3040,6 +2836,18 @@
 "note": "Iradi name; the village was not renamed after a person as on the Kazakh or Kyrgyz side."
 },
 {
+"id": "osm-2583605006",
+"name": "Aral Kystak",
+"name_ru": "Аралкишлак",
+"kind": "village",
+"lon": 73.50366,
+"lat": 42.86527,
+"pop": null,
+"confidence": "osm",
+"zone": "ISEZ",
+"district": "Chu"
+},
+{
 "id": "osm-2583605007",
 "name": "Aspara",
 "name_ru": "Аспара",
@@ -3060,7 +2868,7 @@
 "lat": 42.74279,
 "pop": null,
 "confidence": "osm",
-"zone": null,
+"zone": "ATR",
 "district": null
 },
 {
@@ -3892,18 +3700,6 @@
 "district": null
 },
 {
-"id": "osm-4478228449",
-"name": "Leninskoe",
-"name_ru": "Лениское",
-"kind": "village",
-"lon": 73.05543,
-"lat": 41.02061,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-4546437037",
 "name": "Chyyyrchyk",
 "name_ru": "Чыйырчык",
@@ -4153,18 +3949,6 @@
 "pop": null,
 "confidence": "osm",
 "zone": "ATR",
-"district": null
-},
-{
-"id": "osm-10297828938",
-"name": "Yntymak",
-"name_ru": "Ынтымак",
-"kind": "village",
-"lon": 72.99591,
-"lat": 40.97424,
-"pop": null,
-"confidence": "osm",
-"zone": null,
 "district": null
 },
 {
