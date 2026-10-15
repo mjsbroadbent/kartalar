@@ -120,15 +120,16 @@
   };
   const GCOL = { worship: "#7b5ea7", civic: "#3f6fb0", leisure: "#e07b39", transport: "#1f8a9a", industry: "#6f6f6f", nature: "#3d8b4f", heritage: "#b0583a", military: "#8b2e2e", other: "#8a8a8a" };
   const groupOf = k => Object.keys(GROUP).find(g => GROUP[g].includes(k)) || "other";
-  const PLACE_RANK = { capital: 1, city: 2, town: 3, village: 5, suburb: 6, quarter: 6, neighbourhood: 7, district: 4, "zone-area": 4 };
+  const PLACE_RANK = { capital: 1, city: 2, town: 3, village: 5, hamlet: 7, suburb: 6, quarter: 6, neighbourhood: 7, district: 4, "zone-area": 4, "foreign-city": 3, "foreign-town": 5 };
 
   const POI_FILTER = ["!=", ["get", "kind"], "river-point"];
   function fc(features) { return { type: "FeatureCollection", features }; }
   function pointFeat(p, extra) { return { type: "Feature", id: undefined, geometry: { type: "Point", coordinates: [p.lon, p.lat] }, properties: Object.assign({ id: p.id, label: nameOf(p), kind: p.kind }, extra) }; }
 
-  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson")])
-    .then(([pl, fe, ro, ir, zo, di, qc, rz]) => {
+  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson"), get("data/real_places.json").catch(() => [])])
+    .then(([pl, fe, ro, ir, zo, di, qc, rz, rp]) => {
       D.line = qc; D.rwz = rz;
+      pl = pl.concat(rp);      // the real towns and villages (build/real_places.py) after the lore's own places
       D.places = pl; D.feats = fe; D.routes = ro; D.irad = ir; D.zones = zo; D.districts = di;
       D.all = pl.map(p => Object.assign({ _t: "place" }, p)).concat(fe.map(f => Object.assign({ _t: "feat" }, f)));
       D.byId = Object.fromEntries(D.all.map(p => [p.id, p]));
@@ -151,7 +152,7 @@
     map.addSource("routes", { type: "geojson", data: fc(D.routes.map(r => ({ type: "Feature", properties: { id: r.id, kind: r.kind, label: nameOf(r) }, geometry: { type: "LineString", coordinates: r.coords } })).concat(D.routes.flatMap(r => (r.tunnels || []).map(t => ({ type: "Feature", properties: { id: r.id, kind: "tunnel", label: "" }, geometry: { type: "LineString", coordinates: t } }))))) });
     const bk = D.byId["boz-korgon"];
     map.addSource("restricted", { type: "geojson", data: "data/boz_korgon.geojson" });
-    map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: PLACE_RANK[p.kind] || 6, pop: p.pop || 0 }))) });
+    map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: (PLACE_RANK[p.kind] || 6) + (p.confidence === "osm" ? 0.5 : 0), pop: p.pop || 0 }))) });
     map.addSource("feats", { type: "geojson", data: fc(D.feats.map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "" }))) });
     map.addSource("neighbours", { type: "geojson", data: fc([
       ["Kazakhstan", "Kazakstan", "Казахстан", 75.9, 44.9], ["Kazakhstan", "Kazakstan", "Казахстан", 67.2, 45.6], ["Kyrgyzstan", "Kırgızstan", "Киргизия", 75.4, 41.95],
@@ -211,6 +212,13 @@
         minzoom: 5,
         paint: { "circle-radius": ["match", ["get", "kind"], "capital", 5, "city", 4.5, "town", 3.5, 2.5], "circle-color": "#ffffff", "circle-stroke-color": "#3a3a3a", "circle-stroke-width": ["match", ["get", "kind"], "capital", 2, 1.2],
           "circle-opacity": DOT_OP, "circle-stroke-opacity": DOT_OP } },
+      // real places outside Irad: grey reference labels
+      { id: "foreign-label", type: "symbol", source: "places", minzoom: 6, filter: ["in", ["get", "kind"], ["literal", ["foreign-city", "foreign-town"]]],
+        layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": ["match", ["get", "kind"], "foreign-city", 12, 10.5], "symbol-sort-key": ["get", "rank"] },
+        paint: { "text-color": "#8d877d", "text-halo-color": C.halo, "text-halo-width": 1.4, "text-opacity": ["interpolate", ["linear"], ["zoom"], 6, ["match", ["get", "kind"], "foreign-city", 1, 0], 8, 1] } },
+      { id: "hamlet-label", type: "symbol", source: "places", minzoom: 11.5, filter: ["==", ["get", "kind"], "hamlet"],
+        layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": 11, "symbol-sort-key": ["get", "rank"] },
+        paint: { "text-color": "#5d584f", "text-halo-color": C.halo, "text-halo-width": 1.4 } },
       { id: "quarter-label", type: "symbol", source: "places", minzoom: 11, filter: ["in", ["get", "kind"], ["literal", ["suburb", "quarter", "neighbourhood"]]],
         layout: { "text-field": ["upcase", ["get", "label"]], "text-font": textFont("b"), "text-size": 11, "text-letter-spacing": 0.08, "text-max-width": 7 },
         paint: { "text-color": "#7b7468", "text-halo-color": C.halo, "text-halo-width": 1.5 } },
@@ -429,7 +437,7 @@
   }
 
   /* ---------- map clicks ---------- */
-  const CLICKABLE = ["place-label", "place-dot", "poi-dot", "poi-label", "nature-label", "quarter-label", "district-label", "zone-area-label"];
+  const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "quarter-label", "district-label", "zone-area-label"];
   function openLine(f, ll) {
     const p = f.properties;
     if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });

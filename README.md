@@ -20,6 +20,7 @@ Static site, no build step for the page itself. Deploy on GitHub Pages from the 
 | File | What it is |
 |---|---|
 | `data/settlements.json` | Cities, towns, villages, city quarters, districts and ATR planning zones (name in Iradi, English and Russian; kind; zone; district; coordinates; population and elevation where the lore gives them; wiki article) |
+| `data/real_places.json` | The real towns and villages (from OpenStreetMap, by `build/real_places.py`): real names in Irad's Latin spelling; places renamed after people in independent Kazakhstan or Kyrgyzstan get Iradi names; Taraz is Aulie-Ata; lore places take precedence; outside Irad, neighbouring towns and cities as reference labels |
 | `data/features.json` | Landmarks, churches, markets, stations, checkpoints, dams, mines, peaks, passes, lakes, parks and other features |
 | `data/routes.json` | Highways, roads, the Irad Temir Jolu railway, pipelines, canals and power lines as lines |
 | `data/irad.geojson` | Irad's border |
