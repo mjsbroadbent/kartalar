@@ -1674,7 +1674,7 @@
   "zone": "ISEZ",
   "lat": 42.50034,
   "lon": 71.54693,
-  "elev": 2290,
+  "elev": 1220,
   "confidence": "placed",
   "note": "Main crossing of the demarcation line (~1,900 crossings/day) at about 1,220 m at the mouth of the Kara-Buura valley, ~2 km above Qara-Chik and ~15 km by road from Kyzyl-Adyr (~75 km from Talas): the road on into the tribal Chatkal valley and down to the Fergana valley; El-Choro post 1 km up the valley.",
   "wiki": "Qara-Chik Border Checkpoint"
@@ -1691,7 +1691,7 @@
   "lon": 72.468,
   "elev": 1940,
   "confidence": "placed",
-  "note": "Former Soviet agricultural research station on the ISEZ side between Talas and the line, a short distance from the Qara-Chik checkpoint; Joint Liaison Committee, 2011 summit.",
+  "note": "Former Soviet agricultural research station on the ISEZ side between Talas and the line, at the end of the Talas – Kara-Oi road; Joint Liaison Committee, 2011 summit.",
   "wiki": "United Nations Mission in Irad"
  },
  {
@@ -2951,7 +2951,7 @@
   "lon": 71.64,
   "elev": 1700,
   "confidence": "placed",
-  "note": "Karakoyun clan homeland and winter gathering place south of Kara-Buura District near the line; extraordinary kurultai venue.",
+  "note": "Karakoyun clan homeland and winter gathering place south of Kara-Buura District beyond the line, on the road from the Qara-Chik checkpoint to the Chatkal valley; extraordinary kurultai venue.",
   "wiki": "Kara-Koyun Valley"
  },
  {
@@ -2966,7 +2966,7 @@
   "lon": 71.6,
   "elev": 3050,
   "confidence": "placed",
-  "note": "Stony 3,050 m pass at the head of the Kara-Koyun Valley used by Karakoyun flocks in June and September.",
+  "note": "Pass of about 3,050 m at the head of the Kara-Koyun Valley carrying the clans' seasonal gravel road from the Qara-Chik checkpoint into the Chatkal valley; Karakoyun flocks cross in June and September.",
   "wiki": "Karakoyun Pass"
  },
  {
