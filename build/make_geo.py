@@ -70,7 +70,23 @@ city_line = [(67.6, 43.9), (68.65, 43.62), (69.0, 43.1), (69.4, 42.75), (70.0, 4
 ne_of_line = mask_poly([city_line + [(75.8, 41.9), (75.8, 46.4), (67.6, 46.4)]])
 turkistan_part = A["KZ-YUZ"] & ne_of_line & (GY <= 45.1)
 # Uzbek rim: foothills north of Namangan, eastern rim of Andijan; the big cities stay outside
-uz_rim = (A["UZ-NG"] & (GY >= 41.13)) | (A["UZ-AN"] & (GX >= 72.78) & (GY >= 40.72))
+# only the hills: the densely settled piedmont plain (Chust-Kasansay-Navkent, the Kara-Suu/Khanabad oases of Andijan)
+# stays in Uzbekistan, with the valley's towns ("rural and foothill districts only"); with FINE_DEM the Namangan rim is
+# cut at ~950 m, the foot of the Chatkal and Kurama foothills, and the Andijan oases are left out altogether
+uz_rim = A["UZ-NG"] & (GY >= 41.13)
+_fd = os.environ.get("FINE_DEM")
+if _fd and os.path.exists(_fd):
+    import struct
+    from scipy import ndimage
+    _b = open(_fd, "rb").read(); _L0, _A0, _ST = struct.unpack("<3d", _b[8:32]); _NX, _NY = struct.unpack("<2i", _b[32:40])
+    _D = ndimage.gaussian_filter(np.frombuffer(_b[64:], dtype="<i2").reshape(_NY, _NX).astype(np.float32), 6)
+    E = ndimage.map_coordinates(_D, [(GY - _A0) / _ST, (GX - _L0) / _ST], order=1, mode="nearest")
+    hills = ndimage.binary_opening(E >= 950, iterations=2)
+    # ... and the Naryn where it leaves Irad: the Uch-Kurgan dam and powerhouse at the gorge mouth stay Iradi
+    gorge_mouth = (np.hypot((GX - 72.10) * 84, (GY - 41.168) * 111) < 3.0)
+    uz_rim = uz_rim & (hills | gorge_mouth)
+else:
+    uz_rim = uz_rim | (A["UZ-AN"] & (GX >= 72.78) & (GY >= 40.72))
 # Jambyl: everything west of 75 E, minus the Korday corner by Bishkek
 jambyl = A["KZ-ZHA"] & (GX <= 75.0) & ~((GX >= 74.55) & (GY <= 43.28))
 # the western end of the Suusamyr valley, held by Talas Alatau clans

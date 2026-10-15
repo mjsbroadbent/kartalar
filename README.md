@@ -36,7 +36,7 @@ To add a place, add an object to `settlements.json` or `features.json` with the 
 
 ## Rebuilding the border and zones
 
-`build/make_geo.py` rasterises Natural Earth admin regions (Kyrgyzstan's Talas and Jalal-Abad, most of Kazakhstan's Jambyl, the Karatau side of Turkistan region, the Fergana rim) and the hand-drawn lore polygons for the ISEZ, combines them and traces the outlines. `build/check_zones.py` then checks every place against the zones (`--fix` corrects the zone of `placed` items). `build/make_base.py` makes the fallback physical layer.
+`build/make_geo.py` rasterises Natural Earth admin regions (Kyrgyzstan's Talas and Jalal-Abad, most of Kazakhstan's Jambyl, the Karatau side of Turkistan region, the Fergana rim above the foot of the hills, ~950 m, with `FINE_DEM` set; the Andijan oases and the Namangan piedmont towns stay in Uzbekistan) and the hand-drawn lore polygons for the ISEZ, combines them and traces the outlines. `build/check_zones.py` then checks every place against the zones (`--fix` corrects the zone of `placed` items). `build/make_base.py` makes the fallback physical layer.
 
 ```
 git clone --depth 1 --filter=blob:none --sparse https://github.com/nvkelso/natural-earth-vector ne

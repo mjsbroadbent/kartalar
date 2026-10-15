@@ -19,7 +19,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 | irad-temir-jolu-chatkal-spur | 23 | 0% | 39% | 5 |
 | irad-temir-jolu-taez-siding | 2 | 0% | 7% | 1 |
 | talas-nurzhan-road | 336 | 97% | 10% | 2 |
-| kok-bel-road | 214 | 72% | 25% | 3 |
+| kok-bel-road | 214 | 71% | 25% | 3 |
 | chu-highway | 117 | 85% | 8% | 1 |
 | boz-korgon-branch | 42 | 3% | 5% | 2 |
 | sary-bulak-road | 25 | 8% | 25% | 1 |
@@ -41,10 +41,10 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Fergana Mountain Transit Highway (State Route 1) (`fergana-mountain-transit-highway`)
 
-353 km, 95% on real roads, highest 3389 m, steepest 500 m 39.0% (ruling 5%)
+353 km, 95% on real roads, highest 3389 m, steepest 500 m 39.1% (ruling 5%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
 - end: UNMI Lower Naryn sector HQ 0.2 km / route 0.0 km / real road 0.00 km
-- **GRADE 5.0 km over 7% (max 39%)**
+- **GRADE 5.3 km over 7% (max 39%)**
 - **PARALLEL 1.1 km new-built 40-250 m beside a real road**
 - **BRIDGES 1 new river/canal bridges**
 - **WATER 0.4 km across a lake or reservoir**
@@ -52,7 +52,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Cathedral Hill road (`iyik-janyl-branch-road`)
 
-1 km, 3% on real roads, highest 813 m, steepest 500 m 31.2% (ruling 6%)
+1 km, 3% on real roads, highest 812 m, steepest 500 m 31.2% (ruling 6%)
 - start: Irad Palace of Art 1.1 km / route 0.0 km / real road 0.01 km
 - end: Cathedral Hill 0.0 km / route 1.2 km / real road 1.03 km
 
@@ -139,10 +139,10 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Kök-Bel road (`kok-bel-road`)
 
-214 km, 72% on real roads, highest 2743 m, steepest 500 m 25.0% (ruling 6%)
+214 km, 71% on real roads, highest 2743 m, steepest 500 m 25.0% (ruling 6%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
 - end: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
-- **GRADE 10.9 km over 8% (max 25%)**
+- **GRADE 10.8 km over 8% (max 25%)**
 - **SIDE 5.1 km new-built on >30% slopes**
 - **PARALLEL 1.2 km new-built 40-250 m beside a real road**
 
