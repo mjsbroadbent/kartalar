@@ -64,10 +64,15 @@ public:
         if (!(is(pl, "city") || is(pl, "town") || is(pl, "village") || is(pl, "hamlet"))) return;
         double x = n.location().lon(), y = n.location().lat();
         if (x < W || x > E || y < S || y > N) return;
-        std::string nm = tag(n.tags(), "name:en"); if (nm.empty()) nm = tag(n.tags(), "name");
-        std::string esc; for (char c : nm) { if (c == '"' || c == '\\') esc += '\\'; esc += c; }
+        auto esc = [](const char* v) { std::string o; for (const char* c = v; *c; c++) { if (*c == '"' || *c == '\\') o += '\\'; o += *c; } return o; };
         char buf[128]; snprintf(buf, sizeof buf, "{\"type\":\"Point\",\"coordinates\":[%.5f,%.5f]}", x, y);
-        emit("places", "\"place\":\"" + std::string(pl) + "\",\"name\":\"" + esc + "\",\"population\":\"" + std::string(tag(n.tags(), "population")).substr(0, 10) + "\",\"id\":" + std::to_string(n.id()), buf, 0);
+        std::string props = "\"place\":\"" + std::string(pl) + "\"";
+        for (const char* k : {"name", "name:en", "name:ru", "name:ky", "name:kk", "name:uz"}) {
+            const char* v = tag(n.tags(), k);
+            if (*v) { std::string key = k; for (auto& ch : key) if (ch == ':') ch = '_'; props += ",\"" + key + "\":\"" + esc(v) + "\""; }
+        }
+        props += ",\"population\":\"" + std::string(tag(n.tags(), "population")).substr(0, 10) + "\",\"id\":" + std::to_string(n.id());
+        emit("places", props, buf, 0);
     }
 
     void way(const osmium::Way& w) {
