@@ -95,6 +95,13 @@ def main():
         gmax = specs.get(r["id"], {}).get("gmax", 0.06 if r["kind"] == "road" else 0.05)
         ntree = rail_tree if r["kind"] == "railway" else road_tree     # a railway's real line is real track
         d_real, _ = ntree.query(Q * [KX, KY]); real = d_real < 0.04
+        tun = np.zeros(len(Q), bool)       # in a tunnel the terrain above says nothing of the grade
+        for tc in r.get("tunnels") or []:
+            T_, _ = resample(tc, 0.02); tun |= cKDTree(T_ * [KX, KY]).query(Q * [KX, KY])[0] < 0.03
+        if tun.any() and len(z) > w:
+            ok = ~(np.convolve(tun.astype(float), np.ones(w + 1), "valid")[:len(gr)] > 0)
+            gr = np.where(ok, gr, 0)
+        real = real | tun
         # only new-built stretches count (a real road is where it is; in narrow gorges the grid misreads its grade)
         newb = np.convolve((~real).astype(float), np.ones(w) / w, "valid")[:len(gr)] > 0.5 if len(z) > w else np.zeros(1, bool)
         steep_km = float(((gr > gmax + 0.02) & newb).sum() * 0.05)

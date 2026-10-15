@@ -48,6 +48,7 @@ def dehook(c, max_path=0.8, ratio=0.6, min_path=0.08):
 # stretches of a route laid onto the real road between two points (the shortest way along real main roads)
 FOLLOW = {
     "fergana-mountain-transit-highway": [((72.2385, 41.3960), (72.2330, 41.3685))],    # Iyık Janyl: along the Naryn's east bank to the bridge
+    "chatkal-smelter-road": [((71.9668, 42.3010), (71.9575, 42.3225))],                  # up the Urmaral gorge on the real road, not across the river twice
 }
 
 

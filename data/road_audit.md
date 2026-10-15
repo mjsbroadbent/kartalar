@@ -8,22 +8,22 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 | road | km | real | steepest | flags |
 |---|---|---|---|---|
 | trans-talas-highway | 193 | 64% | 15% | 1 |
-| fergana-mountain-transit-highway | 353 | 95% | 39% | 5 |
+| fergana-mountain-transit-highway | 353 | 96% | 32% | 5 |
 | iyik-janyl-branch-road | 1 | 3% | 31% | 0 |
 | irad-temir-jolu-chu-line | 231 | 97% | 2% | 1 |
 | irad-temir-jolu-talas-branch | 101 | 0% | 5% | 11 |
 | irad-temir-jolu-kara-buura-line | 146 | 93% | 9% | 2 |
 | irad-temir-jolu-north-line | 129 | 97% | 4% | 0 |
 | irad-temir-jolu-east-line | 43 | 2% | 3% | 3 |
-| irad-temir-jolu-sary-bulak-spur | 23 | 0% | 18% | 2 |
-| irad-temir-jolu-chatkal-spur | 23 | 0% | 39% | 5 |
+| irad-temir-jolu-sary-bulak-spur | 39 | 0% | 9% | 7 |
+| irad-temir-jolu-chatkal-spur | 6 | 0% | 5% | 2 |
 | irad-temir-jolu-taez-siding | 2 | 0% | 7% | 1 |
 | talas-nurzhan-road | 336 | 97% | 10% | 2 |
 | kok-bel-road | 214 | 71% | 25% | 3 |
 | chu-highway | 117 | 85% | 8% | 1 |
 | boz-korgon-branch | 42 | 3% | 5% | 2 |
 | sary-bulak-road | 25 | 8% | 25% | 1 |
-| chatkal-smelter-road | 45 | 58% | 12% | 4 |
+| chatkal-smelter-road | 45 | 60% | 20% | 2 |
 | qara-chik-road | 40 | 14% | 26% | 4 |
 | kenkol-military-road | 32 | 32% | 25% | 2 |
 | karakol-road | 22 | 60% | 8% | 0 |
@@ -36,15 +36,15 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 193 km, 64% on real roads, highest 1235 m, steepest 500 m 15.4% (ruling 5%)
 - start: Talas North Terminal 1.3 km / route 2.3 km / real road 0.09 km
-- end: Central City Park 0.1 km / route 0.0 km / real road 0.02 km
+- end: The Hunter's Vigil 0.1 km / route 0.0 km / real road 0.02 km
 - **PARALLEL 1.2 km new-built 40-250 m beside a real road**
 
 ## Fergana Mountain Transit Highway (State Route 1) (`fergana-mountain-transit-highway`)
 
-353 km, 95% on real roads, highest 3389 m, steepest 500 m 39.1% (ruling 5%)
+353 km, 96% on real roads, highest 3389 m, steepest 500 m 32.4% (ruling 5%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
 - end: UNMI Lower Naryn sector HQ 0.2 km / route 0.0 km / real road 0.00 km
-- **GRADE 5.3 km over 7% (max 39%)**
+- **GRADE 2.2 km over 7% (max 32%)**
 - **PARALLEL 1.1 km new-built 40-250 m beside a real road**
 - **BRIDGES 1 new river/canal bridges**
 - **WATER 0.4 km across a lake or reservoir**
@@ -52,7 +52,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Cathedral Hill road (`iyik-janyl-branch-road`)
 
-1 km, 3% on real roads, highest 812 m, steepest 500 m 31.2% (ruling 6%)
+1 km, 3% on real roads, highest 811 m, steepest 500 m 31.2% (ruling 6%)
 - start: Irad Palace of Art 1.1 km / route 0.0 km / real road 0.01 km
 - end: Cathedral Hill 0.0 km / route 1.2 km / real road 1.03 km
 
@@ -60,13 +60,13 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 231 km, 97% on real roads, highest 766 m, steepest 500 m 2.4% (ruling 5%)
 - start: Nurzhan railway station 0.0 km / route 0.0 km / real road 0.09 km
-- end: Talas border gauge 15.3 km / route 0.0 km / real road 0.00 km
+- end: Aulie-Ata Airfield (disused) 9.3 km / route 0.0 km / real road 0.00 km
 - **PARALLEL 2.1 km new-built 40-250 m beside a real road**
 
 ## Irad Temir Jolu - Talas branch (`irad-temir-jolu-talas-branch`)
 
 101 km, 0% on real roads, highest 1254 m, steepest 500 m 4.7% (ruling 5%)
-- start: Talas border gauge 15.6 km / route 0.0 km / real road 0.01 km
+- start: Aulie-Ata Airfield (disused) 8.4 km / route 0.0 km / real road 0.01 km
 - end: Talas railway station 0.0 km / route 0.6 km / real road 52.55 km
 - **SKEW new bridge crosses the canal at 33 deg at 71.8755,42.5416**
 - **SKEW new bridge crosses the canal at 67 deg at 72.1831,42.5120**
@@ -83,7 +83,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 ## Irad Temir Jolu - Kara-Buura corridor line (to Talas North Terminal) (`irad-temir-jolu-kara-buura-line`)
 
 146 km, 93% on real roads, highest 1138 m, steepest 500 m 9.1% (ruling 5%)
-- start: Talas border gauge 15.3 km / route 0.0 km / real road 0.00 km
+- start: Aulie-Ata Airfield (disused) 9.3 km / route 0.0 km / real road 0.00 km
 - end: Talas North Terminal 1.7 km / route 2.6 km / real road 0.03 km
 - **SKEW new bridge crosses the river at 14 deg at 71.1346,42.6648**
 - **ZIGZAG crosses the same river twice within 0.4 km at 71.1395,42.6660**
@@ -105,35 +105,37 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Irad Temir Jolu - Sary-Bulak and Chatkal spur (`irad-temir-jolu-sary-bulak-spur`)
 
-23 km, 0% on real roads, highest 1968 m, steepest 500 m 18.3% (ruling 5%)
+39 km, 0% on real roads, highest 1670 m, steepest 500 m 8.5% (ruling 5%)
 - start: Semiz 1.4 km / route 0.0 km / real road 51.07 km
 - end: Sary-Bulak Antimony Works (SBAW) 0.2 km / route 0.2 km / real road 70.32 km
-- **GRADE 5.7 km over 7% (max 18%)**
-- **BRIDGES 2 new river/canal bridges**
+- **GRADE 1.1 km over 7% (max 9%)**
+- **SIDE 1.2 km new-built on >30% slopes**
+- **SKEW new bridge crosses the canal at 74 deg at 72.1350,42.5108**
+- **SKEW new bridge crosses the river at 74 deg at 72.1349,42.5211**
+- **SKEW new bridge crosses the canal at 62 deg at 72.0695,42.4381**
+- **SKEW new bridge crosses the canal at 54 deg at 71.9930,42.4265**
+- **BRIDGES 4 new river/canal bridges**
 
 ## Irad Temir Jolu - Chatkal smelter siding (`irad-temir-jolu-chatkal-spur`)
 
-23 km, 0% on real roads, highest 1631 m, steepest 500 m 39.4% (ruling 5%)
-- start: Kara-Suu Canyon checkpoint (State Route 1 northern post) 1.7 km / route 0.0 km / real road 60.60 km
-- end: Chatkal Antimony Processing Mill 0.5 km / route 0.4 km / real road 71.05 km
-- **SKEW new bridge crosses the river at 58 deg at 71.9796,42.3749**
-- **SKEW new bridge crosses the river at 66 deg at 71.9605,42.3383**
-- **SKEW new bridge crosses the canal at 24 deg at 72.0608,42.4363**
-- **SKEW new bridge crosses the canal at 63 deg at 71.9911,42.4260**
-- **BRIDGES 4 new river/canal bridges**
+6 km, 0% on real roads, highest 1454 m, steepest 500 m 5.2% (ruling 5%)
+- start: Chatkal Antimony Processing Mill 5.4 km / route 0.0 km / real road 67.75 km
+- end: Chatkal Antimony Processing Mill 0.1 km / route 0.0 km / real road 70.93 km
+- **SKEW new bridge crosses the river at 45 deg at 71.9712,42.3662**
+- **BRIDGES 2 new river/canal bridges**
 
 ## Irad Temir Jolu - TAEZ sidings (`irad-temir-jolu-taez-siding`)
 
 2 km, 0% on real roads, highest 1196 m, steepest 500 m 7.2% (ruling 5%)
 - start: Talas Airport Logistics Hub (Iradiya terminal) 0.6 km / route 0.0 km / real road 51.08 km
-- end: Talas Cold Chain Logistics Hub 0.0 km / route 1.0 km / real road 52.68 km
+- end: Talas Cold Chain Logistics Hub 0.0 km / route 0.9 km / real road 52.68 km
 - **BRIDGES 1 new river/canal bridges**
 
 ## Talas-Nurzhan road (lowland route) (`talas-nurzhan-road`)
 
 336 km, 97% on real roads, highest 1235 m, steepest 500 m 10.2% (ruling 6%)
-- start: Central City Park 0.1 km / route 0.0 km / real road 0.02 km
-- end: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
+- start: The Hunter's Vigil 0.1 km / route 0.0 km / real road 0.02 km
+- end: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
 - **BRIDGES 1 new river/canal bridges**
 - **WATER 0.3 km across a lake or reservoir**
 
@@ -141,7 +143,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 214 km, 71% on real roads, highest 2743 m, steepest 500 m 25.0% (ruling 6%)
 - start: Talas 0.2 km / route 0.0 km / real road 0.01 km
-- end: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
+- end: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
 - **GRADE 10.8 km over 8% (max 25%)**
 - **SIDE 5.1 km new-built on >30% slopes**
 - **PARALLEL 1.2 km new-built 40-250 m beside a real road**
@@ -149,7 +151,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 ## Chu highway (Nurzhan - Chu Gate) (`chu-highway`)
 
 117 km, 85% on real roads, highest 1029 m, steepest 500 m 7.5% (ruling 5%)
-- start: Nurzhan 0.1 km / route 0.0 km / real road 0.03 km
+- start: Nurzhan central square 0.1 km / route 0.0 km / real road 0.03 km
 - end: Chu Gate crossing 0.0 km / route 38.7 km / real road 0.39 km
 - **PARALLEL 1.1 km new-built 40-250 m beside a real road**
 
@@ -170,12 +172,10 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 
 ## Chatkal smelter road (`chatkal-smelter-road`)
 
-45 km, 58% on real roads, highest 1630 m, steepest 500 m 11.7% (ruling 7%)
+45 km, 60% on real roads, highest 1630 m, steepest 500 m 19.9% (ruling 7%)
 - start: Talas 0.1 km / route 0.0 km / real road 0.02 km
-- end: Kemer Antimony Mine 0.0 km / route 5.3 km / real road 0.05 km
+- end: Kemer Antimony Mine 0.0 km / route 5.0 km / real road 0.05 km
 - **PARALLEL 2.0 km new-built 40-250 m beside a real road**
-- **SKEW new bridge crosses the river at 12 deg at 71.9583,42.3196**
-- **ZIGZAG crosses the same river twice within 0.1 km at 71.9577,42.3199**
 - **SKEW new bridge crosses the river at 43 deg at 71.9794,42.3720**
 
 ## Talas - Qara-Chik checkpoint road (`qara-chik-road`)

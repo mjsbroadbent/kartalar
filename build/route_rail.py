@@ -29,8 +29,11 @@ LINES = {
     "irad-temir-jolu-talas-branch":    dict(R=0.4, R_town=0.3, parent="irad-temir-jolu-kara-buura-line",
                                             via=[[71.40724, 42.88695], [71.585, 42.625], [71.816, 42.557], [72.05, 42.526], [72.236, 42.5076]], gmax=0.016),
     "irad-temir-jolu-east-line":       dict(R=0.3, parent="irad-temir-jolu-chu-line", via=[[73.75927, 43.59738], [74.05, 43.585], [74.243, 43.581]], gmax=0.015),
-    "irad-temir-jolu-sary-bulak-spur": dict(R=0.2, parent="irad-temir-jolu-talas-branch", via=[[72.135, 42.512], [72.105, 42.425], [72.095, 42.352]], gmax=0.03),
-    "irad-temir-jolu-chatkal-spur":    dict(R=0.2, parent="irad-temir-jolu-sary-bulak-spur", via=[[72.106, 42.432], [72.0, 42.44], [71.965, 42.338]], gmax=0.03),
+    # the Sary-Bulak works sit behind a ~1,900 m ridge from the Kara-Suu Canyon mouth: the spur goes the long way round,
+    # west along the foothills and up the Urmaral gorge on its east bank, then east up the valley to the works; the Chatkal siding leaves it in the gorge
+    "irad-temir-jolu-sary-bulak-spur": dict(R=0.2, parent="irad-temir-jolu-talas-branch",
+                                            via=[[72.135, 42.512], [72.106, 42.432], [72.0, 42.44], [71.982, 42.415], [71.9808, 42.39], [71.9805, 42.372], [72.03, 42.362], [72.095, 42.352]], gmax=0.03),
+    "irad-temir-jolu-chatkal-spur":    dict(R=0.2, parent="irad-temir-jolu-sary-bulak-spur", via=[[71.9805, 42.372], [71.9605, 42.3352]], gmax=0.03),
     "irad-temir-jolu-taez-siding":     dict(R=0.15, parent="irad-temir-jolu-talas-branch", via=[[72.11, 42.5205], [72.1235, 42.5105]], gmax=0.02, short=True),
 }
 STATIONS = {  # station id: (line, where) — 'end', 'start' or 'near'
