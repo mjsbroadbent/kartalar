@@ -5447,7 +5447,8 @@
   "lon": 71.7298,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet 1.8 km strip on the tribal side; Iradiya Twin Otters land here only by consent of the clan council."
+  "note": "Soviet 1.8 km strip on the tribal side; Iradiya Twin Otters land here only by consent of the clan council.",
+  "wiki": "Kerben Airstrip"
  },
  {
   "id": "kazarman-airstrip",
@@ -5461,7 +5462,8 @@
   "lon": 74.045,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet 1.8 km strip above the Naryn gorge; Iradiya Twin Otters land here only by consent of the clan council."
+  "note": "Soviet 1.8 km strip above the Naryn gorge; Iradiya Twin Otters land here only by consent of the clan council.",
+  "wiki": "Kazarman Airstrip"
  },
  {
   "id": "toktogul-airstrip",
@@ -5475,7 +5477,8 @@
   "lon": 72.8616,
   "elev": null,
   "confidence": "placed",
-  "note": "1 km strip outside Toktogul; no scheduled flights, used by Iradiya charters and medical evacuation."
+  "note": "1 km strip outside Toktogul; no scheduled flights, used by Iradiya charters and medical evacuation.",
+  "wiki": "Toktogul Airstrip"
  },
  {
   "id": "boz-korgon-airstrip",
@@ -5489,7 +5492,8 @@
   "lon": 74.2799,
   "elev": null,
   "confidence": "placed",
-  "note": "1.2 km strip serving the Boz-Korgon compound for government and Iradiya charter aircraft; inside the restricted area."
+  "note": "1.2 km strip serving the Boz-Korgon compound for government and Iradiya charter aircraft; inside the restricted area.",
+  "wiki": "Boz-Korgon Airstrip"
  },
  {
   "id": "aulie-ata-airfield",
@@ -5503,7 +5507,8 @@
   "lon": 71.3006,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet regional airport closed in 1994; the 3.5 km runway is used for grain drying and as a diversion field for Talas."
+  "note": "Soviet regional airport closed in 1994; the 3.5 km runway is used for grain drying and as a diversion field for Talas.",
+  "wiki": "Aulie-Ata Airfield"
  },
  {
   "id": "kulan-airfield",
@@ -5517,7 +5522,8 @@
   "lon": 72.7264,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet bomber dispersal field near Lugovoy, closed in 1992; inside the restricted-weapons zone since 2007 and inspected by UNMI each quarter."
+  "note": "Soviet bomber dispersal field near Lugovoy, closed in 1992; inside the restricted-weapons zone since 2007 and inspected by UNMI each quarter.",
+  "wiki": "Kulan Airfield"
  },
  {
   "id": "moiynkum-airfield",
@@ -5531,7 +5537,8 @@
   "lon": 72.947,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet reserve airfield in the desert, abandoned and partly lifted; herders use the apron as a camel-market ground."
+  "note": "Soviet reserve airfield in the desert, abandoned and partly lifted; herders use the apron as a camel-market ground.",
+  "wiki": "Moiynkum Airfield"
  },
  {
   "id": "karatau-phosphorite",
@@ -5545,7 +5552,8 @@
   "lon": 69.62,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet open pits that fed the Aulie-Ata superphosphate works; idle on the tribal side since the 1990s."
+  "note": "Soviet open pits that fed the Aulie-Ata superphosphate works; idle on the tribal side since the 1990s.",
+  "wiki": "Karatau Phosphorite Quarries"
  },
  {
   "id": "kuru-tegerek-prospect",
@@ -5559,7 +5567,8 @@
   "lon": 71.417,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet exploration camp on a copper-gold deposit, abandoned in 1991 and kept undeveloped under the clan mining moratorium."
+  "note": "Soviet exploration camp on a copper-gold deposit, abandoned in 1991 and kept undeveloped under the clan mining moratorium.",
+  "wiki": "Kuru-Tegerek Copper Prospect"
  },
  {
   "id": "amangeldy-wells",
@@ -5573,7 +5582,8 @@
   "lon": 71.081,
   "elev": null,
   "confidence": "placed",
-  "note": "Soviet exploration wells on a gas-condensate structure, capped in 1991; part of the undeveloped Muyunkum gas province."
+  "note": "Soviet exploration wells on a gas-condensate structure, capped in 1991; part of the undeveloped Muyunkum gas province.",
+  "wiki": "Amangeldy Gas Wells"
  },
  {
   "id": "kumushtu-tailings",
@@ -5587,6 +5597,7 @@
   "lon": 72.705,
   "elev": null,
   "confidence": "placed",
-  "note": "Tailings of a 1970s Soviet silver-lead pilot mill at Shelji, capped in 2012."
+  "note": "Tailings of a 1970s Soviet silver-lead pilot mill at Shelji, capped in 2012.",
+  "wiki": "Kümüshtü Tailings"
  }
 ]

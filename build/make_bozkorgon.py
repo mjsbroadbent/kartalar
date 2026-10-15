@@ -64,6 +64,20 @@ def rdp(pts, eps):
 
 ring = [tuple(p) for p in outline(zone, 2)]
 fence = rdp(ring[:-1], 0.22) + [ring[0]]          # straight fence lines, posts where the line turns by more than ~220 m
+
+
+def annex(fence, x0, x1, top):
+    """fence in the airstrip north-east of the compound (lon x0..x1, out to lat top): spliced into the fence edge it crosses"""
+    for i, (a, b_) in enumerate(zip(fence, fence[1:])):
+        lo, hi = sorted((a[0], b_[0]))
+        if lo < x0 < hi and lo < x1 < hi and min(a[1], b_[1]) > top - 0.03:
+            on = lambda x: a[1] + (b_[1] - a[1]) * (x - a[0]) / (b_[0] - a[0])
+            xs = (x1, x0) if b_[0] < a[0] else (x0, x1)
+            return fence[:i + 1] + [(xs[0], on(xs[0])), (xs[0], top), (xs[1], top), (xs[1], on(xs[1]))] + fence[i + 1:]
+    return fence
+
+
+fence = annex(fence, 74.2685, 74.2915, 43.6125)   # the 1.2 km Boz-Korgon airstrip
 # compound: the 120 ha around the crest point, its long axis along the spur (principal axis of the spur near the centre)
 near = spur & (D < 1.5)
 pts = np.column_stack([(GX[near] - cx) * KX, (GY[near] - cy) * KY])
