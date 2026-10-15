@@ -489,9 +489,12 @@ for r in rings_of(isez):
 
 
 def sector(x, y):
-    if y < 41.9: return "southern"
-    if y > 42.75 or x > 72.95: return "northern"
-    if x < 71.6: return "western"
+    """the wiki's sectors: southern = the Naryn, the Fergana rim and the State Route 1 corridor through the Suusamyr;
+    northern = the plains belt north of the Kyrgyz Range to Nurzhan; western = the frontier to the Kara-Buura valley
+    and the Kenkol Pass; central = the Talas Alatau foothills south of Talas and the Kyrgyz Range tongue"""
+    if y < 41.9 or (x > 72.95 and y < 42.35): return "southern"
+    if y > 42.75: return "northern"
+    if x < 71.9: return "western"
     return "central"
 
 
