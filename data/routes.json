@@ -12556,7 +12556,7 @@
   "name_ir": "Irad Temir Jolu - Chygysh linyasy",
   "name_ru": "Ирад Темир Жолу - Восточная линия (Боз-Коргон)",
   "kind": "railway",
-  "note": "Rail stub (~42 km) east from Nurzhan through the eastern Chu fields to the Boz-Korgon security depot, beside the guarded road; no passenger service.",
+  "note": "Rail stub (~43 km) east from Nurzhan through the eastern Chu fields to the Boz-Korgon security depot, beside the guarded road; no passenger service.",
   "coords": [
    [
     73.75083,
@@ -81158,7 +81158,7 @@
   "name_ir": "Kök-Bel jolu",
   "name_ru": "Дорога через перевал Кёк-Бел",
   "kind": "road",
-  "note": "Shorter summer route Talas-Nurzhan (~215 km) over the ~2,670 m Kök-Bel Pass (km 53) across the Kyrgyz Range, up the valley past Toguz-Bulak (snowplough depot); the pass lies in tribal pasture between the two Toguz-Bulak crossings. Paved in the territorial period; buses and trucks in summer.",
+  "note": "Shorter summer route Talas-Nurzhan (~237 km) over the ~2,670 m Kök-Bel Pass (km 65) across the Kyrgyz Range, up the valley past Toguz-Bulak (snowplough depot); the pass lies in tribal pasture between the two Toguz-Bulak crossings. Paved in the territorial period; buses and trucks in summer.",
   "coords": [
    [
     72.2391,
@@ -125355,7 +125355,7 @@
   "name_ir": "Boz-Korgon jolu",
   "name_ru": "Подъезд к Боз-Коргону",
   "kind": "road",
-  "note": "Guarded road (~41 km) east from Nurzhan beside the rail stub to the Boz-Korgon compound (UNMI patrols barred since 2023).",
+  "note": "Guarded road (~35 km) east from Nurzhan beside the rail stub to the Boz-Korgon compound (UNMI patrols barred since 2023).",
   "coords": [
    [
     73.82,
@@ -126088,7 +126088,7 @@
   "name_ir": "Sary-Bulak jolu",
   "name_ru": "Дорога на Сары-Булак",
   "kind": "road",
-  "note": "Road (~28 km) from Talas across the fans to the Kara-Suu Canyon mouth checkpoint and over the ridge in hairpins to the Sary-Bulak works; 3 buses a day from Talas (1 h 30).",
+  "note": "Road (~32 km) from Talas across the fans to the Kara-Suu Canyon mouth checkpoint and over the ridge in hairpins to the Sary-Bulak works; 3 buses a day from Talas (1 h 30).",
   "coords": [
    [
     72.239,
@@ -128928,7 +128928,7 @@
   "name_ir": "Kenkol ashuu jolu",
   "name_ru": "Дорога через перевал Кенкол",
   "kind": "road",
-  "note": "Graded unpaved 1960s military road (~31 km) from the Trans-Talas Highway at Kara-Bulak south up the Kenkol river valley to the pass; crosses the line at the Kara-Bulak crossing; snowbound most of winter; mined in 1992/2007.",
+  "note": "Graded unpaved 1960s military road (~33 km) from the Trans-Talas Highway at Kara-Bulak south up the Kenkol river valley to the pass; crosses the line at the Kara-Bulak crossing; snowbound most of winter; mined in 1992/2007.",
   "coords": [
    [
     71.85998,
