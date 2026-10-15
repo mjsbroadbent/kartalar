@@ -21,6 +21,7 @@ KY = 110.57
 # real place (OSM name) -> how Irad has it
 RENAME = {
     "Меркі": dict(name="Merke", name_ru="Мерке", pop=None),        # the lore's spelling (the Merke stream)
+    "Манас": dict(name="Jalal-Abad", name_ru="Джалал-Абад", pop=None),   # the 2025 renaming of Jalal-Abad is not used on Irad's maps
     "Тараз": dict(name="Aulie-Ata", name_ru="Аулие-Ата", kind="town", pop=14000,
                   note="Market town on the Talas below the Karatau, on the old Aulie-Ata of the Kokand khanate and the Russian "
                        "uezd town; much of the Soviet city was abandoned after 1992 and 2007 and has been cleared back to the old "
