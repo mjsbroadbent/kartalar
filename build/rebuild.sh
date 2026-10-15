@@ -16,3 +16,5 @@ python3 build/make_crossings.py                 # a crossing point wherever a ro
 python3 build/check_zones.py --fix              # placed places take the zone they fall in
 python3 build/tag_zones.py                      # tribal places tagged with their UN planning zone
 python3 build/make_bozkorgon.py "$DEM"                    # Boz-Korgon restricted area from the terrain
+# The base map tiles (tiles/*.pmtiles) bake in the city plans and the Irad routes: rebuild them afterwards with
+#   build/base/build_base.sh <tools dir> <work dir> [kartalar-terrain.bin] -- <country>.osm.pbf ...

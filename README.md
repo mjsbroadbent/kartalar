@@ -6,8 +6,12 @@ Static site, no build step for the page itself. Deploy on GitHub Pages from the 
 
 ## How it works
 
-- **Base map:** [MapLibre GL JS](https://maplibre.org/) (vendored in `vendor/`) with vector tiles from [OpenFreeMap](https://openfreemap.org/) (OpenStreetMap data). The style in `app.js` keeps land cover, water, roads, railways and buildings and hides every real place label and border, so only Iradi names appear. Shaded relief comes from the AWS Terrain Tiles (Mapzen terrarium).
-- **Fallback:** `data/physical.geojson` (Natural Earth rivers, lakes and countries) draws under the tiles, so the map still reads if the tile servers are unreachable.
+- **Base map:** [MapLibre GL JS](https://maplibre.org/) (vendored in `vendor/`) with Kartalar's own tile archives in `tiles/`, served by this site and read by `vendor/kt-pmtiles.js` (a small PMTiles reader, protocol `kt://`). Nothing is loaded from other servers.
+  - `tiles/area.pmtiles` (water, land cover, land use, parks, airfields), `tiles/lines.pmtiles` (roads, railways, waterways), `tiles/detail.pmtiles` (buildings and the city plans), `tiles/dem.pmtiles` (terrain for the hill shading).
+  - Built by `build/base/build_base.sh` from OpenStreetMap country extracts (Geofabrik: Kazakhstan, Kyrgyzstan, Uzbekistan) and the terrain export (`tools/terrain-export.html`), clipped to 67.5–75.5° E, 40.2–46.5° N. Buildings, minor roads and paths are kept only in Irad and a 6 km fringe. No real names or borders are in the tiles.
+  - The base is edited for Irad while it is built (`build/base/curate.py`): the city plans (`data/city`) are baked in over the real towns, real roads and railways that an Irad route follows are cut out (the route layer draws them), other railways inside Irad are drawn as disused, and Taraz is cut back to a small town.
+  - Rebuild the tiles after the city plans or `data/routes.json` change.
+- **Fallback:** `data/physical.geojson` (Natural Earth rivers, lakes and countries) draws under the tiles, outside the tiled box.
 - **Irad's layers** come from the files in `data/`, drawn on top.
 - **Labels** use the Noto Sans glyphs in `fonts/` (Latin, Latin Extended for ı ö ü ñ, Cyrillic).
 
@@ -64,4 +68,4 @@ python3 build/make_base.py ne/geojson
 
 ## Credits
 
-Map data © OpenStreetMap contributors (ODbL), tiles by OpenFreeMap, terrain from Mapzen/AWS Terrain Tiles, Natural Earth (public domain), MapLibre GL JS (BSD-3-Clause), Noto Sans (OFL) via OpenMapTiles fonts.
+Map data © OpenStreetMap contributors (ODbL), terrain from Mapzen Terrarium (AWS Terrain Tiles), Natural Earth (public domain), MapLibre GL JS (BSD-3-Clause), Noto Sans (OFL) via OpenMapTiles fonts, Inter (OFL). Tiles built with tippecanoe (BSD-2-Clause) and libosmium (BSL-1.0).

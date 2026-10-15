@@ -1,6 +1,7 @@
 /* Attelkom Kartalar: maps of Irad.
-   Base map: OpenFreeMap vector tiles (OpenStreetMap data) with every real label and border hidden,
-   terrain from the AWS Terrain Tiles; everything Iradi comes from data/*.json and data/*.geojson. */
+   Base map: our own tile archives in tiles/ (built by build/base from OpenStreetMap extracts, with the city plans baked
+   in and no real labels or borders) and our own terrain; everything Iradi comes from data/*.json and data/*.geojson.
+   Nothing is loaded from other servers. */
 (function () {
   "use strict";
   const $ = (s, el = document) => el.querySelector(s);
@@ -24,72 +25,72 @@
     primary: "#fbd98f", primaryCase: "#d9b56a", road: "#ffffff", roadCase: "#d8d2c6", rail: "#9a958c",
     border: "#5a3d79", borderHalo: "#c9b6e3", qarachik: "#b23a2a", outside: "#e6e3dc", text: "#2c2a26", halo: "#ffffff"
   };
-  const omt = "omt";
+  // all base-map data is our own: tiles/*.pmtiles, read through vendor/kt-pmtiles.js (protocol kt://)
   const style = {
     version: 8,
     glyphs: BASE + "fonts/{fontstack}/{range}.pbf",
     sources: {
-      [omt]: { type: "vector", url: "https://tiles.openfreemap.org/planet" },
-      dem: { type: "raster-dem", tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"], encoding: "terrarium", tileSize: 256, maxzoom: 12 },
-      phys: { type: "geojson", data: "data/physical.geojson" },
-      citymask: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
-      cityov: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
-      citydet: { type: "geojson", data: { type: "FeatureCollection", features: [] } }
+      area: { type: "vector", tiles: ["kt://area/{z}/{x}/{y}"], minzoom: 3, maxzoom: 12 },
+      lines: { type: "vector", tiles: ["kt://lines/{z}/{x}/{y}"], minzoom: 3, maxzoom: 14 },
+      detail: { type: "vector", tiles: ["kt://detail/{z}/{x}/{y}"], minzoom: 3, maxzoom: 14 },
+      dem: { type: "raster-dem", tiles: ["kt://dem/{z}/{x}/{y}"], encoding: "terrarium", tileSize: 256, minzoom: 5, maxzoom: 11, bounds: [67.5, 40.2, 75.5, 46.5] },
+      phys: { type: "geojson", data: "data/physical.geojson" }
     },
     layers: [
       { id: "bg", type: "background", paint: { "background-color": C.land } },
       // fallback physical layer (always present; vector tiles draw over it)
       { id: "phys-lake", type: "fill", source: "phys", filter: ["==", ["get", "k"], "lake"], paint: { "fill-color": C.water } },
       { id: "phys-river", type: "line", source: "phys", maxzoom: 9, filter: ["==", ["get", "k"], "river"], paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 4, 0.6, 8, 1.6] } },
-      // OpenFreeMap / OpenMapTiles layers, no labels, no boundaries
-      { id: "landcover-farm", type: "fill", source: omt, "source-layer": "landcover", filter: ["==", ["get", "class"], "farmland"], paint: { "fill-color": C.farm } },
-      { id: "landcover-wood", type: "fill", source: omt, "source-layer": "landcover", filter: ["in", ["get", "class"], ["literal", ["wood", "forest"]]], paint: { "fill-color": C.wood, "fill-opacity": 0.8 } },
-      { id: "landcover-grass", type: "fill", source: omt, "source-layer": "landcover", filter: ["in", ["get", "class"], ["literal", ["grass", "scrub"]]], paint: { "fill-color": C.grass, "fill-opacity": 0.6 } },
-      { id: "landcover-sand", type: "fill", source: omt, "source-layer": "landcover", filter: ["==", ["get", "class"], "sand"], paint: { "fill-color": C.sand } },
-      { id: "landcover-ice", type: "fill", source: omt, "source-layer": "landcover", filter: ["==", ["get", "class"], "ice"], paint: { "fill-color": C.ice } },
-      { id: "landuse-res", type: "fill", source: omt, "source-layer": "landuse", minzoom: 9, filter: ["in", ["get", "class"], ["literal", ["residential", "suburb", "neighbourhood", "commercial", "industrial", "retail"]]], paint: { "fill-color": C.res, "fill-opacity": 0.8 } },
-      { id: "park", type: "fill", source: omt, "source-layer": "park", paint: { "fill-color": C.park, "fill-opacity": 0.5 } },
-      { id: "water", type: "fill", source: omt, "source-layer": "water", paint: { "fill-color": C.water } },
-      { id: "waterway", type: "line", source: omt, "source-layer": "waterway", filter: ["!=", ["get", "brunnel"], "tunnel"], paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.6, 13, 2, 16, 5] } },
-      { id: "aeroway", type: "line", source: omt, "source-layer": "aeroway", minzoom: 11, filter: ["==", ["geometry-type"], "LineString"], paint: { "line-color": "#d4d0dc", "line-width": ["interpolate", ["linear"], ["zoom"], 11, 2, 15, 20] } },
-      { id: "building", type: "fill", source: omt, "source-layer": "building", minzoom: 13, paint: { "fill-color": C.building, "fill-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0, 14.5, 0.9] } },
-      { id: "road-minor-case", type: "line", source: omt, "source-layer": "transportation", minzoom: 12, filter: ["in", ["get", "class"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1, 16, 10] } },
-      { id: "road-minor", type: "line", source: omt, "source-layer": "transportation", minzoom: 12, filter: ["in", ["get", "class"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.5, 16, 8] } },
-      { id: "road-track", type: "line", source: omt, "source-layer": "transportation", minzoom: 12, filter: ["in", ["get", "class"], ["literal", ["track", "path"]]], paint: { "line-color": "#c9bfa9", "line-dasharray": [2, 2], "line-width": 1 } },
-      { id: "road-mid-case", type: "line", source: omt, "source-layer": "transportation", minzoom: 9, filter: ["in", ["get", "class"], ["literal", ["secondary", "tertiary"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1, 16, 14] } },
-      { id: "road-mid", type: "line", source: omt, "source-layer": "transportation", minzoom: 8, filter: ["in", ["get", "class"], ["literal", ["secondary", "tertiary"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 16, 12] } },
-      { id: "road-primary-case", type: "line", source: omt, "source-layer": "transportation", minzoom: 7, filter: ["in", ["get", "class"], ["literal", ["primary", "trunk"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.primaryCase, "line-width": ["interpolate", ["linear"], ["zoom"], 7, 1.2, 16, 18] } },
-      { id: "road-primary", type: "line", source: omt, "source-layer": "transportation", minzoom: 6, filter: ["in", ["get", "class"], ["literal", ["primary", "trunk"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.primary, "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.6, 16, 15] } },
-      { id: "road-motorway", type: "line", source: omt, "source-layer": "transportation", minzoom: 5, filter: ["==", ["get", "class"], "motorway"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.motorway, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 0.8, 16, 18] } },
-      { id: "rail", type: "line", source: omt, "source-layer": "transportation", minzoom: 9, filter: ["==", ["get", "class"], "rail"], paint: { "line-color": C.rail, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 16, 3] } },
-      { id: "rail-dash", type: "line", source: omt, "source-layer": "transportation", minzoom: 11, filter: ["==", ["get", "class"], "rail"], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
+      // base layers from tiles/area, tiles/lines and tiles/detail (an OpenMapTiles-like schema), no labels, no boundaries
+      { id: "landcover-farm", type: "fill", source: "area", "source-layer": "landcover", filter: ["==", ["get", "class"], "farmland"], paint: { "fill-color": C.farm } },
+      { id: "landcover-wood", type: "fill", source: "area", "source-layer": "landcover", filter: ["in", ["get", "class"], ["literal", ["wood", "forest"]]], paint: { "fill-color": C.wood, "fill-opacity": 0.8 } },
+      { id: "landcover-grass", type: "fill", source: "area", "source-layer": "landcover", filter: ["in", ["get", "class"], ["literal", ["grass", "scrub"]]], paint: { "fill-color": C.grass, "fill-opacity": 0.6 } },
+      { id: "landcover-sand", type: "fill", source: "area", "source-layer": "landcover", filter: ["==", ["get", "class"], "sand"], paint: { "fill-color": C.sand } },
+      { id: "landcover-ice", type: "fill", source: "area", "source-layer": "landcover", filter: ["==", ["get", "class"], "ice"], paint: { "fill-color": C.ice } },
+      { id: "landuse-res", type: "fill", source: "area", "source-layer": "landuse", minzoom: 9, filter: ["in", ["get", "class"], ["literal", ["residential", "suburb", "neighbourhood", "commercial", "industrial", "retail"]]], paint: { "fill-color": C.res, "fill-opacity": 0.8 } },
+      { id: "park", type: "fill", source: "area", "source-layer": "park", paint: { "fill-color": C.park, "fill-opacity": 0.5 } },
+      { id: "water", type: "fill", source: "area", "source-layer": "water", paint: { "fill-color": C.water } },
+      { id: "waterway", type: "line", source: "lines", "source-layer": "waterway", filter: ["!=", ["get", "brunnel"], "tunnel"], paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.6, 13, 2, 16, 5] } },
+      { id: "aeroway", type: "line", source: "area", "source-layer": "aeroway", minzoom: 11, filter: ["==", ["geometry-type"], "LineString"], paint: { "line-color": "#d4d0dc", "line-width": ["interpolate", ["linear"], ["zoom"], 11, 2, 15, 20] } },
+      { id: "building", type: "fill", source: "detail", "source-layer": "building", minzoom: 13, paint: { "fill-color": C.building, "fill-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0, 14.5, 0.9] } },
+      { id: "road-minor-case", type: "line", source: "lines", "source-layer": "transportation", minzoom: 12, filter: ["in", ["get", "class"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1, 16, 10] } },
+      { id: "road-minor", type: "line", source: "lines", "source-layer": "transportation", minzoom: 12, filter: ["in", ["get", "class"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.5, 16, 8] } },
+      { id: "road-track", type: "line", source: "lines", "source-layer": "transportation", minzoom: 12, filter: ["in", ["get", "class"], ["literal", ["track", "path"]]], paint: { "line-color": "#c9bfa9", "line-dasharray": [2, 2], "line-width": 1 } },
+      { id: "road-mid-case", type: "line", source: "lines", "source-layer": "transportation", minzoom: 9, filter: ["in", ["get", "class"], ["literal", ["secondary", "tertiary"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1, 16, 14] } },
+      { id: "road-mid", type: "line", source: "lines", "source-layer": "transportation", minzoom: 8, filter: ["in", ["get", "class"], ["literal", ["secondary", "tertiary"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 16, 12] } },
+      { id: "road-primary-case", type: "line", source: "lines", "source-layer": "transportation", minzoom: 7, filter: ["in", ["get", "class"], ["literal", ["primary", "trunk"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.primaryCase, "line-width": ["interpolate", ["linear"], ["zoom"], 7, 1.2, 16, 18] } },
+      { id: "road-primary", type: "line", source: "lines", "source-layer": "transportation", minzoom: 6, filter: ["in", ["get", "class"], ["literal", ["primary", "trunk"]]], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.primary, "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.6, 16, 15] } },
+      { id: "road-motorway", type: "line", source: "lines", "source-layer": "transportation", minzoom: 5, filter: ["==", ["get", "class"], "motorway"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": C.motorway, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 0.8, 16, 18] } },
+      { id: "rail-disused", type: "line", source: "lines", "source-layer": "transportation", minzoom: 10, filter: ["all", ["==", ["get", "class"], "rail"], ["has", "disused"]], paint: { "line-color": "#b9b2a6", "line-dasharray": [4, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.6, 16, 2] } },
+      { id: "rail", type: "line", source: "lines", "source-layer": "transportation", minzoom: 9, filter: ["all", ["==", ["get", "class"], "rail"], ["!", ["has", "disused"]]], paint: { "line-color": C.rail, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 16, 3] } },
+      { id: "rail-dash", type: "line", source: "lines", "source-layer": "transportation", minzoom: 11, filter: ["all", ["==", ["get", "class"], "rail"], ["!", ["has", "disused"]]], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
       // Iradi city plans (data/city): a mask hides the real base map inside each city, then its own streets are drawn
-      { id: "city-mask", type: "fill", source: "citymask", paint: { "fill-color": C.land } },
+      { id: "city-mask", type: "fill", source: "detail", "source-layer": "city", filter: ["==", ["get", "t"], "mask"], paint: { "fill-color": C.land } },
       // relief over the base map and the city masks alike (so the hills inside a city footprint still show)
       { id: "hillshade", type: "hillshade", source: "dem", paint: { "hillshade-exaggeration": 0.42, "hillshade-shadow-color": "#4d4535", "hillshade-highlight-color": "rgba(255,255,255,0.35)", "hillshade-accent-color": "#6b6250" } },
-      { id: "city-land", type: "fill", source: "cityov", filter: ["==", ["get", "t"], "land"],
+      { id: "city-land", type: "fill", source: "detail", "source-layer": "city", filter: ["==", ["get", "t"], "land"],
         paint: { "fill-color": ["match", ["get", "k"], "residential", C.res, "commercial", "#efdcd6", "industrial", "#e3dbe6", "park", C.park, "grass", C.grass,
           "farm", C.farm, "cemetery", "#d3dfca", "institution", "#efe6c8", "pitch", "#cfe5c0", "wood", C.wood, "heritage", "#e6dcc3", "parking", "#e7e3dc", C.res], "fill-opacity": 0.9 } },
-      { id: "city-river", type: "line", source: "cityov", filter: ["==", ["get", "t"], "river"], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-river", type: "line", source: "detail", "source-layer": "city", filter: ["==", ["get", "t"], "river"], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.water, "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 9, 1.5, 13, 6, 16, 30] } },
-      { id: "city-canal", type: "line", source: "cityov", filter: ["==", ["get", "t"], "canal"], minzoom: 11, paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 3] } },
-      { id: "city-ditch", type: "line", source: "citydet", filter: ["==", ["get", "t"], "canal"], minzoom: 14, paint: { "line-color": C.waterLine, "line-width": 1 } },
-      { id: "city-building", type: "fill", source: "citydet", minzoom: 13, filter: ["==", ["get", "t"], "building"],
+      { id: "city-canal", type: "line", source: "detail", "source-layer": "city", filter: ["all", ["==", ["get", "t"], "canal"], ["!=", ["get", "k"], "ditch"]], minzoom: 11, paint: { "line-color": C.waterLine, "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 3] } },
+      { id: "city-ditch", type: "line", source: "detail", "source-layer": "city", filter: ["all", ["==", ["get", "t"], "canal"], ["==", ["get", "k"], "ditch"]], minzoom: 14, paint: { "line-color": C.waterLine, "line-width": 1 } },
+      { id: "city-building", type: "fill", source: "detail", "source-layer": "city", minzoom: 13, filter: ["==", ["get", "t"], "building"],
         paint: { "fill-color": ["case", ["has", "tall"], "#d3c9bc", C.building], "fill-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0, 14.5, 0.9] } },
-      { id: "city-path", type: "line", source: "citydet", minzoom: 15, filter: ["==", ["get", "k"], "path"], paint: { "line-color": "#c9bfa9", "line-dasharray": [2, 2], "line-width": 1 } },
-      { id: "city-minor-case", type: "line", source: "citydet", minzoom: 12.5, filter: ["in", ["get", "k"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-path", type: "line", source: "detail", "source-layer": "city", minzoom: 15, filter: ["==", ["get", "k"], "path"], paint: { "line-color": "#c9bfa9", "line-dasharray": [2, 2], "line-width": 1 } },
+      { id: "city-minor-case", type: "line", source: "detail", "source-layer": "city", minzoom: 12.5, filter: ["in", ["get", "k"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 12.5, 1, 16, ["match", ["get", "k"], "service", 6, 10]] } },
-      { id: "city-minor", type: "line", source: "citydet", minzoom: 12.5, filter: ["in", ["get", "k"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-minor", type: "line", source: "detail", "source-layer": "city", minzoom: 12.5, filter: ["in", ["get", "k"], ["literal", ["minor", "service"]]], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 12.5, 0.5, 16, ["match", ["get", "k"], "service", 4.5, 8]] } },
-      { id: "city-rail", type: "line", source: "cityov", minzoom: 9, filter: ["==", ["get", "t"], "rail"], paint: { "line-color": C.rail, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 16, 3] } },
-      { id: "city-rail-dash", type: "line", source: "cityov", minzoom: 11, filter: ["all", ["==", ["get", "t"], "rail"], ["==", ["get", "k"], "rail"]], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
-      { id: "city-mid-case", type: "line", source: "cityov", minzoom: 9.5, filter: ["==", ["get", "k"], "mid"], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-rail", type: "line", source: "detail", "source-layer": "city", minzoom: 9, filter: ["==", ["get", "t"], "rail"], paint: { "line-color": C.rail, "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 16, 3] } },
+      { id: "city-rail-dash", type: "line", source: "detail", "source-layer": "city", minzoom: 11, filter: ["all", ["==", ["get", "t"], "rail"], ["==", ["get", "k"], "rail"]], paint: { "line-color": "#ffffff", "line-dasharray": [3, 3], "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 2] } },
+      { id: "city-mid-case", type: "line", source: "detail", "source-layer": "city", minzoom: 9.5, filter: ["==", ["get", "k"], "mid"], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.roadCase, "line-width": ["interpolate", ["linear"], ["zoom"], 9.5, 1, 16, 14] } },
-      { id: "city-mid", type: "line", source: "cityov", minzoom: 9.5, filter: ["==", ["get", "k"], "mid"], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-mid", type: "line", source: "detail", "source-layer": "city", minzoom: 9.5, filter: ["==", ["get", "k"], "mid"], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.road, "line-width": ["interpolate", ["linear"], ["zoom"], 9.5, 0.5, 16, 12] } },
-      { id: "city-major-case", type: "line", source: "cityov", minzoom: 8.5, filter: ["==", ["get", "k"], "major"], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-major-case", type: "line", source: "detail", "source-layer": "city", minzoom: 8.5, filter: ["==", ["get", "k"], "major"], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.primaryCase, "line-width": ["interpolate", ["linear"], ["zoom"], 8.5, 1.2, 16, 18] } },
-      { id: "city-major", type: "line", source: "cityov", minzoom: 8.5, filter: ["==", ["get", "k"], "major"], layout: { "line-cap": "round", "line-join": "round" },
+      { id: "city-major", type: "line", source: "detail", "source-layer": "city", minzoom: 8.5, filter: ["==", ["get", "k"], "major"], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": C.primary, "line-width": ["interpolate", ["linear"], ["zoom"], 8.5, 0.6, 16, 15] } }
     ]
   };
@@ -101,48 +102,11 @@
     maxBounds: [[62, 37], [82, 50]]
   });
   map.touchZoomRotate.disableRotation();
-  map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "Map data © Attelkom · <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">© OpenStreetMap contributors</a> · <a href=\"https://openfreemap.org\" target=\"_blank\">OpenFreeMap</a> · Terrain: Mapzen/AWS · Natural Earth" }), "bottom-right");
+  window.kartalarMap = map;   // handy for debugging from the console
+  map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "Map data © Attelkom · <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">© OpenStreetMap contributors</a> · Terrain: Mapzen Terrarium · Natural Earth" }), "bottom-right");
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
   map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: false } }), "bottom-right");
   map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
-
-  /* ---------- city plans: overview near the cities, detail tiles when zoomed in ---------- */
-  const CITY = { index: null, ov: new Map(), tiles: new Map(), pending: new Set() };
-  fetch("data/city/index.json").then(r => r.json()).then(ix => {
-    CITY.index = ix;
-    const setMask = () => { const src = map.getSource("citymask"); if (!src) return false; src.setData({ type: "FeatureCollection", features: ix.cities.map(c => ({ type: "Feature", properties: { name: c.name }, geometry: c.footprint })) }); return true; };
-    // the style may still be loading (or already loaded): retry until the source exists
-    if (!setMask()) { const iv = setInterval(() => { if (setMask()) { clearInterval(iv); updateCities(); } }, 200); }
-    map.on("style.load", setMask);
-    updateCities();
-  }).catch(() => {});
-  function updateCities() {
-    const ix = CITY.index; if (!ix || !map.getSource("cityov")) return;
-    const z = map.getZoom(), b = map.getBounds();
-    const vis = ix.cities.filter(c => !(c.bbox[0] > b.getEast() || c.bbox[2] < b.getWest() || c.bbox[1] > b.getNorth() || c.bbox[3] < b.getSouth()));
-    let changed = false;
-    for (const c of vis) {
-      if (z >= 8 && !CITY.ov.has(c.name) && !CITY.pending.has("ov:" + c.name)) {
-        CITY.pending.add("ov:" + c.name);
-        fetch(`data/city/${c.name}/overview.json`).then(r => r.json()).then(j => { CITY.ov.set(c.name, j.features); pushOv(); });
-      }
-      if (z >= 12.5) {
-        const T = ix.tile, i0 = Math.floor(b.getWest() / T), i1 = Math.floor(b.getEast() / T), j0 = Math.floor(b.getSouth() / T), j1 = Math.floor(b.getNorth() / T);
-        for (const [i, j] of c.tiles) {
-          if (i < i0 - 1 || i > i1 || j < j0 - 1 || j > j1) continue;   // features are filed by their first point: take one tile of margin
-          const key = `${c.name}/t_${i}_${j}`;
-          if (CITY.tiles.has(key) || CITY.pending.has(key)) continue;
-          CITY.pending.add(key); changed = true;
-          fetch(`data/city/${key}.json`).then(r => r.json()).then(fc => { CITY.tiles.set(key, fc.features); pushDet(); });
-        }
-      }
-    }
-  }
-  let detTimer = null;
-  function pushOv() { map.getSource("cityov").setData({ type: "FeatureCollection", features: [].concat(...CITY.ov.values()) }); }
-  function pushDet() { clearTimeout(detTimer); detTimer = setTimeout(() => map.getSource("citydet").setData({ type: "FeatureCollection", features: [].concat(...CITY.tiles.values()) }), 120); }
-  map.on("moveend", updateCities);
-  map.on("style.load", () => { if (CITY.ov.size) pushOv(); if (CITY.tiles.size) pushDet(); updateCities(); });
 
   /* ---------- data ---------- */
   const D = { places: [], feats: [], routes: [], irad: null, zones: null, districts: null };
