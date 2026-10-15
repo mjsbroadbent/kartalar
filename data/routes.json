@@ -13812,7 +13812,7 @@
   "name_ir": "Sary-Bulak temir jol tarmagy",
   "name_ru": "Ветка на Сары-Булак и Чаткал",
   "kind": "railway",
-  "note": "Industrial spur (~23 km) from the Talas branch west of the city across the fans to the Kara-Suu Canyon mouth and up the gorge floor to the Sary-Bulak Antimony Works; siding repairs budgeted for the 2026-27 restart.",
+  "note": "Industrial spur (~39 km) from the Talas branch west of the city to near the Kara-Suu Canyon mouth, west along the foothills, up the Urmaral gorge on its east bank and east up the upper Urmaral valley past Ak-Bulak to the Sary-Bulak Antimony Works (Soviet engineers went round because the Kara-Suu Canyon is too steep for rail); siding repairs budgeted for the 2026-27 restart.",
   "coords": [
    [
     72.1228,
@@ -14692,7 +14692,7 @@
   ],
   "snapped": "terrain",
   "length_km": 39,
-  "max_elev_m": 1920,
+  "max_elev_m": 1670,
   "in_city": [
    "talas"
   ],
@@ -14704,7 +14704,7 @@
   "name_ir": "Chatkal temir jol tarmagy",
   "name_ru": "Подъездной путь Чаткальского комбината",
   "kind": "railway",
-  "note": "Siding (~23 km) leaving the Sary-Bulak spur near the canyon mouth, west along the foothills and up the valley to the Chatkal Chemical Smelting Complex.",
+  "note": "Siding (~6 km) leaving the Sary-Bulak spur in the Urmaral gorge and running up the gorge floor to the Chatkal Antimony Processing Mill, below the Chatkal Chemical Smelting Complex.",
   "coords": [
    [
     71.98053,
@@ -14866,7 +14866,7 @@
   "length_km_drawn": 12.4,
   "snapped": "terrain",
   "length_km": 6,
-  "max_elev_m": 1640,
+  "max_elev_m": 1454,
   "min_radius_m": 210
  },
  {
