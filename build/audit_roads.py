@@ -84,7 +84,7 @@ def main():
     out = ["# Road audit (build/audit_roads.py)", "",
            "Grades are over 500 m windows from the ~90 m terrain grid; GRADE counts only new-built stretches. *Real* = within 40 m of an OpenStreetMap road or track.",
            "Flags: GRADE steeper than the road's ruling grade + 2 points for more than 1 km in all; SIDE new-built over 1 km on side slopes over 30%;",
-           "BRIDGES new bridges (no real road crossing within 200 m); ZIGZAG the same river or canal crossed twice within 3 km; SKEW a new bridge less than 75 degrees to its river; WATER across a lake; BEND a turn over 100 degrees on easy ground;",
+           "BRIDGES new bridges (no real road crossing within 200 m); ZIGZAG the same river or canal crossed twice within 3 km; SKEW a new bridge less than 75 degrees to its river (45 for a railway, where skew bridges are the usual way across); WATER across a lake; BEND a turn over 100 degrees on easy ground;",
            "PARALLEL new road running close beside a real road; END an end more than 1 km from any settlement, feature, other route or real road; EXIT where the road leaves Irad with no real road carrying on.", ""]
     summary = []
     for r in roads:
@@ -150,7 +150,7 @@ def main():
                     ang = math.degrees(math.asin(min(1, abs(dv[0] * tv[1] - dv[1] * tv[0]) / (np.hypot(*dv) * np.hypot(*tv) + 1e-12))))
                     Wk = Rv * [KX, KY]; dd = dv / (np.hypot(*dv) + 1e-12)
                     along = ang < 25 and all(np.hypot(*(Wk - (x * [KX, KY] + dd * s_)).T).min() < 0.05 for s_ in (-0.15, -0.075, 0.075, 0.15))
-                    if ang < 75 and not along: flags.append(f"SKEW new bridge crosses the {cls} at {ang:.0f} deg at {x[0]:.4f},{x[1]:.4f}")
+                    if ang < (45 if r["kind"] == "railway" else 75) and not along: flags.append(f"SKEW new bridge crosses the {cls} at {ang:.0f} deg at {x[0]:.4f},{x[1]:.4f}")
             hits.sort(key=lambda h: h[0])
             newx = lambda x: ntree.query(x * [KX, KY])[0] > 0.04    # on a real road the crossings are the real road's
             for (s0, x0), (s1, x1) in zip(hits, hits[1:]):    # the same river crossed twice in a short way: a zigzag

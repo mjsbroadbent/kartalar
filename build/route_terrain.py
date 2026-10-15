@@ -255,6 +255,16 @@ def route(spec):
         if clean and clean[-1] == p:
             continue
         clean.append(p)
+    # no out-and-back spikes (a via point reached and left the way it came)
+    ch = True
+    while ch and len(clean) > 3:
+        ch = False
+        for k in range(1, len(clean) - 1):
+            p0, p1, p2 = clean[k - 1], clean[k], clean[k + 1]
+            ax_, ay_ = (p1[0] - p0[0]) * KX, (p1[1] - p0[1]) * KY; bx_, by_ = (p2[0] - p1[0]) * KX, (p2[1] - p1[1]) * KY
+            la, lb = math.hypot(ax_, ay_), math.hypot(bx_, by_)
+            if la * lb > 0 and (ax_ * bx_ + ay_ * by_) < -0.985 * la * lb:
+                del clean[k]; ch = True; break
     zs = dem_at([p[0] for p in clean], [p[1] for p in clean])
     real_km = sum(km(a, b_) for real, pts in runs if real for a, b_ in zip(pts, pts[1:]))
     return clean, float(zs.max()), real_km
@@ -276,57 +286,127 @@ def river_crossings(pts):
     return n
 
 
-def hairpins(pts, gmax, window=0.4):
-    """replace climbs steeper than gmax with a flight of hairpins: legs of up to ~300 m across the slope with tight
-    turns, as few as the climb allows. Steep ~400 m windows next to each other are taken as one climb."""
+def hairpins(pts, gmax, step=0.1, hyst=40.0, max_chord=4.0):
+    """replace climbs steeper than gmax with roads laid over the terrain at the ruling grade (serpentine). The line is
+    split at the high and low points of its profile (ignoring wiggles under ~40 m), and each climb or descent with a
+    steep 400 m stretch in it is laid out again as a whole, end to end."""
     n_pts = len(pts)
     if n_pts < 2: return list(pts)
-    # cut the line into ~400 m windows and mark the steep ones
     cuts = [0]; L = 0.0
     for k in range(n_pts - 1):
         L += km(pts[k], pts[k + 1])
-        if L >= window or k == n_pts - 2: cuts.append(k + 1); L = 0.0
-    zc = dem_at([pts[c][0] for c in cuts], [pts[c][1] for c in cuts])
-    steep = []
-    for a_, b_ in zip(range(len(cuts) - 1), range(1, len(cuts))):
-        Lw = sum(km(pts[k], pts[k + 1]) for k in range(cuts[a_], cuts[b_]))
-        steep.append(abs(zc[b_] - zc[a_]) / 1000 > gmax * max(Lw, 1e-6) and abs(zc[b_] - zc[a_]) > 40)
-    out = [pts[0]]; w_ = 0
-    while w_ < len(steep):
-        if not steep[w_]:
-            out += list(pts[cuts[w_] + 1:cuts[w_ + 1] + 1]); w_ += 1; continue
-        e_ = w_
-        while e_ + 1 < len(steep) and steep[e_ + 1]: e_ += 1          # one climb: windows w_..e_
-        ia, ib = cuts[w_], cuts[e_ + 1]; a, b_ = pts[ia], pts[ib]
-        dz = abs(zc[e_ + 1] - zc[w_]) / 1000; chord = km(a, b_)
-        if chord < 0.15:
-            out += list(pts[ia + 1:ib + 1]); w_ = e_ + 1; continue
-        need = dz / gmax
-        vx, vy = (b_[0] - a[0]) * KX / chord, (b_[1] - a[1]) * KY / chord
-        px, py = -vy, vx
-        best = None
-        for w in (0.3, 0.22, 0.15):                   # long legs first: few turns
-            for n in range(2, 60):
-                adv = chord / n
-                if adv < 0.04: break
-                if 2 * math.hypot(adv / 2, w) + (n - 2) * math.hypot(adv, 2 * w) >= need: best = (w, n); break
-            if best: break
-        w, n = best if best else (0.3, max(2, int(chord / 0.04)))
-        zl, zr = dem_at([a[0] + 0.15 * px / KX, a[0] - 0.15 * px / KX], [a[1] + 0.15 * py / KY, a[1] - 0.15 * py / KY])
-        side = -1 if abs(zr - zc[w_]) < abs(zl - zc[w_]) else 1        # first leg onto the gentler side
-        zz = [a]
-        for k in range(1, n):
-            t = k / n; sgn = side if k % 2 else -side
-            zz.append((a[0] + (b_[0] - a[0]) * t + sgn * w * px / KX, a[1] + (b_[1] - a[1]) * t + sgn * w * py / KY))
-        zz.append(b_)
-        # round the turns a little (one corner-cutting pass keeps them tight)
-        rz = [zz[0]]
-        for p0, p1 in zip(zz, zz[1:]):
-            rz.append((0.85 * p0[0] + 0.15 * p1[0], 0.85 * p0[1] + 0.15 * p1[1])); rz.append((0.15 * p0[0] + 0.85 * p1[0], 0.15 * p0[1] + 0.85 * p1[1]))
-        rz.append(zz[-1])
-        out += rz[1:]; w_ = e_ + 1
+        if L >= step or k == n_pts - 2: cuts.append(k + 1); L = 0.0
+    zc = dem_at([pts[c][0] for c in cuts], [pts[c][1] for c in cuts]).astype(float)
+    zs = ndimage.gaussian_filter1d(zc, 2.0, mode="nearest") if len(zc) > 4 else zc
+    # turning points of the profile, with hysteresis
+    turn = [0]; ext = 0; d = 0
+    for q in range(1, len(zs)):
+        if d >= 0 and zs[q] >= zs[ext]: ext = q; d = 1 if zs[q] > zs[turn[-1]] + 1e-9 else d
+        elif d <= 0 and zs[q] <= zs[ext]: ext = q; d = -1 if zs[q] < zs[turn[-1]] - 1e-9 else d
+        if d == 1 and zs[ext] - zs[q] > hyst: turn.append(ext); ext = q; d = -1
+        elif d == -1 and zs[q] - zs[ext] > hyst: turn.append(ext); ext = q; d = 1
+    if turn[-1] != len(zs) - 1: turn.append(len(zs) - 1)
+    # split long climbs so each fits a local grid
+    segs = []
+    for u, v in zip(turn, turn[1:]):
+        while km(pts[cuts[u]], pts[cuts[v]]) > max_chord and v - u > 2:
+            m = u + 1
+            while m < v - 1 and km(pts[cuts[u]], pts[cuts[m + 1]]) <= max_chord * 0.75: m += 1
+            segs.append((u, m)); u = m
+        segs.append((u, v))
+    out = [pts[0]]
+    w = max(1, int(round(0.4 / step)))
+    for u, v in segs:
+        ia, ib = cuts[u], cuts[v]
+        ww = min(w, v - u)                 # a climb shorter than the window is judged whole
+        steep = ww > 0 and any(abs(zc[q + ww] - zc[q]) / 1000 > gmax * max(sum(km(pts[k], pts[k + 1]) for k in range(cuts[q], cuts[q + ww])), 1e-6)
+                               and abs(zc[q + ww] - zc[q]) > 20 for q in range(u, v - ww + 1))
+        rz = serpentine(pts[ia], pts[ib], 0.92 * gmax) if steep and km(pts[ia], pts[ib]) >= 0.15 else None
+        out += (rz[1:] if rz else list(pts[ia + 1:ib + 1]))
     return out
 
+def zigzag(a, b_, za, dz, chord, gmax):
+    """the old straight-legged flight of hairpins between a and b_ (fallback when the terrain walk fails)"""
+    need = dz / gmax
+    vx, vy = (b_[0] - a[0]) * KX / chord, (b_[1] - a[1]) * KY / chord
+    px, py = -vy, vx
+    best = None
+    for w in (0.3, 0.22, 0.15):                   # long legs first: few turns
+        for n in range(2, 60):
+            adv = chord / n
+            if adv < 0.04: break
+            if 2 * math.hypot(adv / 2, w) + (n - 2) * math.hypot(adv, 2 * w) >= need: best = (w, n); break
+        if best: break
+    w, n = best if best else (0.3, max(2, int(chord / 0.04)))
+    zl, zr = dem_at([a[0] + 0.15 * px / KX, a[0] - 0.15 * px / KX], [a[1] + 0.15 * py / KY, a[1] - 0.15 * py / KY])
+    side = -1 if abs(zr - za) < abs(zl - za) else 1        # first leg onto the gentler side
+    zz = [a]
+    for k in range(1, n):
+        t = k / n; sgn = side if k % 2 else -side
+        zz.append((a[0] + (b_[0] - a[0]) * t + sgn * w * px / KX, a[1] + (b_[1] - a[1]) * t + sgn * w * py / KY))
+    zz.append(b_)
+    # round the turns a little (one corner-cutting pass keeps them tight)
+    rz = [zz[0]]
+    for p0, p1 in zip(zz, zz[1:]):
+        rz.append((0.85 * p0[0] + 0.15 * p1[0], 0.85 * p0[1] + 0.15 * p1[1])); rz.append((0.15 * p0[0] + 0.85 * p1[0], 0.15 * p0[1] + 0.85 * p1[1]))
+    rz.append(zz[-1])
+    return rz
+
+
+def serpentine(a, b_, gmax, res=0.04, pad=0.7, turn_km=0.6):
+    """a climb laid out over the terrain on a fine local grid of position and heading: steps steeper than gmax cost
+    dearly, each change of heading costs a little and a hairpin about turn_km, so the road takes long legs across the
+    slope at the ruling grade with as few turns as the climb needs. None if no path is found."""
+    from scipy.sparse import csr_matrix
+    x0 = min(a[0], b_[0]) - pad / KX; x1 = max(a[0], b_[0]) + pad / KX
+    y0 = min(a[1], b_[1]) - pad / KY; y1 = max(a[1], b_[1]) + pad / KY
+    nx = int((x1 - x0) * KX / res) + 1; ny = int((y1 - y0) * KY / res) + 1
+    if nx * ny > 40000: res *= math.sqrt(nx * ny / 40000); nx = int((x1 - x0) * KX / res) + 1; ny = int((y1 - y0) * KY / res) + 1
+    gxs = x0 + np.arange(nx) * res / KX; gys = y0 + np.arange(ny) * res / KY
+    GX_, GY_ = np.meshgrid(gxs, gys)
+    Z = ndimage.gaussian_filter(dem_at(GX_.ravel(), GY_.ravel()).reshape(ny, nx).astype(float), 1.2)
+    DIRS = [(1, 0), (2, 1), (1, 1), (1, 2), (0, 1), (-1, 2), (-1, 1), (-2, 1), (-1, 0), (-2, -1), (-1, -1), (-1, -2), (0, -1), (1, -2), (1, -1), (2, -1)]
+    H = len(DIRS); NC = ny * nx
+    cell = np.arange(NC).reshape(ny, nx)
+    rows, cols, wts = [], [], []
+    for h2, (di, dj) in enumerate(DIRS):
+        j0, j1 = max(0, -dj), ny - max(0, dj); i0, i1 = max(0, -di), nx - max(0, di)
+        A = cell[j0:j1, i0:i1].ravel(); B = cell[j0 + dj:j1 + dj, i0 + di:i1 + di].ravel()
+        L = math.hypot(di, dj) * res
+        g = np.abs(Z[j0 + dj:j1 + dj, i0 + di:i1 + di] - Z[j0:j1, i0:i1]).ravel() / (L * 1000)
+        c = L * (1 + np.maximum(0, g - gmax) * 400)
+        for h in range(H):
+            dh = min((h2 - h) % H, (h - h2) % H)
+            tc = 0.0 if dh == 0 else (0.02 * dh if dh <= 2 else turn_km)
+            rows.append(A * H + h); cols.append(B * H + h2); wts.append(c + tc)
+    S0 = NC * H; T0 = S0 + 1
+    ia = int(round((a[0] - x0) * KX / res)); ja = int(round((a[1] - y0) * KY / res))
+    ib = int(round((b_[0] - x0) * KX / res)); jb = int(round((b_[1] - y0) * KY / res))
+    ca, cb = cell[ja, ia], cell[jb, ib]
+    rows.append(np.full(H, S0)); cols.append(ca * H + np.arange(H)); wts.append(np.full(H, 1e-6))
+    rows.append(cb * H + np.arange(H)); cols.append(np.full(H, T0)); wts.append(np.full(H, 1e-6))
+    G = csr_matrix((np.concatenate(wts), (np.concatenate(rows), np.concatenate(cols))), shape=(S0 + 2, S0 + 2))
+    dist, pred = dijkstra(G, indices=S0, return_predecessors=True)
+    if not np.isfinite(dist[T0]): return None
+    n = pred[T0]; seq = []
+    while n != S0 and n >= 0:
+        seq.append(n // H); n = pred[n]
+    seq.reverse()
+    path = [tuple(a)] + [(float(gxs[q % nx]), float(gys[q // nx])) for q in seq[1:-1]] + [tuple(b_)]
+    path = rdp(path, 0.012)
+    # no spikes: drop a vertex where the road doubles straight back on itself over a short leg
+    ch = True
+    while ch and len(path) > 3:
+        ch = False
+        for k in range(1, len(path) - 1):
+            p0, p1, p2 = path[k - 1], path[k], path[k + 1]
+            ax_, ay_ = (p1[0] - p0[0]) * KX, (p1[1] - p0[1]) * KY; bx_, by_ = (p2[0] - p1[0]) * KX, (p2[1] - p1[1]) * KY
+            la, lb = math.hypot(ax_, ay_), math.hypot(bx_, by_)
+            if min(la, lb) < 0.05 and (ax_ * bx_ + ay_ * by_) < -0.97 * la * lb:      # a stray spike, not a hairpin
+                del path[k]; ch = True; break
+    path = chaikin(path, 2)
+    path[0] = tuple(a); path[-1] = tuple(b_)
+    return path
 
 def load_rivers(classes=("river",)):
     fn = os.environ.get("ROUTE_RIVERS")
@@ -374,16 +454,27 @@ if __name__ == "__main__":
         for key, k in (("start_on", 0), ("end_on", -1)):    # begin or end at a junction on another route
             if spec.get(key) and R.get(spec[key], {}).get("coords"):
                 C = np.array(R[spec[key]]["coords"]); p = spec["via"][k]
-                d = np.hypot((C[:, 0] - p[0]) * KX, (C[:, 1] - p[1]) * KY); i = int(np.argmin(d))
-                spec["via"][k] = [float(C[i, 0]), float(C[i, 1])]
+                best = (1e9, None)                          # the nearest point on it, not just its nearest vertex
+                for q in range(len(C) - 1):
+                    d_ = (C[q + 1] - C[q]) * [KX, KY]; t_ = float(np.clip(np.dot((np.array(p) - C[q]) * [KX, KY], d_) / max(np.dot(d_, d_), 1e-12), 0, 1))
+                    pp = C[q] + (C[q + 1] - C[q]) * t_; e_ = float(np.hypot(*((pp - p) * [KX, KY])))
+                    if e_ < best[0]: best = (e_, pp)
+                spec["via"][k] = [round(float(best[1][0]), 5), round(float(best[1][1]), 5)]
         coords, zmax, real_km = route(spec)
         if spec.get("prefix") and R.get(spec["prefix"]["route"], {}).get("coords"):
             # the road begins along another (one road, one line): that road's stretch is put in front
             B = np.array(R[spec["prefix"]["route"]]["coords"])
             nr = lambda q: int(np.argmin(np.hypot((B[:, 0] - q[0]) * KX, (B[:, 1] - q[1]) * KY)))
-            i0, i1 = nr(spec["prefix"]["from"]), nr(coords[0])
-            seg = B[i0:i1 + 1] if i0 <= i1 else B[i1:i0 + 1][::-1]
-            coords = [tuple(p) for p in seg[:-1]] + list(coords)
+            i0 = nr(spec["prefix"]["from"])
+            # the segment of that road nearest this road's start: its stretch is taken up to there, no further
+            P_ = np.array(coords[0]); best = (1e9, 0, 0.0)
+            for k in range(len(B) - 1):
+                d_ = (B[k + 1] - B[k]) * [KX, KY]; t_ = float(np.clip(np.dot((P_ - B[k]) * [KX, KY], d_) / max(np.dot(d_, d_), 1e-12), 0, 1))
+                e_ = float(np.hypot(*((B[k] + (B[k + 1] - B[k]) * t_ - P_) * [KX, KY])))
+                if e_ < best[0]: best = (e_, k, t_)
+            k = best[1]
+            seg = B[i0:k + 1] if i0 <= k else B[k + 1:i0 + 1][::-1]
+            coords = [tuple(p) for p in seg] + list(coords)
         r["coords"] = [list(p) for p in coords]
         r["snapped"] = "terrain"
         L = km_len(coords)

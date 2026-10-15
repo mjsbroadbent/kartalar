@@ -22,18 +22,18 @@ KY = 110.57
 # id: (Rmin km, parent line id or None, via points for new track (None = keep the real-track geometry), grade limit)
 LINES = {
     # the old Turksib: real track from Nurzhan station west round the end of the Kyrgyz Range to the lowland junction
-    "irad-temir-jolu-chu-line":        dict(R=0.6, R_town=0.35, parent=None, via=[[73.75927, 43.59738], [72.9, 42.95], [71.40724, 42.88695]], net_only=True),
+    "irad-temir-jolu-chu-line":        dict(R=0.6, R_town=0.35, parent=None, via=[[73.75927, 43.59738], [72.8031, 42.9762], [71.40724, 42.88695]], net_only=True),
     "irad-temir-jolu-kara-buura-line": dict(R=0.6, R_town=0.35, parent=None, via=[[71.40724, 42.88695], [69.9975, 42.5488]], net_only=True),   # to the frontier (Talas North Terminal)
     # the Turksib east from Nurzhan to the Kazakh frontier (real track all the way): exchange station at the border
     "irad-temir-jolu-north-line":      dict(R=0.6, R_town=0.35, parent=None, via=[[73.75927, 43.59738], [74.04, 43.8647], [74.60, 43.79], [74.975, 43.623]], net_only=True),
     "irad-temir-jolu-talas-branch":    dict(R=0.4, R_town=0.3, parent="irad-temir-jolu-kara-buura-line",
-                                            via=[[71.40724, 42.88695], [71.585, 42.625], [71.816, 42.557], [72.05, 42.526], [72.236, 42.5076]], gmax=0.016),
-    "irad-temir-jolu-east-line":       dict(R=0.3, parent="irad-temir-jolu-chu-line", via=[[73.75927, 43.59738], [74.05, 43.585], [74.243, 43.581]], gmax=0.015),
+                                            via=[[71.40724, 42.88695], [71.585, 42.625], [71.816, 42.557], [71.857, 42.5446], [71.8607, 42.5404], [71.878, 42.5402], [71.97, 42.5425], [72.03, 42.5285], [72.065, 42.5205], [72.236, 42.5076]], gmax=0.016),
+    "irad-temir-jolu-east-line":       dict(R=0.3, parent="irad-temir-jolu-chu-line", via=[[73.75927, 43.59738], [73.852, 43.6003], [73.860, 43.6006], [74.05, 43.585], [74.243, 43.581]], gmax=0.015),
     # the Sary-Bulak works sit behind a ~1,900 m ridge from the Kara-Suu Canyon mouth: the spur goes the long way round,
     # west along the foothills and up the Urmaral gorge on its east bank, then east up the valley to the works; the Chatkal siding leaves it in the gorge
     "irad-temir-jolu-sary-bulak-spur": dict(R=0.2, parent="irad-temir-jolu-talas-branch",
                                             via=[[72.135, 42.512], [72.106, 42.432], [72.0, 42.44], [71.982, 42.415], [71.9808, 42.39], [71.9805, 42.372], [72.03, 42.362], [72.095, 42.352]], gmax=0.03),
-    "irad-temir-jolu-chatkal-spur":    dict(R=0.2, parent="irad-temir-jolu-sary-bulak-spur", via=[[71.9805, 42.372], [71.9605, 42.3352]], gmax=0.03),
+    "irad-temir-jolu-chatkal-spur":    dict(R=0.2, parent="irad-temir-jolu-sary-bulak-spur", via=[[71.9801, 42.3830], [71.9785, 42.3790], [71.9755, 42.3786], [71.9605, 42.3352]], gmax=0.03, short=True),
     "irad-temir-jolu-taez-siding":     dict(R=0.15, parent="irad-temir-jolu-talas-branch", via=[[72.11, 42.5205], [72.1235, 42.5105]], gmax=0.02, short=True),
 }
 STATIONS = {  # station id: (line, where) — 'end', 'start' or 'near'
@@ -171,7 +171,8 @@ def main():
         for lid, L in LINES.items():
             if not L["via"] or lid not in R: continue
             spec = {"id": lid, "kind": "rail", "net": "rail", "via": L["via"], "gmax": L.get("gmax", 0.018), "build": 1.0 if not L.get("net_only") else 40.0,
-                    "eps": 0.05, "chaikin": 0, "hairpins": False, "margin": 0.08, "snap_km": 2.0, "side_w": 1.5, "snowline": 3000}
+                    "eps": 0.05, "chaikin": 0, "hairpins": False, "margin": 0.08, "snap_km": 2.0, "side_w": 1.5, "snowline": 3000,
+                    "bridge_km": L.get("bridge_km", 3.0)}   # a rail bridge is dear, and dearer the more it skews
             coords, zmax, real_km = rt.route(spec)
             R[lid]["coords"] = [list(p) for p in coords]
             print(f"  routed {lid}: {real_km:.0f} km on real track")
