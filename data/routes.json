@@ -5,7 +5,7 @@
   "name_ir": "Trans-Talas jolu",
   "name_ru": "Трансталасская автомагистраль",
   "kind": "highway",
-  "note": "About 167 km from the Talas North Terminal on the Kazakh frontier facing Shymkent, straight across the flat lower valley to Kyzyl-Adyr (km 109), then up the valley road to Talas, where State Route 1 continues east.",
+  "note": "About 194 km from the Talas North Terminal on the Kazakh frontier facing Shymkent, straight across the flat lower valley to Kyzyl-Adyr (km 135), then up the old valley road to Talas, where State Route 1 continues east.",
   "coords": [
    [
     70.0125,
@@ -6063,7 +6063,7 @@
   "name_ir": "Irad Temir Jolu - Talas linyasy",
   "name_ru": "Ирад Темир Жолу - Таласская ветка",
   "kind": "railway",
-  "note": "Branch (~93 km) from the lowland junction up the Talas valley via Kyzyl-Adyr, Kara-Bulak (grain depot) and the TAEZ sidings to the Talas terminus.",
+  "note": "Branch (~94 km) from the lowland junction up the Talas valley via Kyzyl-Adyr, Kara-Bulak (grain depot) and the TAEZ sidings to the Talas terminus.",
   "coords": [
    [
     71.39922,
@@ -12796,7 +12796,7 @@
   "name_ir": "Irad Temir Jolu - Chygysh linyasy",
   "name_ru": "Ирад Темир Жолу - Восточная линия (Боз-Коргон)",
   "kind": "railway",
-  "note": "Rail stub (~41 km) east from Nurzhan through the eastern Chu fields to the Boz-Korgon security depot, beside the guarded road; no passenger service.",
+  "note": "Rail stub (~42 km) east from Nurzhan through the eastern Chu fields to the Boz-Korgon security depot, beside the guarded road; no passenger service.",
   "coords": [
    [
     73.7508,
@@ -13880,7 +13880,7 @@
   "name_ir": "Sary-Bulak temir jol tarmagy",
   "name_ru": "Ветка на Сары-Булак и Чаткал",
   "kind": "railway",
-  "note": "Industrial spur (~24 km) from the Talas branch west of the city across the fans to the Kara-Suu Canyon mouth and up the gorge floor to the Sary-Bulak Antimony Works; siding repairs budgeted for the 2026-27 restart.",
+  "note": "Industrial spur (~23 km) from the Talas branch west of the city across the fans to the Kara-Suu Canyon mouth and up the gorge floor to the Sary-Bulak Antimony Works; siding repairs budgeted for the 2026-27 restart.",
   "coords": [
    [
     72.1234,
@@ -15310,7 +15310,7 @@
   "name_ir": "Talas-Nurzhan jolu",
   "name_ru": "Автодорога Талас - Нуржан (равнинная)",
   "kind": "road",
-  "note": "All-season road (~334 km) out of the Talas valley via Kyzyl-Adyr, round the western end of the Kyrgyz Range and east along the main road below the range, then across the Chu plain to Nurzhan; used in winter when the Kök-Bel road is shut.",
+  "note": "All-season road (~337 km) out of the Talas valley via Kyzyl-Adyr, round the western end of the Kyrgyz Range and east along the main road below the range, then across the Chu plain to Nurzhan; used in winter when the Kök-Bel road is shut.",
   "coords": [
    [
     72.2392,
@@ -17802,7 +17802,7 @@
   "name_ir": "Kök-Bel jolu",
   "name_ru": "Дорога через перевал Кёк-Бел",
   "kind": "road",
-  "note": "Shorter summer route Talas-Nurzhan (~225 km) over the ~2,670 m Kök-Bel Pass (km 53) across the Kyrgyz Range, up the valley past Toguz-Bulak (snowplough depot); the pass lies in tribal pasture between the two Toguz-Bulak crossings. Paved in the territorial period; buses and trucks in summer.",
+  "note": "Shorter summer route Talas-Nurzhan (~220 km) over the ~2,670 m Kök-Bel Pass (km 53) across the Kyrgyz Range, up the valley past Toguz-Bulak (snowplough depot); the pass lies in tribal pasture between the two Toguz-Bulak crossings. Paved in the territorial period; buses and trucks in summer.",
   "coords": [
    [
     72.2392,
@@ -21661,7 +21661,7 @@
   "name_ir": "Boz-Korgon jolu",
   "name_ru": "Подъезд к Боз-Коргону",
   "kind": "road",
-  "note": "Guarded road (~35 km) east from Nurzhan beside the rail stub to the Boz-Korgon compound (UNMI patrols barred since 2023).",
+  "note": "Guarded road (~41 km) east from Nurzhan beside the rail stub to the Boz-Korgon compound (UNMI patrols barred since 2023).",
   "coords": [
    [
     73.82,
@@ -22430,7 +22430,7 @@
   "name_ir": "Sary-Bulak jolu",
   "name_ru": "Дорога на Сары-Булак",
   "kind": "road",
-  "note": "Road (~24 km) from Talas across the fans to the Kara-Suu Canyon mouth checkpoint and up the gorge to the Sary-Bulak works and the Chatkal smelter turn; 3 buses a day from Talas (1 h 30).",
+  "note": "Road (~29 km) from Talas across the fans to the Kara-Suu Canyon mouth checkpoint and up the gorge to the Sary-Bulak works and the Chatkal smelter turn; 3 buses a day from Talas (1 h 30).",
   "coords": [
    [
     72.2392,
@@ -23311,7 +23311,7 @@
   "name_ir": "Chatkal kombinat jolu",
   "name_ru": "Дорога к Чаткальскому комбинату",
   "kind": "road",
-  "note": "Road (~40 km) from Talas west along the foothills and up the next valley to the Chatkal smelter and the Kemer mine.",
+  "note": "Road (~46 km) from Talas west along the foothills and up the next valley to the Chatkal smelter and the Kemer mine.",
   "coords": [
    [
     72.2392,
@@ -24242,7 +24242,7 @@
   "name_ir": "Qara-Chik jolu",
   "name_ru": "Дорога Талас - КПП Кара-Чик",
   "kind": "road",
-  "note": "Road (~37 km) from Talas via Kalba (livestock inspection pens) and past UNMI Kara-Oi up the valley to the Qara-Chik Border Checkpoint, the main crossing; continues as a gravel track on the tribal side.",
+  "note": "Road (~43 km) from Talas via Kalba (livestock inspection pens) and past UNMI Kara-Oi up the valley to the Qara-Chik Border Checkpoint, the main crossing; continues as a gravel track on the tribal side.",
   "coords": [
    [
     72.2392,
@@ -25609,7 +25609,7 @@
   "name_ir": "Kenkol ashuu jolu",
   "name_ru": "Дорога через перевал Кенкол",
   "kind": "road",
-  "note": "Graded unpaved 1960s military road (~35 km) from the western Talas valley up the Kenkol valley to the pass; crosses the line at the Kara-Bulak crossing; snowbound most of winter; mined in 1992/2007.",
+  "note": "Graded unpaved 1960s military road (~31 km) from the Trans-Talas Highway at Kara-Bulak south up the Kenkol river valley to the pass; crosses the line at the Kara-Bulak crossing; snowbound most of winter; mined in 1992/2007.",
   "coords": [
    [
     71.8672,
@@ -26091,7 +26091,7 @@
   "name_ir": "Batysh Karakol jolu",
   "name_ru": "Дорога по долине Западного Каракола",
   "kind": "road",
-  "note": "All-weather road (~20 km) from State Route 1 in the western Suusamyr east along the valley and up the Western Karakol valley to Karakol village (~2,550 m) and its logistics depot; leaves the ISEZ corridor at the Suusamyr crossing.",
+  "note": "All-weather road (~22 km) from State Route 1 in the western Suusamyr east along the valley and up the Western Karakol valley to Karakol village (~2,550 m) and its logistics depot; leaves the ISEZ corridor at the Suusamyr crossing.",
   "coords": [
    [
     73.25168,
@@ -27714,7 +27714,7 @@
   "name_ir": "Toktogul tündük elektr liniyasy",
   "name_ru": "Северная экспортная ЛЭП Токтогульской ГЭС",
   "kind": "power-line",
-  "note": "High-voltage export line from the ISEZ switchyard below the dam along the State Route 1 corridor to Talas and west beside the Trans-Talas Highway to the Kazakh grid (~440 km).",
+  "note": "High-voltage export line from the ISEZ switchyard below the dam along the State Route 1 corridor to Talas and west beside the Trans-Talas Highway to the Kazakh grid (~470 km).",
   "coords": [
    [
     72.615,
