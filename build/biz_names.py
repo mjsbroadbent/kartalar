@@ -23,6 +23,10 @@ INVENTED = {
     "Ak Bata Bank": "commercial bank",
 }
 
+# ---------- per-city flavour (set by make_businesses.py; the defaults are Talas) ----------
+FLAVOR = {}
+def fl(k, d): return FLAVOR.get(k, d)
+
 # ---------- stems ----------
 PEOPLE = ["Aibek", "Aigül", "Altynai", "Asel", "Azamat", "Baktygül", "Bermet", "Chynara", "Daniyar", "Elnura", "Ermek",
           "Gülnara", "Gülzat", "Jyldyz", "Kanat", "Kanykei", "Meerim", "Nurlan", "Nurbek", "Saltanat", "Samat", "Talant", "Tilek",
@@ -76,6 +80,7 @@ CUISINE_MIX = [("iradi", 40), ("russian", 10), ("uzbek", 10), ("koryo", 8), ("ch
 def cuisine_for(b, area):
     c = (b.get("cuisine") or "").lower()
     if area == "semiz" and h01(b["id"], "mx") < 0.75: return "mexican"
+    if area == "expat" and h01(b["id"], "ex") < 0.4: return pick(["european", "american", "pizza", "sushi", "coffee", "steakhouse"], b["id"], "exk")
     if area == "base" and h01(b["id"], "us") < 0.45: return pick(["american", "steakhouse", "barbecue", "burger"], b["id"], "usk")
     m = {"regional": "iradi", "local": "iradi", "kyrgyz": "iradi", "kazakh": "iradi", "uzbek": "uzbek", "russian": "russian",
          "korean": "koryo", "chinese": "chinese", "turkish": "turkish", "kebab": "turkish", "georgian": "georgian", "italian": "european",
@@ -83,8 +88,9 @@ def cuisine_for(b, area):
          "coffee_shop": "coffee", "dessert": "dessert", "indian": "indian", "asian": "chinese", "steak_house": "steakhouse", "tea": "tea"}
     if c in m: return m[c]
     if c in CUISINE_LABEL: return c
-    tot = sum(w for _, w in CUISINE_MIX); r = h01(b["id"], "cu") * tot
-    for k, w in CUISINE_MIX:
+    mix = fl("cuisine_mix", CUISINE_MIX)
+    tot = sum(w for _, w in mix); r = h01(b["id"], "cu") * tot
+    for k, w in mix:
         r -= w
         if r < 0: return k
     return "iradi"
@@ -103,11 +109,11 @@ CUISINE_LABEL = {"iradi": ("Iradi", "Iradi", "ирадская кухня"), "ru
 # ---------- names by kind ----------
 def stem(b, tag):
     """a name stem: (iradi, english, russian)"""
-    r = h01(b["id"], tag)
-    if r < 0.38:
-        n = pick(PEOPLE, b["id"], tag, "p"); return n, n, cyr_name(n)
-    if r < 0.85:
-        ir, en = pick(WORDS, b["id"], tag, "w"); return ir, en, cyr_name(ir)
+    r = h01(b["id"], tag); p_, ru_ = fl("people_share", 0.38), fl("ru_share", 0.15)
+    if r < p_:
+        n = pick(PEOPLE + fl("people_extra", []), b["id"], tag, "p"); return n, n, cyr_name(n)
+    if r < 1 - ru_:
+        ir, en = pick(WORDS + fl("words_extra", []), b["id"], tag, "w"); return ir, en, cyr_name(ir)
     ru = pick(RU_WORDS, b["id"], tag, "r"); return translit_ru(ru), translit_ru(ru), ru
 
 RU_LAT = {"а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo", "ж": "zh", "з": "z", "и": "i", "й": "y", "к": "k", "л": "l",
@@ -185,6 +191,14 @@ def name_food(b, area):
     if cu == "sushi": return set_names(b, f"{s_ir} Sushi", f"{s_en} Sushi", f"Суши «{s_ru}»")
     if cu == "coffee":
         return set_names(b, f"{s_en} Coffee", f"{s_en} Coffee", f"{s_en} Coffee")
+    if k == "cafe" and h01(b["id"], "stol") < fl("stolovaya", 0):
+        b["sub_label"] = ("Canteen", "Stolovaya", "Столовая")
+        if h01(b["id"], "stn") < 0.4:
+            n = 1 + int(h01(b["id"], "stno") * 40); return set_names(b, f"{n}-Stolovaya", f"Canteen No. {n}", f"Столовая № {n}")
+        return set_names(b, f"Stolovaya {s_ir}", f"{s_en} Canteen", f"Столовая «{s_ru}»")
+    if k == "restaurant" and h01(b["id"], "toy") < fl("banquet", 0):
+        b["sub_label"] = ("Banquet hall", "Toykana", "Банкетный зал")
+        return set_names(b, f"Toykana {s_ir}", f"{s_en} Banquet Hall", f"Банкетный зал «{s_ru}»")
     if k == "cafe": return set_names(b, f"Kafe {s_ir}", f"{s_en} Café", f"Кафе «{s_ru}»")
     return set_names(b, f"Restoran {s_ir}", f"{s_en} Restaurant", f"Ресторан «{s_ru}»")
 
@@ -203,7 +217,9 @@ SHOP_SUB = {   # sub-type: (iradi word, english word, russian word)
     "car_repair": ("Avtoservis", "Car Service", "Автосервис"), "variety_store": ("Bardık nerse", "Variety Store", "Всё для дома"),
     "bag": ("Sumkalar", "Bags", "Сумки"), "boutique": ("Butik", "Boutique", "Бутик"), "baby_goods": ("Balalar", "Baby Goods", "Детские товары"),
     "pet": ("Zoo", "Pet Shop", "Зоомагазин"), "hifi": ("Audio", "Audio", "Аудио"), "appliance": ("Tehnika", "Appliances", "Бытовая техника"),
-    "paint": ("Bodo", "Paints", "Краски"), "kitchen": ("Ashkana", "Kitchens", "Кухни"), "watches": ("Saattar", "Watches", "Часы"),
+    "paint": ("Bodo", "Paints", "Краски"), "religious": ("Shamdal jana ikona", "Icons & Candles", "Иконы и свечи"),
+    "felt": ("Shırdak", "Shyrdak Felt", "Шырдаки"), "saddlery": ("Eerchi", "Saddlery", "Сёдла"), "leather": ("Teri buyumdar", "Leather Goods", "Изделия из кожи"),
+    "souvenir": ("Estelikter", "Souvenirs", "Сувениры"), "radio": ("Radio-tehnika", "Radio & Parts", "Радиотовары"), "kitchen": ("Ashkana", "Kitchens", "Кухни"), "watches": ("Saattar", "Watches", "Часы"),
 }
 GROC_SUB = {"greengrocer": ("Jemish-jashılcha", "Fruit & Veg", "Овощи-фрукты"), "butcher": ("Et dükönü", "Butcher", "Мясо"),
             "dairy": ("Süt azıktarı", "Dairy", "Молочные продукты"), "spices": ("Kanttuu jana jıttuu", "Spices", "Специи"),
@@ -215,8 +231,9 @@ def name_shop(b, area):
     s_ir, s_en, s_ru = stem(b, "n")
     if k == "supermarket":
         r = h01(b["id"], "chain")
-        if r < 0.38: return set_names(b, "Bereke", "Bereke Supermarket", "Береке")
-        if r < 0.62: return set_names(b, "Jıldız Market", "Jıldız Market", "Жылдыз Маркет")
+        c1, c2 = fl("chains", (0.38, 0.24))
+        if r < c1: return set_names(b, "Bereke", "Bereke Supermarket", "Береке")
+        if r < c1 + c2: return set_names(b, "Jıldız Market", "Jıldız Market", "Жылдыз Маркет")
         return set_names(b, f"Supermarket {s_ir}", f"{s_en} Supermarket", f"Супермаркет «{s_ru}»")
     if k == "grocery":
         if area == "semiz" and h01(b["id"], "abar") < 0.6:
@@ -224,7 +241,7 @@ def name_shop(b, area):
         if sub in GROC_SUB:
             w = GROC_SUB[sub]; return set_names(b, f"{w[0]} · {s_ir}", f"{s_en} {w[1]}", f"{w[2]} «{s_ru}»")
         f_ = h01(b["id"], "gf")
-        if f_ < 0.45: return set_names(b, f"Dükön {s_ir}", f"{s_en} Store", f"Магазин «{s_ru}»")
+        if f_ < 0.45: return set_names(b, f"{fl('shop_word', 'Dükön')} {s_ir}", f"{s_en} Store", f"Магазин «{s_ru}»")
         if f_ < 0.8: return set_names(b, f"Azık-tülük {s_ir}", f"{s_en} Groceries", f"Продукты «{s_ru}»")
         return set_names(b, f"Mini-market {s_ir}", f"{s_en} Mini-Market", f"Минимаркет «{s_ru}»")
     if k == "pharmacy":

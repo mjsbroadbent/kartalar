@@ -65,8 +65,51 @@ CITIES = {
               ] + [{"at": at, "kinds": ["fast-food"], "name": "KFC Irad", "name_ir": "KFC Irad", "name_en": "KFC Irad", "name_ru": "KFC Irad",
                     "cuisine": "chicken", "tulpar": True} for at in ["talas-central-square", "silk-road-arena", (72.165, 42.522), (72.278, 42.488)]]},
     # the plans below are moved by make_cities.py itself (MOVE_POIS), so their move parameters are not needed here
-    "nurzhan": {"donor": "shymkent", "city": "Nurzhan", "zone": "ISEZ", "fill_to": 2300, "keep": {"fuel": 0.55}, "banks": [(6, TALASBANK)], "bank_rest": [(0.5, CHUY), (0.5, AKBATA)]},
-    "iyik-janyl": {"donor": "osh", "city": "Iyık Janyl", "zone": "ISEZ", "fill_to": 800, "banks": [(2, TALASBANK)], "bank_rest": [(0.5, CHUY), (0.5, AKBATA)]},
+    # the Russo heartland: Russian names and 'magazin' on the signs, canteens and banquet halls, the largest Koryo-saram
+    # community (kuksi), oil money in Navbahor; the radio bazaar and the Dastgoh market; the boiler-room café in Dastgoh
+    "nurzhan": {"donor": "shymkent", "city": "Nurzhan", "zone": "ISEZ", "fill_to": 2300, "keep": {"fuel": 0.55}, "tulpar": 0.35, "chaikhana_share": 0.1,
+                "banks": [(6, TALASBANK)], "bank_rest": [(0.5, CHUY), (0.5, AKBATA)],
+                "flavor": {"people_share": 0.3, "ru_share": 0.4, "shop_word": "Magazin", "stolovaya": 0.18, "banquet": 0.1, "chains": (0.35, 0.25),
+                           "people_extra": ["Valentina", "Galina", "Lyudmila", "Nikolai", "Andrei", "Yuri", "Tatyana", "Irina", "Pavel", "Olga", "Tsoi", "Li", "Ten", "Khan"],
+                           "cuisine_mix": [("iradi", 22), ("russian", 25), ("koryo", 16), ("uzbek", 7), ("chinese", 5), ("turkish", 5), ("georgian", 5),
+                                           ("european", 8), ("pizza", 5), ("american", 2)]},
+                "areas": {"expat": (73.762, 43.572, 1.6)},          # Navbahor: shopping centres, NurGaz and foreign-oil staff
+                "clusters": [{"at": (73.7535, 43.5975), "r": 0.25, "mix": [["market", "marketplace"]] + [["shop", x] for x in ["radio", "electronics", "mobile_phone", "computer", "radio", "hifi"] * 3]}],
+                "named": [
+                    {"at": (73.7535, 43.5975), "kinds": ["market"], "name": "Radiobazar", "name_en": "Nurzhan Radio Bazaar", "name_ru": "Радиобазар",
+                     "note": "Electronics, radio parts and phone repairs, row after row; the last row is where the bargains are."},
+                    {"at": "nurzhan-dastgoh", "kinds": ["market"], "name": "Dastgoh bazarı", "name_en": "Dastgoh Market", "name_ru": "Дастгохский рынок",
+                     "note": "The foundry quarter's market: forge goods from the villages, tools, and vegetables from the plastic tunnels."},
+                    {"at": "nurzhan-dastgoh", "kinds": ["cafe", "bar"], "name": "Kotelnaya", "name_en": "Kotelnaya", "name_ru": "Котельная", "kind": "cafe",
+                     "note": "A café in a former boiler room under a Dastgoh block; mor-wave on vinyl in the evenings."},
+                    {"at": "azatlik-prospect", "kinds": ["bank"], "name": "Talasbank", "name_ir": "Talasbank", "name_en": "Talasbank", "name_ru": "Таласбанк",
+                     "note": "The Azatlık branch; on the 10th of every month the queue for remittances goes out of the door."},
+                ] + [{"at": at, "kinds": ["fast-food"], "name": "KFC Irad", "name_ir": "KFC Irad", "name_en": "KFC Irad", "name_ru": "KFC Irad",
+                      "cuisine": "chicken", "tulpar": True} for at in ["nurzhan-central-square", "nurzhan-navbahor"]]},
+    # the spiritual capital: Iradi names (saints among them), pilgrims' guesthouses and icon shops below Cathedral Hill,
+    # crafts (saddles, shyrdak felt, leather), the Lower Town bazaar, teahouses along Khunuk Creek; more cash, fewer bars
+    "iyik-janyl": {"donor": "osh", "city": "Iyık Janyl", "zone": "ISEZ", "fill_to": 800, "tulpar": 0.1, "keep": {"bar": 0.3},
+                   "banks": [(2, TALASBANK)], "bank_rest": [(0.5, CHUY), (0.5, AKBATA)],
+                   "flavor": {"people_share": 0.35, "ru_share": 0.03, "chains": (0.25, 0.15),
+                              "people_extra": ["Ephrem", "Janyl", "Toma", "Mattai", "Yuhanna", "Mariyam"],
+                              "words_extra": [("Ziyarat", "Pilgrim"), ("Chirköö", "Church"), ("Jangak", "Walnut"), ("Örük", "Apricot"), ("Alma", "Apple"),
+                                              ("Naryn", "Naryn"), ("Khunuk", "Khunuk"), ("Diz-i Safid", "Diz-i Safid"), ("Kümöch", "Kümöch")],
+                              "cuisine_mix": [("iradi", 50), ("uzbek", 25), ("russian", 4), ("koryo", 2), ("turkish", 4), ("european", 5), ("pizza", 4),
+                                              ("chinese", 2), ("georgian", 2)]},
+                   "clusters": [
+                       {"at": (72.2505, 41.3950), "r": 0.6, "extra": {"pilgrim": True},     # below the cathedral steps
+                        "mix": [["guesthouse", "guest_house"]] * 12 + [["shop", x] for x in ["religious"] * 5 + ["souvenir"] * 3 + ["felt", "felt", "saddlery", "leather", "leather"]]
+                               + [["chaikhana", "chaikhana"]] * 3 + [["bakery", "bakery"]] * 2 + [["cafe", "cafe"]] * 2},
+                       {"at": (72.258, 41.449), "r": 0.6, "mix": [["chaikhana", "chaikhana"]] * 8 + [["restaurant", "restaurant"]] * 2},   # Khunuk Creek
+                       {"at": (72.200, 41.418), "r": 0.35, "extra": {"bazaar": True},       # the Lower Town bazaar
+                        "mix": [["market", "marketplace"]] + [["grocery", x] for x in ["greengrocer", "butcher", "dairy", "spices", "greengrocer"] * 2]
+                               + [["shop", x] for x in ["felt", "saddlery", "leather", "clothes", "fabric", "houseware", "shoes", "carpet"]]
+                               + [["chaikhana", "chaikhana"]] * 4 + [["bakery", "bakery"]] * 3},
+                   ],
+                   "named": [
+                       {"at": (72.200, 41.418), "kinds": ["market"], "name": "Iyık Janyl bazarı", "name_en": "Iyık Janyl Bazaar", "name_ru": "Ийык-Джанылский базар",
+                        "note": "The old bazaar of the Lower Town: apples, apricots and walnuts, saddles and felt; herders from the tribal regions sell livestock and wool here."},
+                   ]},
 }
 
 # OSM tag -> (our kind, sub-type). None: not brought across (civic places are the lore's; parking, benches ...)
@@ -163,7 +206,7 @@ def load_main_streets(city):
 # the mix used to top up a city whose donor is thinly mapped (Talas's own mix, without fuel, malls and markets)
 FILL_MIX = [("grocery", "convenience", 19), ("shop", None, 18), ("cafe", "cafe", 11), ("restaurant", "restaurant", 10), ("supermarket", "supermarket", 6),
             ("pharmacy", "pharmacy", 5), ("fast-food", "fast_food", 5), ("bakery", "bakery", 4), ("chaikhana", "chaikhana", 4), ("hotel", "hotel", 2),
-            ("bar", "bar", 3), ("bank", "bank", 2), ("guesthouse", "guest_house", 1), ("hostel", "hostel", 1)]
+            ("bar", "bar", 3), ("bank", "bank", 1), ("guesthouse", "guest_house", 1), ("hostel", "hostel", 1)]
 FILL_SHOPS = ["clothes", "shoes", "mobile_phone", "electronics", "hardware", "furniture", "florist", "cosmetics", "car_parts", "hairdresser",
               "beauty", "car_repair", "houseware", "jewelry", "books", "sports", "optician", "gift"]
 
@@ -181,6 +224,7 @@ def load_city_buildings(city):
 def main():
     src = sys.argv[1]; name = sys.argv[2] if len(sys.argv) > 2 else "talas"
     C = CITIES[name]
+    biz_names.FLAVOR.clear(); biz_names.FLAVOR.update(C.get("flavor", {}))
     ix = json.load(open(os.path.join(ROOT, "data/city/index.json")))
     cx_ = [c for c in ix["cities"] if c["name"] == name][0]
     pdx, pdy = C.get("pivot_donor", (0, 0)); tx, ty = C.get("pivot", ((cx_["bbox"][0] + cx_["bbox"][2]) / 2, (cx_["bbox"][1] + cx_["bbox"][3]) / 2)); kd, kt = kx(pdy), kx(ty)
@@ -243,7 +287,10 @@ def main():
     for ci, cl in enumerate(C.get("clusters", [])):
         bx, by = cl["at"]
         near = bt.query_ball_point([bx * kt, by * KY], cl["r"])
-        near = sorted(near, key=lambda i: h01(name, "cl", ci, i))[:len(cl["mix"])]
+        if not near: print(f"  cluster {ci}: no buildings within {cl['r']} km of {cl['at']}"); continue
+        # the first of the mix on the building nearest the centre (a cluster's market), the rest spread at random
+        first = min(near, key=lambda i: (B[i][0] - bx) ** 2 * kt * kt + (B[i][1] - by) ** 2 * KY * KY)
+        near = [first] + sorted([i for i in near if i != first], key=lambda i: h01(name, "cl", ci, i))[:len(cl["mix"]) - 1]
         for j, i in enumerate(near):
             kind, sub, cu = (cl["mix"][j] + [None, None])[:3]
             x, y = B[i]
@@ -275,7 +322,7 @@ def main():
 
     # a share of the donor's cafés are teahouses here
     for b in out:
-        if b["kind"] == "cafe" and b.get("cuisine") not in ("coffee_shop", "dessert", "pizza", "burger") and h01(b["_key"], "chai") < 0.3:
+        if b["kind"] == "cafe" and b.get("cuisine") not in ("coffee_shop", "dessert", "pizza", "burger") and h01(b["_key"], "chai") < C.get("chaikhana_share", 0.3):
             b["kind"] = "chaikhana"; stats["cafe"] -= 1; stats["chaikhana"] = stats.get("chaikhana", 0) + 1
 
     # the lore's character by area: the Mexican community's Semiz, the American contractors' strip toward the air base
@@ -289,17 +336,6 @@ def main():
         if not b["hours"]: b["hours"] = default_hours(b["kind"], b["_key"])
         biz_names.dress(b, name, area_of(b))
 
-    # banks: fixed numbers of the lore's banks first (Talasbank: 28 branches in all), the rest shared out
-    banks = sorted([b for b in out if b["kind"] == "bank" and b["sub"] != "bureau_de_change"], key=lambda b: h01(b["_key"], "bank"))
-    plan = [nm for n_, nm in C.get("banks", []) for _ in range(n_)]
-    for i, b in enumerate(banks):
-        if i < len(plan): biz_names.set_names(b, *plan[i])
-        else:
-            r = h01(b["_key"], "bk2"); acc = 0
-            for share, nm in C.get("bank_rest", []):
-                acc += share
-                if r < acc: biz_names.set_names(b, *nm); break
-
     # the lore's own businesses, onto the nearest fitting one
     taken = set()
     def nearest(kinds, lon, lat, cond=lambda b: True):
@@ -311,13 +347,29 @@ def main():
         b = nearest(spec["kinds"], lon, lat, spec.get("cond", lambda b: True))
         b["kind"] = spec.get("kind", b["kind"])
         for k_, v in spec.items():
-            if k_ in ("name", "name_en", "name_ru", "name_ir", "cuisine", "note", "price_level", "price", "tulpar"): b[k_] = v
+            if k_ in ("name", "name_en", "name_ru", "name_ir", "cuisine", "note", "price_level", "price", "tulpar", "sub", "sub_label"): b[k_] = v
         if "cuisine" in spec: b["cuisine_label"] = biz_names.CUISINE_LABEL[spec["cuisine"]]
+        if "name" in spec and "name_ir" not in spec: b["name_ir"] = spec["name"]
         b["lore"] = True
+
+    # banks: fixed numbers of the lore's banks first (Talasbank: 28 branches in all), the rest shared out
+    banks = sorted([b for b in out if b["kind"] == "bank" and b["sub"] != "bureau_de_change" and not b.get("lore")], key=lambda b: h01(b["_key"], "bank"))
+    plan = [nm for n_, nm in C.get("banks", []) for _ in range(n_)]
+    for b in out:          # a branch the lore places counts toward its bank's number
+        if b.get("lore") and b["kind"] == "bank":
+            nm = (b["name"], b["name_en"], b["name_ru"])
+            if nm in plan: plan.remove(nm)
+    for i, b in enumerate(banks):
+        if i < len(plan): biz_names.set_names(b, *plan[i])
+        else:
+            r = h01(b["_key"], "bk2"); acc = 0
+            for share, nm in C.get("bank_rest", []):
+                acc += share
+                if r < acc: biz_names.set_names(b, *nm); break
 
     # Tulpar delivery: the five lore partners and a share of the city's eateries
     for b in out:
-        if b["kind"] in ("restaurant", "cafe", "fast-food", "chaikhana", "bakery") and h01(b["_key"], "tulpar") < 0.4: b["tulpar"] = True
+        if b["kind"] in ("restaurant", "cafe", "fast-food", "chaikhana", "bakery") and h01(b["_key"], "tulpar") < C.get("tulpar", 0.4): b["tulpar"] = True
         del b["_key"]
         if b["quarter"] is None: del b["quarter"]
         if b.get("sub") == b["kind"]: del b["sub"]
