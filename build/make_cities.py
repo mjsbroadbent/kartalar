@@ -304,6 +304,19 @@ def build(C):
         FOLD[0] = np.zeros(len(P), bool)
         return np.column_stack([tx + xr / kt, ty + yr / KY])
 
+    # MOVE_POIS=<city>:<in.ndjson>:<out.ndjson>: move the donor's businesses (build/base/extract_poi.cpp) with this
+    # city's plan, for build/make_businesses.py, and stop (the warped plans cannot be redone outside this script)
+    mp = os.environ.get("MOVE_POIS", "").split(":")
+    if mp[0] == C["name"]:
+        rows = [json.loads(l) for l in open(mp[1])]
+        P = tf([(r["lon"], r["lat"]) for r in rows]); fold = FOLD[0]
+        with open(mp[2], "w") as fo:
+            for r, (x, y), f_ in zip(rows, P, fold):
+                if f_: continue                      # folded inside a bend of the warp: no sensible place
+                r["donor_lon"], r["donor_lat"] = r["lon"], r["lat"]; r["lon"], r["lat"] = round(float(x), 6), round(float(y), 6)
+                fo.write(json.dumps(r, ensure_ascii=False) + "\n")
+        print(f"  {C['name']}: {len(rows) - int(fold.sum())} of {len(rows)} businesses moved to {mp[2]}"); sys.exit(0)
+
     # allowed ground at the target
     (ex, ey), ea, eb = C["ellipse"]
     lons = np.arange(ex - ea / kt - 0.01, ex + ea / kt + 0.01, GRID); lats = np.arange(ey - eb / KY - 0.01, ey + eb / KY + 0.01, GRID)
@@ -950,6 +963,7 @@ if __name__ == "__main__":
     index = {"tile": TILE, "cities": []}
     outs = []
     for C in CITIES:
+        if os.environ.get("MOVE_POIS") and not os.environ["MOVE_POIS"].startswith(C["name"] + ":"): continue
         feats, footprint, rivers, _ = build(C)
         d = os.path.join(OUT, C["name"]); os.makedirs(d, exist_ok=True)
         for fn in os.listdir(d): os.remove(os.path.join(d, fn))

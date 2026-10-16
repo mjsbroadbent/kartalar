@@ -21,10 +21,16 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 KY = 110.57
 def kx(lat): return 111.32 * math.cos(math.radians(lat))
 
+TALASBANK = ("Talasbank", "Talasbank", "Таласбанк")
+TRANSOXIANA = ("Transoxiana Mikrokarjı Fondu", "Transoxiana Microfinance Fund", "Трансоксиана Микрофинансовый фонд")
+CHUY = ("Chüy Kommertsiyalık Banky", "Chuy Commercial Bank", "Чуй Коммерческий банк")
+AKBATA = ("Ak Bata Bank", "Ak Bata Bank", "Ак Бата Банк")
+
 # the same move as build/make_cities.py (keep the two in step)
 CITIES = {
     "talas": {"donor": "bishkek", "pivot_donor": (74.6037, 42.8765), "pivot": (72.240, 42.519), "rotate": 0, "mirror": False, "scale": 1.0,
               "city": "Talas", "zone": "ISEZ",
+              "banks": [(20, TALASBANK), (5, TRANSOXIANA)], "bank_rest": [(0.55, CHUY), (0.45, AKBATA)],
               # the Old City is the lore's own mahalla, not the donor's streets: its businesses are made around the bazaar
               "old_town": {"center": (72.2290, 42.5275), "a": 0.60, "b": 0.42, "angle": 12},
               "clusters": [
@@ -58,6 +64,9 @@ CITIES = {
                    "note": "Opened in 2018 on the site of a demolished 1910 merchant house by the covered market."},
               ] + [{"at": at, "kinds": ["fast-food"], "name": "KFC Irad", "name_ir": "KFC Irad", "name_en": "KFC Irad", "name_ru": "KFC Irad",
                     "cuisine": "chicken", "tulpar": True} for at in ["talas-central-square", "silk-road-arena", (72.165, 42.522), (72.278, 42.488)]]},
+    # the plans below are moved by make_cities.py itself (MOVE_POIS), so their move parameters are not needed here
+    "nurzhan": {"donor": "shymkent", "city": "Nurzhan", "zone": "ISEZ", "fill_to": 2300, "keep": {"fuel": 0.55}, "banks": [(6, TALASBANK)], "bank_rest": [(0.5, CHUY), (0.5, AKBATA)]},
+    "iyik-janyl": {"donor": "osh", "city": "Iyık Janyl", "zone": "ISEZ", "fill_to": 800, "banks": [(2, TALASBANK)], "bank_rest": [(0.5, CHUY), (0.5, AKBATA)]},
 }
 
 # OSM tag -> (our kind, sub-type). None: not brought across (civic places are the lore's; parking, benches ...)
@@ -137,6 +146,28 @@ def default_hours(kind, key):
     return {**{d: wd for d in DAYS[:5]}, "sa": sa, "su": su}
 
 
+def load_main_streets(city):
+    """vertices of the plan's major and mid streets, densified every ~20 m"""
+    pts = []
+    for fn in glob.glob(os.path.join(ROOT, "data/city", city, "*.json")):
+        for f in json.load(open(fn))["features"]:
+            p_ = f["properties"]
+            if p_.get("t") != "road" or p_.get("k") not in ("major", "mid") or f["geometry"]["type"] != "LineString": continue
+            c = np.array(f["geometry"]["coordinates"])[:, :2]
+            for a_, b_ in zip(c, c[1:]):
+                n = max(1, int(math.hypot((b_[0] - a_[0]) * 81, (b_[1] - a_[1]) * KY) / 0.02))
+                pts += [a_ + (b_ - a_) * t for t in np.arange(n) / n]
+    return np.array(pts)
+
+
+# the mix used to top up a city whose donor is thinly mapped (Talas's own mix, without fuel, malls and markets)
+FILL_MIX = [("grocery", "convenience", 19), ("shop", None, 18), ("cafe", "cafe", 11), ("restaurant", "restaurant", 10), ("supermarket", "supermarket", 6),
+            ("pharmacy", "pharmacy", 5), ("fast-food", "fast_food", 5), ("bakery", "bakery", 4), ("chaikhana", "chaikhana", 4), ("hotel", "hotel", 2),
+            ("bar", "bar", 3), ("bank", "bank", 2), ("guesthouse", "guest_house", 1), ("hostel", "hostel", 1)]
+FILL_SHOPS = ["clothes", "shoes", "mobile_phone", "electronics", "hardware", "furniture", "florist", "cosmetics", "car_parts", "hairdresser",
+              "beauty", "car_repair", "houseware", "jewelry", "books", "sports", "optician", "gift"]
+
+
 def load_city_buildings(city):
     pts = []
     for fn in glob.glob(os.path.join(ROOT, "data/city", city, "t_*.json")):
@@ -150,13 +181,14 @@ def load_city_buildings(city):
 def main():
     src = sys.argv[1]; name = sys.argv[2] if len(sys.argv) > 2 else "talas"
     C = CITIES[name]
-    pdx, pdy = C["pivot_donor"]; tx, ty = C["pivot"]; kd, kt = kx(pdy), kx(ty)
-    a = math.radians(C["rotate"]); ca, sa = math.cos(a), math.sin(a); sc = C["scale"]; mir = -1 if C["mirror"] else 1
+    ix = json.load(open(os.path.join(ROOT, "data/city/index.json")))
+    cx_ = [c for c in ix["cities"] if c["name"] == name][0]
+    pdx, pdy = C.get("pivot_donor", (0, 0)); tx, ty = C.get("pivot", ((cx_["bbox"][0] + cx_["bbox"][2]) / 2, (cx_["bbox"][1] + cx_["bbox"][3]) / 2)); kd, kt = kx(pdy), kx(ty)
+    a = math.radians(C.get("rotate", 0)); ca, sa = math.cos(a), math.sin(a); sc = C.get("scale", 1); mir = -1 if C.get("mirror") else 1
     def tf(lon, lat):
         x = (lon - pdx) * kd * mir; y = (lat - pdy) * KY
         return tx + (x * ca - y * sa) * sc / kt, ty + (x * sa + y * ca) * sc / KY
 
-    ix = json.load(open(os.path.join(ROOT, "data/city/index.json")))
     fp = [c for c in ix["cities"] if c["name"] == name][0]["footprint"]
     foot = [Path(np.array(p[0])) for p in (fp["coordinates"] if fp["type"] == "MultiPolygon" else [fp["coordinates"]])]
     in_foot = lambda x, y: any(P.contains_point((x, y)) for P in foot)
@@ -192,10 +224,10 @@ def main():
         p = json.loads(line); c = classify(p)
         if not c: continue
         kind, sub = c
-        x, y = tf(p["lon"], p["lat"])
+        x, y = (p["lon"], p["lat"]) if "donor_lon" in p else tf(p["lon"], p["lat"])     # already moved by make_cities.py (MOVE_POIS)
         if not in_foot(x, y) or in_old(x, y): continue
         n_in += 1
-        if h01(p["osm"], "keep") >= KEEP_SUB.get(sub, KEEP.get(kind, 1.0)): continue
+        if h01(p["osm"], "keep") >= C.get("keep", {}).get(kind, KEEP_SUB.get(sub, KEEP.get(kind, 1.0))): continue
         d, _ = bt.query([x * kt, y * KY])
         if d > (0.12 if kind in ("fuel", "market", "mall") else 0.04): continue      # on a building (fuel and markets: by one)
         if lore_t is not None and lore_t.query([x * kt, y * KY])[0] < 0.03: continue
@@ -217,6 +249,30 @@ def main():
             x, y = B[i]
             add(kind, sub, float(x), float(y), f"cl{ci}-{j}", None, dict({"cuisine": cu} if cu else {}, **cl.get("extra", {})))
 
+    # top up a thinly mapped donor: businesses on buildings fronting the main streets, spaced from those already there
+    if C.get("fill_to") and len(out) < C["fill_to"]:
+        M = load_main_streets(name); mt = cKDTree(M * [kt, KY])
+        dmain, _ = mt.query(B * [kt, KY])
+        cand = []
+        for lo, hi in ((0, 0.035), (0.035, 0.08)):         # buildings fronting a main street first, then one row back
+            c_ = [i for i in np.where((dmain >= lo) & (dmain < hi))[0] if not in_old(*B[i])]
+            cand += sorted(c_, key=lambda i: h01(name, "fill", i))
+        tot = sum(w for *_, w in FILL_MIX)
+        cell = lambda q: (int(q[0] // 0.03), int(q[1] // 0.03))       # ~30 m cells: one business per cell and its neighbours
+        used = {cell([b["lon"] * kt, b["lat"] * KY]) for b in out}
+        for i in cand:
+            if len(out) >= C["fill_to"]: break
+            q = B[i] * [kt, KY]; c0 = cell(q)
+            if any((c0[0] + dx, c0[1] + dy) in used for dx in (-1, 0, 1) for dy in (-1, 0, 1)): continue
+            used.add(c0)
+            r = h01(name, "fk", i) * tot
+            for kind, sub, w in FILL_MIX:
+                r -= w
+                if r < 0: break
+            if sub is None: sub = FILL_SHOPS[int(h01(name, "fs", i) * len(FILL_SHOPS))]
+            add(kind, sub, float(B[i][0]), float(B[i][1]), f"fill-{i}", None, {})
+        print(f"  topped up to {len(out)} along the main streets")
+
     # a share of the donor's cafés are teahouses here
     for b in out:
         if b["kind"] == "cafe" and b.get("cuisine") not in ("coffee_shop", "dessert", "pizza", "burger") and h01(b["_key"], "chai") < 0.3:
@@ -233,13 +289,16 @@ def main():
         if not b["hours"]: b["hours"] = default_hours(b["kind"], b["_key"])
         biz_names.dress(b, name, area_of(b))
 
-    # banks: the lore's Talasbank has 28 branches; the Transoxiana Microfinance Fund a few; the rest two smaller banks
+    # banks: fixed numbers of the lore's banks first (Talasbank: 28 branches in all), the rest shared out
     banks = sorted([b for b in out if b["kind"] == "bank" and b["sub"] != "bureau_de_change"], key=lambda b: h01(b["_key"], "bank"))
+    plan = [nm for n_, nm in C.get("banks", []) for _ in range(n_)]
     for i, b in enumerate(banks):
-        if i < C.get("talasbank", 28): continue
-        elif i < C.get("talasbank", 28) + 5: biz_names.set_names(b, "Transoxiana Mikrokarjı Fondu", "Transoxiana Microfinance Fund", "Трансоксиана Микрофинансовый фонд")
-        elif h01(b["_key"], "bk2") < 0.55: biz_names.set_names(b, "Chüy Kommertsiyalık Banky", "Chuy Commercial Bank", "Чуй Коммерческий банк")
-        else: biz_names.set_names(b, "Ak Bata Bank", "Ak Bata Bank", "Ак Бата Банк")
+        if i < len(plan): biz_names.set_names(b, *plan[i])
+        else:
+            r = h01(b["_key"], "bk2"); acc = 0
+            for share, nm in C.get("bank_rest", []):
+                acc += share
+                if r < acc: biz_names.set_names(b, *nm); break
 
     # the lore's own businesses, onto the nearest fitting one
     taken = set()

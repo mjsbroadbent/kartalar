@@ -11,7 +11,9 @@ name is kept.** Every business gets an Iradi name from `build/biz_names.py`. Out
 
 The same input always gives the same businesses, names and hours.
 
-Done so far: **Talas** (from Bishkek), about 3,100 businesses.
+Done so far: **Talas** (from Bishkek), about 3,100 businesses; **Nurzhan** (from Shymkent), 2,300; **Iyık Janyl** (from Osh), 800.
+Shymkent and Osh are thinly mapped, so those two are topped up along their main streets with Talas's mix of kinds
+(`fill_to`). Their plans are moved by `make_cities.py` itself: `MOVE_POIS=<city>:<in.ndjson>:<out.ndjson> python3 build/make_cities.py ...`.
 
 ## Companies and brands invented for the map
 
@@ -22,8 +24,8 @@ None of these are in the lore yet. They are the ones to adopt into canon, rename
 | **Bereke** / Bereke Supermarket / Береке | Supermarket chain, the biggest (*bereke*: plenty) | 76 stores |
 | **Jıldız Market** / Jıldız Market / Жылдыз Маркет | Second supermarket chain (*jıldız*: star) | 40 stores |
 | **Shıpa Dariykana** / Shıpa Pharmacy / Аптека «Шыпа» | Pharmacy chain (*shıpa*: cure) | 34 pharmacies |
-| **Chüy Kommertsiyalık Banky** / Chuy Commercial Bank / Чуй Коммерческий банк | Commercial bank, one of the "other banks" the Bank of Irad Clearing House implies | 10 branches |
-| **Ak Bata Bank** / Ak Bata Bank / Ак Бата Банк | Commercial bank (*ak bata*: blessing) | 18 branches |
+| **Chüy Kommertsiyalık Banky** / Chuy Commercial Bank / Чуй Коммерческий банк | Commercial bank, one of the "other banks" the Bank of Irad Clearing House implies | 12 branches |
+| **Ak Bata Bank** / Ak Bata Bank / Ак Бата Банк | Commercial bank (*ak bata*: blessing) | 24 branches |
 | **Hotel Bazar-i Kalan** / Meymankana Bazar-i Kalan | A name for the lore's unnamed 2018 hotel on the site of the demolished 1910 merchant house by the covered market | 1 |
 
 Numbered state pharmacies ("Pharmacy No. 22", *22-Dariykana*, Аптека № 22) are a type, not a company: Soviet-style
@@ -33,7 +35,7 @@ numbering kept on, numbers 1–60.
 
 | Lore | On the map | Beyond the lore |
 |---|---|---|
-| Talasbank (28 branches) | Exactly 28 branches across the city | Where the branches are |
+| Talasbank (28 branches) | 20 in Talas, 6 in Nurzhan, 2 in Iyık Janyl | Where the branches are |
 | Transoxiana Microfinance Fund | 5 offices | The number of offices |
 | NurGaz (makes the petrol and diesel; refuses Tulpar Pay) | Brand of about 60% of filling stations (65 in Talas) | NurGaz as a fuel-station brand |
 | KFC Irad (the only foreign chain named) | 4 restaurants: by Central Square, by the Silk Road Arena, on the strip toward the air base, in Alatau Heights | The locations |
