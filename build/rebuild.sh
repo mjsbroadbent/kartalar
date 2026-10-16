@@ -7,8 +7,12 @@ set -e
 cd "$(dirname "$0")/.."
 DEM="$1"; OSM="$2"
 RDEM="${ROUTE_DEM:-$DEM}"; RNET="${ROUTE_NET:-$OSM}"
+# start from the routes as they were before the last city re-lay: routes not re-routed here (State Route 1, the
+# pipelines) would otherwise be re-laid and smoothed again on every build and drift
+if [ -f build/.cache/routes_raw.json ]; then cp build/.cache/routes_raw.json data/routes.json; fi
 python3 build/route_terrain.py "$RDEM" "$RNET"   # roads over the terrain (build/route_specs.json)
 python3 build/route_rail.py "$RDEM" "$RNET"     # railways: real track, new track over the terrain, turnouts, minimum radii
+mkdir -p build/.cache; cp data/routes.json build/.cache/routes_raw.json   # the routes before the city re-lay: build/rebuild_roads.sh starts from here
 python3 build/derive_lines.py                   # Otmek tunnel; pipelines and power lines along their routes
 if [ -n "$3" ]; then python3 build/make_cities.py "$RDEM" "$OSM" "$3"; fi   # borrowed city plans; routes re-laid along their streets
 python3 build/dehook.py "$RDEM"                 # no hooks or jogs left by the city re-lay

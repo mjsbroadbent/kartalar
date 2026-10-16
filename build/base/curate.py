@@ -391,8 +391,11 @@ def main():
     stats = {}
     def count(k, n=1): stats[k] = stats.get(k, 0) + n
 
-    lake_fix = lake_levels()
+    # CURATE_LAYERS=transportation redoes only the layers named (a road edit: only transportation depends on the routes)
+    only = [l for l in os.environ.get("CURATE_LAYERS", "").split(",") if l]
+    lake_fix = lake_levels() if not only or "water" in only else None
     for layer in ["transportation", "waterway", "water", "landcover", "landuse", "park", "building", "aeroway"]:
+        if only and layer not in only: continue
         out = []
         for f in load(layer):
             g = f["geometry"]; cls = f["properties"].get("class")

@@ -69,6 +69,22 @@ python3 build/make_base.py ne/geojson
 
 `tools/city-export.html` downloads the streets, buildings, land use and parks of the donor cities (Bishkek for Talas, Shymkent for Nurzhan, Osh for Iyık Janyl). `build/make_cities.py` moves each donor plan onto its Iradi site (Shymkent turned 45° so its refinery district lies east; Osh mirrored so its sacred hill becomes Cathedral Hill on the east bank of the Naryn), clips it to the ground the city can occupy (valley floor, off the airfield, clear of Tash-Kömür), drops every real name, and writes `data/city/` (an overview per city and 0.02° detail tiles). It also re-lays the lore routes and railways through each city along the borrowed main streets and tracks, and moves the stations onto them. The map hides the real base map inside each city footprint and draws the borrowed plan instead.
 
+### Editing a road
+
+A road edit (a via point or a `fixed` stretch in `build/route_specs.json`, or a city's `drop_streets` / `add_streets` in
+`build/make_cities.py`) does not need the full rebuild:
+
+1. `build/rebuild_roads.sh <dem.bin> <osm.json> <city dir> <route ids>`: re-routes only those roads and the roads that
+   start on them, then re-lays the routes along the city streets (about 4 minutes; it starts from
+   `build/.cache/routes_raw.json`, the routes before the last city re-lay, which `build/rebuild.sh` saves).
+2. `build/preview_routes.py out.png <zoom/lat/lon>`: a screenshot in seconds with the new road lines drawn in colour, the
+   committed ones dashed grey and the city plans' streets in dark red. The base tiles may still be the old ones.
+3. When it looks right: `build/rebuild_roads.sh --tiles-only <tools dir> <work dir>` refreshes only `tiles/lines.pmtiles`
+   and `tiles/detail.pmtiles` (about 2 minutes; `CURATE_LAYERS=transportation` for `curate.py`). Or add
+   `--tiles <tools dir> <work dir>` to step 1 to do both in one go.
+
+Run the full `build/rebuild.sh` when a road crosses the Qara-Chik line or the frontier, or a place may have moved.
+
 ## Features
 
 - Search across every place in Iradi, English or Russian (accents optional), with keyboard navigation
