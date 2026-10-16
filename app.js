@@ -9,6 +9,39 @@
   const store = (k, v) => { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || "null"); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } };
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  /* ---------- icons: stroked 24px SVGs used as CSS masks (class "ic", coloured by currentColor) ---------- */
+  const IP = {
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>', menu: '<path d="M4 6.5h16M4 12h16M4 17.5h16"/>', close: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+    pin: '<path d="M12 21s-6.5-6-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    phone: '<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>',
+    globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.4 5.4 3.4 8.5s-1 6.1-3.4 8.5c-2.4-2.4-3.4-5.4-3.4-8.5s1-6.1 3.4-8.5z"/>',
+    book: '<path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7zM12 6.5V20"/>',
+    save: '<path d="M7 3.5h10v17l-5-4-5 4z"/>', saved: '<path d="M7 3.5h10v17l-5-4-5 4z" fill="#000"/>',
+    share: '<circle cx="17.5" cy="5.5" r="2.5"/><circle cx="6.5" cy="12" r="2.5"/><circle cx="17.5" cy="18.5" r="2.5"/><path d="M8.7 10.7l6.6-3.9M8.7 13.3l6.6 3.9"/>',
+    nearby: '<circle cx="12" cy="12" r="2.5"/><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+    copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>',
+    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.4"/>', warn: '<path d="M12 4l9 15.5H3z"/><path d="M12 10v4.5M12 17v.4"/>',
+    user: '<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>', elev: '<path d="M2.5 19.5l7-11 4 6 2.5-3.5 5.5 8.5z"/>',
+    people: '<circle cx="9" cy="8" r="3.3"/><path d="M2.8 19.5a6.2 6.2 0 0 1 12.4 0"/><circle cx="17" cy="9" r="2.4"/><path d="M16.3 14a4.8 4.8 0 0 1 5 5"/>',
+    flag: '<path d="M5.5 21V4M5.5 4.5h11l-2 4 2 4h-11"/>', ruler: '<path d="M3.5 16.5l13-13 4 4-13 13z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
+    edit: '<path d="M4 20h4l10.5-10.5-4-4L4 16z"/><path d="M13 7l4 4"/>', money: '<rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/>',
+    food: '<path d="M7 3v7.5M5 3v5a2 2 0 0 0 4 0V3M7 10.5V21M16.5 3c-2 1.5-2.7 4-2.7 7.5h2.7V21"/>',
+    stay: '<path d="M3 18.5V6.5M3 13.5h18v5M21 13.5v-2a2 2 0 0 0-2-2h-8.5v4"/><circle cx="7" cy="10.5" r="1.8"/>',
+    shops: '<path d="M5 8.5h14l-1 11.5H6zM9 8.5V7a3 3 0 0 1 6 0v1.5"/>',
+    worship: '<path d="M12 2.5v4.5M10.2 4.2h3.6M5.5 21v-9.5L12 7l6.5 4.5V21M3.5 21h17M10 21v-4.5a2 2 0 0 1 4 0V21"/>',
+    leisure: '<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3.3 3.5M16 6h3a3 3 0 0 1-3.3 3.5M12 13v4M8.5 20h7"/>',
+    transport: '<rect x="5" y="3.5" width="14" height="13.5" rx="3"/><path d="M5 10.5h14M8 20.5V17M16 20.5V17"/><circle cx="8.5" cy="13.8" r=".6"/><circle cx="15.5" cy="13.8" r=".6"/>',
+    civic: '<path d="M3 9.5L12 4l9 5.5M5.5 10v8M10 10v8M14 10v8M18.5 10v8M3 20.5h18"/>',
+    heritage: '<path d="M4 20.5h16M6 20.5v-9M10.5 20.5v-6M14.5 20.5V12M18 20.5v-9M4.5 9.5l3-2.5h9l3 2.5z"/>',
+    nature: '<path d="M2.5 19.5l7-11 4 6 2.5-3.5 5.5 8.5z"/>', crossing: '<path d="M4.5 21V4.5M4.5 8.5h15v4h-15M8.5 8.5l-2 4M13 8.5l-2 4M17.5 8.5l-2 4"/>',
+    industry: '<path d="M3 20.5V10l5 3v-3l5 3V5.5h4l1 15z"/>', military: '<path d="M12 3.5l7 2.5v5.5c0 4.5-3 7.5-7 9.5-4-2-7-5-7-9.5V6z"/>',
+    place: '<path d="M4 20.5V10l8-6 8 6v10.5h-5.5v-6h-5v6z"/>', other: '<circle cx="12" cy="12" r="3.5"/>', route: '<path d="M6 19.5c0-5 12-3 12-9S6 9 6 4.5"/><circle cx="6" cy="4.5" r="1.6"/><circle cx="6" cy="19.5" r="1.6"/>'
+  };
+  const icUrl = {};
+  Object.entries(IP).forEach(([k, v]) => { icUrl[k] = "url('data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + v + '</svg>') + "')"; });
+  const ic = (k, cls) => `<span class="ic${cls ? " " + cls : ""}" style="--i:${icUrl[k] || icUrl.other}" aria-hidden="true"></span>`;
+
   /* ---------- language ---------- */
   const nav = (navigator.language || "en").toLowerCase();
   const LANG = store("kt_lang") || (nav.startsWith("ru") ? "ru" : nav.startsWith("ky") ? "ir" : "en");
@@ -109,16 +142,18 @@
   map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
 
   /* ---------- data ---------- */
-  const D = { places: [], feats: [], routes: [], irad: null, zones: null, districts: null };
+  const D = { places: [], feats: [], routes: [], irad: null, zones: null, districts: null, reviews: {} };
+  const DEMO = new URLSearchParams(location.search).has("demo");    // ?demo: sample businesses and reviews to preview the cards
   const get = u => fetch(u).then(r => r.json());
 
   const GROUP = {
+    food: ["restaurant", "cafe", "chaikhana", "bakery", "bar"], stay: ["hotel", "guesthouse", "hostel"], shops: ["shop", "bank", "pharmacy", "fuel", "supermarket"],
     worship: ["church", "mosque", "mazar"], civic: ["government", "university", "school", "hospital", "museum", "un"],
     leisure: ["stadium", "hippodrome", "market"], transport: ["airport", "station", "bus-station", "terminal"], crossing: ["border-crossing", "checkpoint"],
     industry: ["dam", "power", "mine", "industry", "oilfield"], nature: ["peak", "pass", "lake", "reservoir", "river-point", "spring", "park", "river", "canal", "glacier", "range", "valley", "desert"],
     heritage: ["ruins", "heritage", "landmark"], military: ["military"]
   };
-  const GCOL = { worship: "#7b5ea7", civic: "#3f6fb0", leisure: "#e07b39", transport: "#1f8a9a", industry: "#6f6f6f", nature: "#3d8b4f", heritage: "#b0583a", military: "#8b2e2e", crossing: "#9b2c2c", other: "#8a8a8a" };
+  const GCOL = { food: "#e8710a", stay: "#c2185b", shops: "#3f51b5", worship: "#7b5ea7", civic: "#3f6fb0", leisure: "#e07b39", transport: "#1f8a9a", industry: "#6f6f6f", nature: "#3d8b4f", heritage: "#b0583a", military: "#8b2e2e", crossing: "#9b2c2c", other: "#8a8a8a" };
   const groupOf = k => Object.keys(GROUP).find(g => GROUP[g].includes(k)) || "other";
   const PLACE_RANK = { capital: 1, city: 2, town: 3, village: 5, hamlet: 7, suburb: 6, quarter: 6, neighbourhood: 7, district: 4, "zone-area": 4, "foreign-city": 3, "foreign-town": 5 };
 
@@ -129,8 +164,11 @@
   function fc(features) { return { type: "FeatureCollection", features }; }
   function pointFeat(p, extra) { return { type: "Feature", id: undefined, geometry: { type: "Point", coordinates: [p.lon, p.lat] }, properties: Object.assign({ id: p.id, label: nameOf(p), kind: p.kind }, extra) }; }
 
-  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson"), get("data/real_places.json").catch(() => []), get("data/nature.json").catch(() => [])])
-    .then(([pl, fe, ro, ir, zo, di, qc, rz, rp, na]) => {
+  Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson"), get("data/real_places.json").catch(() => []), get("data/nature.json").catch(() => []),
+    get(DEMO ? "data/demo/places.json" : "data/places.json").catch(() => []), get(DEMO ? "data/demo/reviews.json" : "data/reviews.json").catch(() => ({}))])
+    .then(([pl, fe, ro, ir, zo, di, qc, rz, rp, na, bz, rv]) => {
+      fe = fe.concat(bz);      // businesses: restaurants, cafes, hotels, shops (docs/PLACES.md)
+      D.reviews = rv || {};
       D.line = qc; D.rwz = rz;
       pl = pl.concat(rp);      // the real towns and villages (build/real_places.py) after the lore's own places
       D.places = pl; D.feats = fe; D.routes = ro; D.irad = ir; D.zones = zo; D.districts = di;
@@ -289,6 +327,7 @@
     L.forEach(l => { const g = l._g; delete l._g; if (g) l.metadata = { g }; map.addLayer(l); });
     applyLayerPrefs();
     ready = true;
+    drawChips(); drawSaved();
     const q = new URLSearchParams(location.search).get("p");
     if (q && D.byId[q]) openPlace(D.byId[q], true);
     else if (!location.hash.includes("map=")) map.fitBounds(bbox(D.irad), { padding: 30, duration: 0 });
@@ -334,8 +373,6 @@
   $$("[data-layer]").forEach(cb => cb.addEventListener("change", () => {
     const p = store("kt_layers") || {}; p[cb.dataset.layer] = cb.checked; store("kt_layers", p); setGroup(cb.dataset.layer, cb.checked);
   }));
-  $("#menuBtn").addEventListener("click", () => { const m = $("#menu"); m.hidden = !m.hidden; $("#menuBtn").setAttribute("aria-expanded", String(!m.hidden)); });
-  document.addEventListener("click", e => { if (!$("#menu").hidden && !e.target.closest("#menu, #menuBtn")) { $("#menu").hidden = true; $("#menuBtn").setAttribute("aria-expanded", "false"); } });
   $$("#langSeg [data-lang]").forEach(b => {
     b.setAttribute("aria-pressed", String(b.dataset.lang === LANG));
     b.addEventListener("click", () => { store("kt_lang", b.dataset.lang); location.reload(); });
@@ -380,10 +417,13 @@
   document.addEventListener("click", e => { if (!e.target.closest(".top")) $("#results").hidden = true; });
   function pick(p) { $("#results").hidden = true; qEl.value = nameOf(p); $("#qClear").hidden = false; openPlace(p, true); qEl.blur(); }
 
-  /* ---------- category chips ---------- */
-  const CHIPS = [["worship", "⛪"], ["leisure", "🏟️"], ["transport", "🚉"], ["civic", "🏛️"], ["heritage", "🏺"], ["nature", "⛰️"], ["crossing", "🛂"]];
-  $("#chips").innerHTML = CHIPS.map(([g, e]) => `<button type="button" data-chip="${g}"><span>${e}</span>${esc(t("grp_" + g))}</button>`).join("");
+  /* ---------- category chips: only the categories the map has places for ---------- */
+  const CHIP_ORDER = ["food", "stay", "shops", "worship", "leisure", "transport", "civic", "heritage", "nature", "crossing"];
   let chipOn = null;
+  function drawChips() {
+    const have = new Set(D.feats.map(f => groupOf(f.kind)));
+    $("#chips").innerHTML = CHIP_ORDER.filter(g => have.has(g)).map(g => `<button type="button" data-chip="${g}" style="--chip:${GCOL[g]}">${ic(g)}${esc(t("grp_" + g))}</button>`).join("");
+  }
   $("#chips").addEventListener("click", e => {
     const b = e.target.closest("[data-chip]"); if (!b || !ready) return;
     chipOn = chipOn === b.dataset.chip ? null : b.dataset.chip;
@@ -398,7 +438,7 @@
       const pts = D.feats.filter(x => groupOf(x.kind) === chipOn);
       if (pts.length) {
         const b2 = pts.reduce((a, p) => [Math.min(a[0], p.lon), Math.min(a[1], p.lat), Math.max(a[2], p.lon), Math.max(a[3], p.lat)], [180, 90, -180, -90]);
-        map.fitBounds([[b2[0], b2[1]], [b2[2], b2[3]]], { padding: { top: 140, bottom: 60, left: 40, right: 40 }, maxZoom: 12 });
+        map.fitBounds([[b2[0], b2[1]], [b2[2], b2[3]]], { padding: Object.assign({ top: 140, bottom: 60, left: 40, right: 40 }, panelPad(40)), maxZoom: 13 });
       }
       toast(t("chipShown", { n: pts.length, g: t("grp_" + chipOn).toLowerCase() }));
     } else {
@@ -408,7 +448,7 @@
     }
   });
 
-  /* ---------- place card ---------- */
+  /* ---------- place panel ---------- */
   function kindLabel(p) { return t("k_" + p.kind); }
   // district and city names stored in English in the data, shown in the current language
   function locName(n, isCity) {
@@ -418,64 +458,187 @@
     if (S[LANG] && S[LANG]["dist_" + n]) return S[LANG]["dist_" + n];
     return pl ? nameOf(pl) : n;
   }
-  function dotColor(p) { return p._t === "place" ? "#5f6b7a" : GCOL[groupOf(p.kind)]; }
-  function kindIcon(p) {
-    if (p._t === "place") return { capital: "★", city: "●", town: "●", village: "•", district: "▦", "zone-area": "▦" }[p.kind] || "•";
-    return { worship: "✝", civic: "▣", leisure: "◆", transport: "⇄", industry: "⚙", nature: "▲", heritage: "◈", military: "✚" }[groupOf(p.kind)] || "•";
-  }
+  const iconKey = p => p._t === "place" ? "place" : groupOf(p.kind);
+  function dotColor(p) { return p._t === "place" ? "#5c6b60" : GCOL[groupOf(p.kind)]; }
+  function kindIcon(p) { return ic(iconKey(p)); }
+  const HERO = { place: ["#1f8a2b", "#1aa59a"], food: ["#ff8a00", "#e0531f"], stay: ["#c2185b", "#7b1fa2"], shops: ["#3f51b5", "#1fa3e0"], worship: ["#6a4f9c", "#3f6fb0"],
+    leisure: ["#e07b39", "#c9a227"], transport: ["#1f8a9a", "#1fa3e0"], civic: ["#2f5f9e", "#1f8a9a"], heritage: ["#b0583a", "#c9a227"], nature: ["#3d8b4f", "#7aa33a"],
+    crossing: ["#9b2c2c", "#5c6b60"], industry: ["#5f6b6a", "#8a978d"], military: ["#8b2e2e", "#5c3a2e"], other: ["#5c6b60", "#8a978d"] };
   const ZOOM = { capital: 11, city: 11.5, town: 12.5, village: 13.5, suburb: 14, quarter: 14, neighbourhood: 14.5, district: 8.5, "zone-area": 7 };
   const wikiUrl = title => "https://irad.wiki/#" + encodeURIComponent(title.replace(/\s+/g, "_"));
+  const fmtN = n => Number(n).toLocaleString(LANG === "ru" ? "ru-RU" : "en-GB");
+  const fmtKm = d => d < 1 ? Math.round(d * 1000) + " m" : d.toFixed(d < 10 ? 1 : 0) + " km";
+  const isWide = () => innerWidth > 760;
+  function panelPad(base = 60) {
+    if ($("#panel").hidden) return {};
+    return isWide() ? { left: parseInt(getComputedStyle(document.documentElement).getPropertyValue("--panel-w")) + base } : { bottom: Math.round(innerHeight * 0.46) + 20, top: 80 };
+  }
+
+  // reviews: data/reviews.json {place id: [{author, date, stars, text, lang, guide, reply: {text, date}}]}
+  function revOf(p) {
+    const list = (D.reviews[p.id] || []).slice();
+    const n = p.reviews_count || list.length;
+    const avg = p.rating || (list.length ? list.reduce((a, r) => a + r.stars, 0) / list.length : 0);
+    return { list, n, avg };
+  }
+  const stars = (v, cls = "") => `<span class="stars ${cls}" aria-label="${v.toFixed(1)} / 5">${[1, 2, 3, 4, 5].map(i => `<span${i > Math.round(v) ? ' class="off"' : ""}>★</span>`).join("")}</span>`;
+  // opening hours: {mo: "09:00-22:00", ..., su: "closed"}, Irad time (UTC+6)
+  const DAYS = ["su", "mo", "tu", "we", "th", "fr", "sa"];
+  function iradNow() { const d = new Date(Date.now() + 6 * 3600e3); return { day: d.getUTCDay(), min: d.getUTCHours() * 60 + d.getUTCMinutes() }; }
+  function openState(h) {
+    if (!h) return null;
+    const { day, min } = iradNow(), v = h[DAYS[day]];
+    if (!v || v === "closed") return { open: false, txt: t("closedToday") };
+    if (v === "24h") return { open: true, txt: t("open24") };
+    for (const span of v.split(",")) {
+      const [a, b] = span.split("-").map(x => { const [hh, mm] = x.trim().split(":").map(Number); return hh * 60 + (mm || 0); });
+      const end = b <= a ? b + 1440 : b;
+      if (min >= a && min < end) return { open: true, txt: t("openUntil", { t: span.split("-")[1].trim() }) };
+    }
+    return { open: false, txt: t("closedNow") };
+  }
+  const saved = () => store("kt_saved") || [];
+  const isSaved = id => saved().includes(id);
+  function toggleSave(p) {
+    const s = saved(), i = s.indexOf(p.id);
+    if (i >= 0) s.splice(i, 1); else s.unshift(p.id);
+    store("kt_saved", s.slice(0, 200)); drawSaved();
+    toast(t(i >= 0 ? "unsavedT" : "savedT", { n: nameOf(p) }));
+    return i < 0;
+  }
+
+  const panel = $("#panel");
+  function showPanel(html) {
+    $("#panelBody").innerHTML = html;
+    panel.hidden = false; setFull(false); document.body.classList.add("has-panel");
+    $("#panelScroll").scrollTop = 0;
+    $$("#panelBody .tabs [data-tab]").forEach(b => b.onclick = () => selectTab(b.dataset.tab));
+  }
+  function selectTab(name) {
+    $$("#panelBody .tabs [data-tab]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+    $$("#panelBody [data-pane]").forEach(x => (x.hidden = x.dataset.pane !== name));
+    const tb = $("#panelBody .tabs"); if (tb && $("#panelScroll").scrollTop > tb.offsetTop) $("#panelScroll").scrollTop = tb.offsetTop;
+  }
+  function setFull(on) { panel.classList.toggle("full", on); document.body.classList.toggle("sheet-full", on && !isWide()); }
+  $("#grip").addEventListener("click", () => setFull(!panel.classList.contains("full")));
+
+  function heroHtml(p, crumbs) {
+    const g = iconKey(p), [c1, c2] = HERO[g] || HERO.other;
+    if (p.photos && p.photos.length) return `<figure class="hero has-photo"><img src="${esc(p.photos[0])}" alt="${esc(nameOf(p))}" loading="lazy"><span class="hero-count">1 / ${p.photos.length}</span></figure>`;
+    return `<figure class="hero" style="--hc1:${c1};--hc2:${c2}">${ic(g, "hero-ic")}<div class="hero-crumb">${crumbs.filter(Boolean).map(c => `<span>${esc(c)}</span>`).join("")}</div></figure>`;
+  }
+  const row = (icon, html, attrs = "") => `<li ${attrs}>${ic(icon)}<div>${html}</div></li>`;
+
   function openPlace(p, fly) {
-    if (fly && p.bbox) map.fitBounds([[p.bbox[0], p.bbox[1]], [p.bbox[2], p.bbox[3]]], { padding: 60, maxZoom: 11, speed: 1.6, essential: true });
-    else if (fly) map.flyTo({ center: [p.lon, p.lat], zoom: p._t === "place" ? (ZOOM[p.kind] || 13) : (["peak", "pass", "lake", "reservoir", "park", "glacier"].includes(p.kind) ? (p.area > 20 ? 9.5 : 11.5) : 15), speed: 1.6, essential: true });
+    if (fly && p.bbox) map.fitBounds([[p.bbox[0], p.bbox[1]], [p.bbox[2], p.bbox[3]]], { padding: Object.assign({ top: 60, bottom: 60, left: 60, right: 60 }, panelPad()), maxZoom: 11, speed: 1.6, essential: true });
+    const g = iconKey(p);
     const others = [p.name, p.name_en, p.name_ir, p.name_ru].filter((n, i, a) => n && n !== nameOf(p) && a.indexOf(n) === i);
     const zone = p.zone === "ISEZ" ? t("isez") : p.zone === "ATR" ? t("atr") : "";
-    const where = p._t === "place" ? (p.kind === "district" ? zone : [p.district && p.district !== p.name ? locName(p.district) : "", zone].filter(Boolean).join(" · "))
-      : [locName(p.city, true), zone].filter(Boolean).join(" · ");
-    const facts = [];
-    if (p.pop) facts.push([t("population"), Number(p.pop).toLocaleString(LANG === "ru" ? "ru-RU" : "en-GB")]);
-    if (p.status) facts.push([t("status"), t("st_" + p.status)]);
-    if (p.elev) facts.push([t("elevation"), Number(p.elev).toLocaleString("en-GB") + " m"]);
-    if (p.length) facts.push([t("length"), p.length.toLocaleString("en-GB") + " km" + (p.kind === "river" || p.kind === "canal" ? " " + t("inIrad") : "")]);
-    if (p.area) facts.push([t("area"), (p.area < 10 ? p.area.toFixed(1) : Math.round(p.area)) + " km²"]);
-    facts.push([t("coords"), `${p.lat.toFixed(4)}°N, ${p.lon.toFixed(4)}°E`]);
-    let extra = "";
-    if (p.id === "boz-korgon") extra = `<p class="warn">⚠ ${esc(t("restrictedText"))}</p>`;
-    else if (p.desc) extra = `<p class="info">${esc(p.desc)}</p>`;
-    else if (p.zone === "ATR") extra = `<p class="info">${esc(t("atrText"))}</p>`;
-    $("#cardBody").innerHTML = `<div class="c-kind" style="color:${dotColor(p)}">${kindIcon(p)} ${esc(kindLabel(p))}</div>
-      <h2>${esc(nameOf(p))}</h2>${others.length ? `<p class="c-alt">${others.map(esc).join(" · ")}</p>` : ""}
-      ${where ? `<p class="c-where">${esc(where)}</p>` : ""}
-      <div class="c-actions">
-        ${p.wiki ? `<a class="c-btn primary" href="${wikiUrl(p.wiki)}" target="_blank" rel="noopener">📖 ${esc(t("readWiki"))}</a>` : ""}
-        <button type="button" class="c-btn" id="shareBtn">🔗 ${esc(t("share"))}</button>
-        <button type="button" class="c-btn" id="nearBtn">📍 ${esc(t("nearby"))}</button>
+    const zoneShort = p.zone === "ISEZ" ? "ISEZ" : p.zone === "ATR" ? t("atrShort") : "";
+    const city = p._t === "feat" ? locName(p.city, true) : "";
+    const dist = p.district && p.district !== p.name && p.kind !== "district" ? (p._t === "place" ? locName(p.district) : "") : "";
+    const where = p.address || [city, dist, zone].filter(Boolean).join(" · ");
+    const { list, n, avg } = revOf(p), os = openState(p.hours);
+    // overview rows
+    const rows = [];
+    rows.push(row("pin", `${esc(where || t("irad"))}${p.address && (city || zone) ? `<small>${esc([city, zone].filter(Boolean).join(" · "))}</small>` : ""}`));
+    if (p.hours) {
+      const today = iradNow().day;
+      rows.push(row("clock", `<span class="${os.open ? "p-open" : "p-closed"}">${esc(os.txt)}</span><table class="hours">${[1, 2, 3, 4, 5, 6, 0].map(d => `<tr${d === today ? ' class="today"' : ""}><td>${esc(t("day_" + DAYS[d]))}</td><td>${esc(p.hours[DAYS[d]] === "closed" || !p.hours[DAYS[d]] ? t("closed") : p.hours[DAYS[d]] === "24h" ? t("open24") : p.hours[DAYS[d]])}</td></tr>`).join("")}</table>`));
+    }
+    if (p.price) rows.push(row("money", esc(p.price)));
+    if (p.phone) rows.push(row("phone", `<a href="tel:${esc(p.phone.replace(/\s/g, ""))}">${esc(p.phone)}</a>`));
+    if (p.web) rows.push(row("globe", `<a href="${esc(p.web)}" target="_blank" rel="noopener">${esc(p.web.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</a>`));
+    if (p.wiki) rows.push(row("book", `<a href="${wikiUrl(p.wiki)}" target="_blank" rel="noopener">${esc(t("readWiki"))}</a>`));
+    if (p.pop) rows.push(row("people", `${esc(fmtN(p.pop))}<small>${esc(t("population"))}</small>`));
+    if (p.elev) rows.push(row("elev", `${esc(fmtN(p.elev))} m<small>${esc(t("elevation"))}</small>`));
+    if (p.length) rows.push(row("ruler", `${esc(fmtN(p.length))} km${p.kind === "river" || p.kind === "canal" ? " " + esc(t("inIrad")) : ""}<small>${esc(t("length"))}</small>`));
+    if (p.area) rows.push(row("ruler", `${p.area < 10 ? p.area.toFixed(1) : Math.round(p.area)} km²<small>${esc(t("area"))}</small>`));
+    if (p.status) rows.push(row("info", `${esc(t("st_" + p.status))}<small>${esc(t("status"))}</small>`));
+    rows.push(row("copy", `${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}<small>${esc(t("coordsCopy"))}</small>`, 'class="click" id="copyLL"'));
+    let note = "";
+    if (p.id === "boz-korgon") note = `<p class="note warn">${ic("warn")}<span>${esc(t("restrictedText"))}</span></p>`;
+    else if (p.zone === "ATR") note = `<p class="note info">${ic("info")}<span>${esc(t("atrText"))}</span></p>`;
+    const desc = p.desc || p.note || "";
+    // nearby
+    const near = D.all.filter(x => x.id !== p.id && !["district", "zone-area"].includes(x.kind)).map(x => [km(p, x), x]).sort((a, b) => a[0] - b[0]).slice(0, 6);
+    const nearHtml = `<ul class="row-list">${near.map(([d, x]) => `<li data-id="${esc(x.id)}"><span class="r-ico" style="background:${dotColor(x)}">${kindIcon(x)}</span><span><b>${esc(nameOf(x))}</b><small>${esc(kindLabel(x))}</small></span><em>${fmtKm(d)}</em></li>`).join("")}</ul>`;
+    // reviews
+    const rvSum = n ? `<div class="rv-sum"><div class="rv-big"><b>${avg.toFixed(1)}</b>${stars(avg)}<small>${esc(t("nReviews", { n: fmtN(n) }))}</small></div>
+        <div class="rv-bars">${[5, 4, 3, 2, 1].map(k => { const c = list.filter(r => r.stars === k).length; return `<div><span>${k}</span><i style="--w:${list.length ? Math.round(100 * c / list.length) : 0}%"></i></div>`; }).join("")}</div></div>` : "";
+    const rvList = list.sort((a, b) => (b.date || "").localeCompare(a.date || "")).map(r => reviewHtml(r)).join("");
+    const rvPane = n ? `${rvSum}<div class="rv-write"><button type="button" class="btn-orange js-write">${esc(t("writeReview"))}</button></div>
+        <div class="rv-sort"><button type="button" class="btn-line" aria-pressed="true" data-sort="new">${esc(t("sortNew"))}</button><button type="button" class="btn-line" aria-pressed="false" data-sort="high">${esc(t("sortHigh"))}</button><button type="button" class="btn-line" aria-pressed="false" data-sort="low">${esc(t("sortLow"))}</button></div>
+        <div id="rvList">${rvList}</div>`
+      : `<div class="rv-empty">${ic("edit")}<b>${esc(t("noReviews"))}</b>${esc(t("noReviewsSub"))}</div><div class="rv-write" style="justify-content:center;border:0"><button type="button" class="btn-orange js-write">${esc(t("writeReview"))}</button></div>`;
+    // about
+    const facts = [[t("type"), kindLabel(p)]];
+    if (zone) facts.push([t("zone"), zone]);
+    if (dist) facts.push([t("district"), dist]);
+    if (p.real_name) facts.push([t("sovietMaps"), p.real_name]);
+    if (others.length) facts.push([t("otherNames"), others.join(" · ")]);
+
+    showPanel(`${heroHtml(p, [dist || city, zoneShort])}
+      <div class="p-head">
+        <h1>${esc(nameOf(p))}</h1>${others.length ? `<p class="p-alt">${others.map(esc).join(" · ")}</p>` : ""}
+        ${n ? `<p class="p-rate"><b>${avg.toFixed(1)}</b>${stars(avg)}<a href="#" class="js-rv">(${fmtN(n)})</a></p>` : ""}
+        <p class="p-kind"><b style="--kind:${dotColor(p)}">${esc(kindLabel(p))}</b>${p.price_level ? ` · <span title="${esc(t("priceLevel"))}">${"с".repeat(p.price_level)}</span>` : ""}${os ? ` · <span class="${os.open ? "p-open" : "p-closed"}">${esc(os.txt)}</span>` : ""}</p>
       </div>
-      ${extra}
-      <dl class="c-facts">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
-      <div id="nearList"></div>`;
+      <div class="p-actions">
+        ${p.wiki ? `<a class="act primary" href="${wikiUrl(p.wiki)}" target="_blank" rel="noopener"><span class="c">${ic("book")}</span>${esc(t("actWiki"))}</a>` : p.web ? `<a class="act primary" href="${esc(p.web)}" target="_blank" rel="noopener"><span class="c">${ic("globe")}</span>${esc(t("actWeb"))}</a>` : ""}
+        <button type="button" class="act${isSaved(p.id) ? " on" : ""}" id="saveBtn"><span class="c">${ic(isSaved(p.id) ? "saved" : "save")}</span><span class="lbl">${esc(t(isSaved(p.id) ? "actSaved" : "actSave"))}</span></button>
+        <button type="button" class="act" id="nearBtn"><span class="c">${ic("nearby")}</span>${esc(t("nearby"))}</button>
+        <button type="button" class="act" id="shareBtn"><span class="c">${ic("share")}</span>${esc(t("share"))}</button>
+        ${p.phone ? `<a class="act" href="tel:${esc(p.phone.replace(/\s/g, ""))}"><span class="c">${ic("phone")}</span>${esc(t("actCall"))}</a>` : ""}
+      </div>
+      <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="ov" aria-selected="true">${esc(t("tabOverview"))}</button><button type="button" role="tab" data-tab="rv" aria-selected="false">${esc(t("tabReviews"))}${n ? " · " + fmtN(n) : ""}</button><button type="button" role="tab" data-tab="ab" aria-selected="false">${esc(t("tabAbout"))}</button></div>
+      <div class="tab" data-pane="ov">${note}<ul class="rows">${rows.join("")}</ul>
+        ${desc ? `<div class="sect"><h2>${esc(t("tabAbout"))}</h2><p class="desc">${esc(desc)}</p></div>` : ""}
+        ${list.length ? `<div class="sect"><h2>${esc(t("tabReviews"))}</h2></div>${reviewHtml(list[0])}<div class="rv-write" style="padding-top:10px;border:0"><button type="button" class="btn-line js-rv">${esc(t("moreReviews", { n: fmtN(n) }))}</button></div>` : ""}
+        <div class="sect" id="nearSect"><h2>${esc(t("nearby"))}</h2>${nearHtml}</div></div>
+      <div class="tab" data-pane="rv" hidden>${rvPane}</div>
+      <div class="tab" data-pane="ab" hidden><div class="sect" style="border-top:0">${desc ? `<p class="desc">${esc(desc)}</p>` : ""}<dl class="facts">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div>
+        <ul class="rows">${row("flag", `${esc(t("report"))}<small>${esc(t("reportSub"))}</small>`, 'class="click" id="reportBtn"')}</ul></div>`);
+
     $("#shareBtn").onclick = () => {
-      const url = location.origin + location.pathname + "?p=" + encodeURIComponent(p.id);
+      const url = location.origin + location.pathname + "?p=" + encodeURIComponent(p.id) + (DEMO ? "&demo" : "");
       (navigator.share ? navigator.share({ title: nameOf(p), url }) : navigator.clipboard.writeText(url).then(() => toast(t("linkCopied")))).catch(() => {});
     };
-    $("#nearBtn").onclick = () => showNearby(p);
-    $("#card").hidden = false;
+    $("#saveBtn").onclick = () => { const on = toggleSave(p); const b = $("#saveBtn"); b.classList.toggle("on", on); b.querySelector(".c").innerHTML = ic(on ? "saved" : "save"); b.querySelector(".lbl").textContent = t(on ? "actSaved" : "actSave"); };
+    $("#nearBtn").onclick = () => { selectTab("ov"); setFull(true); $("#panelScroll").scrollTop = $("#nearSect").offsetTop - 50; };
+    $("#copyLL").onclick = () => navigator.clipboard.writeText(`${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}`).then(() => toast(t("coordsCopied"))).catch(() => {});
+    $("#reportBtn").onclick = () => toast(t("reportT"));
+    $$("#panelBody .js-rv").forEach(a => a.onclick = e => { e.preventDefault(); selectTab("rv"); });
+    $$("#panelBody .js-write").forEach(b => b.onclick = openLogin);
+    $$("#panelBody [data-sort]").forEach(b => b.onclick = () => {
+      $$("#panelBody [data-sort]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      const s = b.dataset.sort, l = list.slice().sort((x, y) => s === "high" ? y.stars - x.stars : s === "low" ? x.stars - y.stars : (y.date || "").localeCompare(x.date || ""));
+      $("#rvList").innerHTML = l.map(reviewHtml).join("");
+    });
+    $$("#nearSect [data-id]").forEach(li => li.onclick = () => openPlace(D.byId[li.dataset.id], true));
+    if (fly && !p.bbox) map.flyTo({ center: [p.lon, p.lat], zoom: p._t === "place" ? (ZOOM[p.kind] || 13) : (["peak", "pass", "lake", "reservoir", "park", "glacier"].includes(p.kind) ? (p.area > 20 ? 9.5 : 11.5) : 15), padding: panelPad(0), speed: 1.6, essential: true });
     highlight(p);
-    history.replaceState(null, "", location.pathname + "?p=" + encodeURIComponent(p.id) + location.hash);
+    history.replaceState(null, "", location.pathname + "?p=" + encodeURIComponent(p.id) + (DEMO ? "&demo" : "") + location.hash);
+  }
+  const AVA = ["#1f8a2b", "#ff8a00", "#1fa3e0", "#7b5ea7", "#c2185b", "#0d3b1a", "#b0583a", "#2f5f9e"];
+  function reviewHtml(r) {
+    const h = [...(r.author || "?")].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const date = r.date ? new Date(r.date + "T12:00:00Z").toLocaleDateString(LANG === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+    return `<div class="rv"><div class="rv-who"><span class="ava" style="background:${AVA[h % AVA.length]}">${esc((r.author || "?").trim()[0].toUpperCase())}</span><div><b>${esc(r.author)}</b><small>${r.guide ? esc(t("localGuide")) + " · " : ""}${r.count ? esc(t("nOwnReviews", { n: r.count })) : ""}</small></div></div>
+      <div class="rv-meta">${stars(r.stars)}<span>${esc(date)}</span></div><p>${esc(r.text)}</p>
+      ${r.lang && r.lang !== LANG ? `<div class="rv-lang">${esc(t("writtenIn", { l: t("lang_" + r.lang) }))}</div>` : ""}
+      ${r.reply ? `<div class="rv-reply"><b>${esc(t("ownerReply"))}</b>${esc(r.reply.text)}</div>` : ""}</div>`;
   }
   function km(a, b) { const dx = (a.lon - b.lon) * 111.32 * Math.cos(a.lat * Math.PI / 180), dy = (a.lat - b.lat) * 110.57; return Math.hypot(dx, dy); }
-  function showNearby(p) {
-    const list = D.all.filter(x => x.id !== p.id && !["district", "zone-area"].includes(x.kind)).map(x => [km(p, x), x]).sort((a, b) => a[0] - b[0]).slice(0, 8);
-    $("#nearList").innerHTML = `<h3>${esc(t("nearby"))}</h3><ul class="near">` + list.map(([d, x]) => `<li data-id="${esc(x.id)}"><span class="r-ico" style="background:${dotColor(x)}">${kindIcon(x)}</span><span><b>${esc(nameOf(x))}</b><small>${esc(kindLabel(x))}</small></span><em>${d < 1 ? Math.round(d * 1000) + " m" : d.toFixed(d < 10 ? 1 : 0) + " km"}</em></li>`).join("") + `</ul>`;
-    $$("#nearList [data-id]").forEach(li => li.onclick = () => openPlace(D.byId[li.dataset.id], true));
-  }
   let hl = null;
   function highlight(p) {
-    if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });
+    if (!hl) hl = new maplibregl.Marker({ color: "#e0531f" });
     hl.setLngLat([p.lon, p.lat]).addTo(map);
   }
-  function closeCard() { $("#card").hidden = true; if (hl) hl.remove(); history.replaceState(null, "", location.pathname + location.hash); }
-  $("#cardClose").addEventListener("click", closeCard);
+  function closeCard() {
+    panel.hidden = true; setFull(false); document.body.classList.remove("has-panel"); if (hl) hl.remove();
+    history.replaceState(null, "", location.pathname + (DEMO ? "?demo" : "") + location.hash);
+  }
 
   /* dropped pin: what's here */
   function dropPin(ll) {
@@ -485,31 +648,32 @@
     const dist = zone === "ISEZ" ? whichIn(D.districts, pt, "district") : null;
     const here = { lat: ll.lat, lon: ll.lng };
     const near = D.places.filter(x => ["capital", "city", "town", "village"].includes(x.kind)).map(x => [km(here, x), x]).sort((a, b) => a[0] - b[0])[0];
-    if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });
+    if (!hl) hl = new maplibregl.Marker({ color: "#e0531f" });
     hl.setLngLat(ll).addTo(map);
     const where = !inIrad ? t("outsideIrad") : [dist ? t("districtOf", { d: t("dn_" + dist) }) : "", zone === "ISEZ" ? t("isez") : t("atr")].filter(Boolean).join(" · ");
-    $("#cardBody").innerHTML = `<div class="c-kind">📍 ${esc(t("droppedPin"))}</div><h2>${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</h2><p class="c-where">${esc(where)}</p>
-      ${inIrad && near ? `<p class="c-alt">${esc(t("nearestPlace", { n: nameOf(near[1]), d: near[0].toFixed(near[0] < 10 ? 1 : 0) }))}</p>` : ""}
-      ${inIrad && zone === "ATR" ? `<p class="info">${esc(t("atrText"))}</p>` : ""}
-      <div class="c-actions">${inIrad && near ? `<button type="button" class="c-btn" id="goNear">${esc(nameOf(near[1]))}</button>` : ""}</div>`;
+    showPanel(`<figure class="hero" style="--hc1:#5c6b60;--hc2:#1f8a2b">${ic("pin", "hero-ic")}<div class="hero-crumb"><span>${esc(t("droppedPin"))}</span></div></figure>
+      <div class="p-head"><h1>${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</h1><p class="p-kind">${esc(where)}</p></div>
+      <div class="p-actions">${inIrad && near ? `<button type="button" class="act primary" id="goNear"><span class="c">${ic("place")}</span>${esc(nameOf(near[1]))}</button>` : ""}
+        <button type="button" class="act" id="copyLL"><span class="c">${ic("copy")}</span>${esc(t("actCopy"))}</button></div>
+      ${inIrad && zone === "ATR" ? `<p class="note info">${ic("info")}<span>${esc(t("atrText"))}</span></p>` : ""}
+      <ul class="rows">${inIrad && near ? row("place", `${esc(t("nearestPlace", { n: nameOf(near[1]), d: near[0].toFixed(near[0] < 10 ? 1 : 0) }))}`) : ""}</ul>`);
     const g = $("#goNear"); if (g) g.onclick = () => openPlace(near[1], true);
-    $("#card").hidden = false;
+    $("#copyLL").onclick = () => navigator.clipboard.writeText(`${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`).then(() => toast(t("coordsCopied"))).catch(() => {});
   }
 
   /* ---------- map clicks ---------- */
   const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "crossing-major", "crossing-minor", "nature-big", "nature-osm-label", "nature-pass", "nature-small", "landform-label", "quarter-label", "district-label", "zone-area-label"];
   function openLine(f, ll) {
     const p = f.properties;
-    if (!hl) hl = new maplibregl.Marker({ color: "#d93025" });
+    if (!hl) hl = new maplibregl.Marker({ color: "#e0531f" });
     hl.setLngLat(ll).addTo(map);
     const total = D.line.features.reduce((a, x) => a + x.properties.km, 0);
-    $("#cardBody").innerHTML = `<div class="c-kind" style="color:${C.qarachik}">┅ ${esc(t("lineKind"))}</div>
-      <h2>${esc(t("lineName"))}</h2><p class="c-alt">${esc(LANG === "ru" ? "Qara-Chik chek ara sızığı · Qara-Chik Demarcation Line" : LANG === "ir" ? "Qara-Chik Demarcation Line · Демаркационная линия Кара-Чик" : "Qara-Chik chek ara sızığı · Демаркационная линия Кара-Чик")}</p>
-      <p class="c-where">${esc(t("sec_" + p.sector))} · ${esc(t("fol_" + p.follows))}</p>
-      <div class="c-actions"><a class="c-btn primary" href="${wikiUrl("Qara-Chik Demarcation Line")}" target="_blank" rel="noopener">📖 ${esc(t("readWiki"))}</a></div>
-      <p class="info">${esc(t("lineText"))}</p>
-      <dl class="c-facts"><dt>${esc(t("lineLen"))}</dt><dd>${Math.round(total / 10) * 10} km</dd><dt>${esc(t("lineRwz"))}</dt><dd>12 km</dd><dt>${esc(t("coords"))}</dt><dd>${ll.lat.toFixed(4)}°N, ${ll.lng.toFixed(4)}°E</dd></dl>`;
-    $("#card").hidden = false;
+    showPanel(`<figure class="hero" style="--hc1:#9b2c2c;--hc2:#5c3a2e">${ic("crossing", "hero-ic")}<div class="hero-crumb"><span>${esc(t("lineKind"))}</span><span>${esc(t("sec_" + p.sector))}</span></div></figure>
+      <div class="p-head"><h1>${esc(t("lineName"))}</h1><p class="p-alt">${esc(LANG === "ru" ? "Qara-Chik chek ara sızığı · Qara-Chik Demarcation Line" : LANG === "ir" ? "Qara-Chik Demarcation Line · Демаркационная линия Кара-Чик" : "Qara-Chik chek ara sızığı · Демаркационная линия Кара-Чик")}</p>
+        <p class="p-kind"><b style="--kind:#9b2c2c">${esc(t("lineKind"))}</b> · ${esc(t("fol_" + p.follows))}</p></div>
+      <div class="p-actions"><a class="act primary" href="${wikiUrl("Qara-Chik Demarcation Line")}" target="_blank" rel="noopener"><span class="c">${ic("book")}</span>${esc(t("actWiki"))}</a></div>
+      <p class="note info">${ic("info")}<span>${esc(t("lineText"))}</span></p>
+      <ul class="rows">${row("ruler", `${Math.round(total / 10) * 10} km<small>${esc(t("lineLen"))}</small>`)}${row("warn", `12 km<small>${esc(t("lineRwz"))}</small>`)}${row("pin", `${ll.lat.toFixed(4)}°N, ${ll.lng.toFixed(4)}°E<small>${esc(t("coords"))}</small>`)}</ul>`);
   }
   map.on("click", e => {
     if (!ready) return;
@@ -517,13 +681,37 @@
     if (hit.length) { const p = D.byId[hit[0].properties.id]; if (p) { openPlace(p, false); return; } }
     const lh = map.getLayer("qarachik-hit") && map.getLayoutProperty("qarachik-hit", "visibility") !== "none" ? map.queryRenderedFeatures(e.point, { layers: ["qarachik-hit"] }) : [];
     if (lh.length) { openLine(lh[0], e.lngLat); return; }
-    if (!$("#card").hidden) { closeCard(); return; }
+    if (!panel.hidden) { closeCard(); return; }
     dropPin(e.lngLat);
   });
   ["qarachik-hit"].concat(CLICKABLE).forEach(id => {
     map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
     map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
   });
+
+  /* ---------- menu, saved places, personal account ---------- */
+  function setMenu(open) { $("#menu").hidden = !open; $("#scrim").hidden = !open; $("#menuBtn").setAttribute("aria-expanded", String(open)); }
+  $("#menuBtn").addEventListener("click", () => setMenu($("#menu").hidden));
+  $("#menuClose").addEventListener("click", () => setMenu(false));
+  $("#scrim").addEventListener("click", () => setMenu(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { setMenu(false); $("#login").hidden = true; } });
+  function drawSaved() {
+    const s = saved().map(id => D.byId[id]).filter(Boolean);
+    $("#savedList").innerHTML = s.length ? s.map(p => `<li data-id="${esc(p.id)}"><span class="r-ico" style="background:${dotColor(p)}">${kindIcon(p)}</span>${esc(nameOf(p))}</li>`).join("") : `<li class="none">${esc(t("noSaved"))}</li>`;
+    $$("#savedList [data-id]").forEach(li => li.onclick = () => { setMenu(false); openPlace(D.byId[li.dataset.id], true); });
+  }
+  function openLogin() { setMenu(false); $("#loginErr").hidden = true; $("#login").hidden = false; setTimeout(() => $("#loginForm [name=u]").focus(), 50); }
+  $("#acctBtn").addEventListener("click", openLogin);
+  $("#loginX").addEventListener("click", () => ($("#login").hidden = true));
+  $("#login").addEventListener("click", e => { if (e.target.id === "login") $("#login").hidden = true; });
+  $("#loginForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const b = $("#loginForm .btn-orange"); b.disabled = true; b.textContent = t("loginWait");
+    setTimeout(() => { b.disabled = false; b.textContent = t("loginGo"); const er = $("#loginErr"); er.textContent = t("loginErr", { c: "BL-" + (4000 + Math.floor(Math.random() * 900)) }); er.hidden = false; }, 1600);
+  });
+  $("#qClear").innerHTML = ic("close"); $("#qGo").innerHTML = ic("search"); $("#menuBtn").innerHTML = ic("menu"); $("#menuClose").innerHTML = ic("close"); $("#loginX").innerHTML = ic("close");
+  $("#acctBtn .i-user").outerHTML = ic("user");
+  $("#qGo").addEventListener("click", () => { const r = search(qEl.value); if (r[0]) pick(r[0]); else qEl.focus(); });
 
   /* ---------- notices ---------- */
   function updateNotice() {

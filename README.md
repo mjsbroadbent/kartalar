@@ -15,6 +15,15 @@ Static site, no build step for the page itself. Deploy on GitHub Pages from the 
 - **Irad's layers** come from the files in `data/`, drawn on top.
 - **Labels** use the Noto Sans glyphs in `fonts/` (Latin, Latin Extended for ı ö ü ñ, Cyrillic).
 
+## Interface
+
+The map app is Attelkom's: the brand comes from attelkom.net (theme v2.3 by WebStudio Talas): Attelkom green and dark
+forest green, orange for the buttons that matter, Montserrat for headings and labels (`vendor/montserrat`, OFL), the 2019
+app-icon logo (`img/attelkom-2019.svg`, `img/attelkom-tile.svg`). Places open in a side panel on wide screens and a
+bottom sheet on phones, with Overview, Reviews and About tabs, saved places in the menu, and the shared Attelkom personal
+account sign-in (which, in-world, always fails with a billing error). Businesses (restaurants, cafés, hotels, shops) and
+reviews have a data format ready in `docs/PLACES.md`; add `?demo` to preview sample listings.
+
 ## Data
 
 | File | What it is |

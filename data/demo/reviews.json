@@ -1,0 +1,17 @@
+{
+ "demo-jibek-ashkana": [
+  {"author": "Aibek T.", "guide": true, "count": 87, "date": "2026-09-30", "stars": 5, "lang": "en", "text": "Best lagman near the market, hand-pulled while you wait. Go before 1 pm or the manty are gone.", "reply": {"text": "Thank you! Plov is on Thursdays and Fridays from 11.", "date": "2026-10-01"}},
+  {"author": "Нурия К.", "count": 12, "date": "2026-09-12", "stars": 4, "lang": "ru", "text": "Вкусно и недорого, но в обед очень шумно и не хватает мест."},
+  {"author": "Bakyt", "count": 3, "date": "2026-08-21", "stars": 5, "lang": "ir", "text": "Lagman abdan daamduu, baası arzan. Juma künü paloo bar."},
+  {"author": "Gulnara S.", "guide": true, "count": 41, "date": "2026-07-04", "stars": 3, "lang": "en", "text": "Food is fine but they only take cash or Attelkom Pay, and the Attelkom Pay terminal was down."}
+ ],
+ "demo-kalan-chaikhana": [
+  {"author": "Daniyar", "count": 9, "date": "2026-10-05", "stars": 5, "lang": "en", "text": "Sit on the topchan, order a pot of green tea and samsa straight from the tandyr. Feels like 1975 in the best way."},
+  {"author": "Марат", "count": 2, "date": "2026-09-18", "stars": 4, "lang": "ru", "text": "Атмосфера отличная, шашлык хороший. Туалет во дворе базара."}
+ ],
+ "demo-altyn-coffee": [
+  {"author": "Elena V.", "guide": true, "count": 120, "date": "2026-10-11", "stars": 4, "lang": "en", "text": "Good flat white, reliable Wi-Fi, too many people on laptops at lunch."},
+  {"author": "Timur", "count": 5, "date": "2026-09-02", "stars": 2, "lang": "en", "text": "Overpriced for Talas. 450 som for a cake.", "reply": {"text": "We use imported ingredients. Try our lunch set from 12 to 15.", "date": "2026-09-03"}},
+  {"author": "Айгерим", "count": 17, "date": "2026-08-15", "stars": 5, "lang": "ru", "text": "Лучшие десерты в городе, уютный второй этаж."}
+ ]
+}

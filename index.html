@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Attelkom Kartalar · Maps of Irad</title>
   <meta name="description" content="Attelkom Kartalar: maps of Irad. Cities, villages, roads, railways and places across the ISEZ and the tribal regions.">
-  <meta name="theme-color" content="#1f7a2e">
+  <meta name="theme-color" content="#1f8a2b">
   <link rel="canonical" href="https://maps.attelkom.net/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Attelkom Kartalar">
@@ -17,10 +17,12 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Map of Irad between Kazakhstan, Kyrgyzstan and Uzbekistan">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="img/favicon.png" type="image/png">
   <link rel="stylesheet" href="vendor/inter/inter.css">
+  <link rel="stylesheet" href="vendor/montserrat/montserrat.css">
   <link rel="stylesheet" href="vendor/maplibre-gl.css">
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="app.css?v=3">
 </head>
 <body>
   <div id="map" role="application" aria-label="Map of Irad"></div>
@@ -30,37 +32,67 @@
     <p>Read more about Irad on <a href="https://irad.wiki/">Irad Wiki</a>.</p>
   </div></noscript>
 
-  <!-- search and brand -->
+  <!-- place panel: docked on the left on wide screens, a bottom sheet on phones -->
+  <aside class="panel" id="panel" hidden aria-live="polite">
+    <button type="button" class="sheet-grip" id="grip" aria-label="Expand"><span></span></button>
+    <div class="panel-scroll" id="panelScroll"><div id="panelBody"></div></div>
+  </aside>
+
+  <!-- search and categories -->
   <div class="top">
     <div class="search" id="searchBox">
-      <a class="brand" href="./" title="Attelkom Kartalar"><img src="img/attelkom-mark.png" alt="" width="34" height="34"></a>
+      <a class="brand" href="./" title="Attelkom Kartalar"><img src="img/attelkom-tile.svg" alt="Attelkom" width="34" height="34"></a>
       <input id="q" type="search" autocomplete="off" spellcheck="false" data-tp="searchPh" placeholder="Search Kartalar" aria-label="Search">
-      <button type="button" class="ico" id="qClear" aria-label="Clear" hidden>✕</button>
-      <button type="button" class="ico" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+      <button type="button" class="ico" id="qClear" aria-label="Clear" hidden></button>
+      <button type="button" class="ico ico-go" id="qGo" aria-label="Search"></button>
+      <span class="sep"></span>
+      <button type="button" class="ico" id="menuBtn" aria-label="Menu" aria-expanded="false"></button>
     </div>
     <ul class="results" id="results" role="listbox" hidden></ul>
     <div class="chips" id="chips"></div>
   </div>
 
-  <!-- place card -->
-  <aside class="card" id="card" hidden aria-live="polite">
-    <button type="button" class="card-x" id="cardClose" aria-label="Close">✕</button>
-    <div id="cardBody"></div>
-  </aside>
-
-  <!-- menu -->
-  <div class="menu" id="menu" hidden>
-    <div class="menu-h"><img src="img/attelkom-mark.png" alt="" width="40" height="40"><div><b>Attelkom Kartalar</b><small data-t="tagline">Maps of Irad</small></div></div>
-    <h4 data-t="language">Language</h4>
-    <div class="seg" id="langSeg"><button data-lang="ir">Iradcha</button><button data-lang="ru">Русский</button><button data-lang="en">English</button></div>
+  <!-- menu drawer -->
+  <div class="scrim" id="scrim" hidden></div>
+  <nav class="menu" id="menu" hidden aria-label="Menu">
+    <div class="menu-h">
+      <img src="img/attelkom-2019.svg" alt="attelkom" height="40">
+      <div class="menu-prod"><b>Kartalar</b><small data-t="tagline">Maps of Irad</small></div>
+      <button type="button" class="ico" id="menuClose" aria-label="Close"></button>
+    </div>
+    <button type="button" class="btn-account" id="acctBtn"><span class="i-user"></span><span data-t="account">Personal account</span></button>
+    <h4 data-t="saved">Saved places</h4>
+    <ul class="saved" id="savedList"></ul>
     <h4 data-t="layers">Map layers</h4>
     <label class="tog"><input type="checkbox" data-layer="terrain" checked> <span data-t="lyrTerrain">Terrain shading</span></label>
     <label class="tog"><input type="checkbox" data-layer="routes" checked> <span data-t="lyrRoutes">Highways and railways</span></label>
     <label class="tog"><input type="checkbox" data-layer="poi" checked> <span data-t="lyrPoi">Places of interest</span></label>
     <label class="tog"><input type="checkbox" data-layer="zones" checked> <span data-t="lyrZones">Zones and districts</span></label>
     <label class="tog"><input type="checkbox" data-layer="infra"> <span data-t="lyrInfra">Pipelines, canals and power lines</span></label>
+    <h4 data-t="language">Language</h4>
+    <div class="seg" id="langSeg"><button data-lang="ir">Iradcha</button><button data-lang="ru">Русский</button><button data-lang="en">English</button></div>
     <p class="menu-note" data-t="menuNote">Map data in the Autonomous Tribal Regions is limited. Report a mistake at any Attelkom office.</p>
-    <p class="menu-links"><a href="https://irad.wiki/" target="_blank" rel="noopener">Irad Wiki</a> · <a href="https://talasherald.com/" target="_blank" rel="noopener">Talas Herald</a></p>
+    <div class="menu-foot">
+      <a href="https://attelkom.net/" target="_blank" rel="noopener">attelkom.net</a>
+      <a href="https://irad.wiki/" target="_blank" rel="noopener">Irad Wiki</a>
+      <a href="https://talasherald.com/" target="_blank" rel="noopener">Talas Herald</a>
+      <small>© 2019–2026 OJSC «Attelkom» · <span data-t="hotline">Hotline 105</span></small>
+    </div>
+  </nav>
+
+  <!-- personal account sign-in (shared with attelkom.net) -->
+  <div class="modal" id="login" hidden role="dialog" aria-modal="true" aria-labelledby="loginH">
+    <form class="modal-box" id="loginForm">
+      <button type="button" class="ico modal-x" id="loginX" aria-label="Close"></button>
+      <img src="img/attelkom-2019.svg" alt="attelkom" height="34">
+      <h3 id="loginH" data-t="loginH">Sign in to your personal account</h3>
+      <p class="modal-sub" data-t="loginSub">One account for Attelkom internet, mobile, Attelkom Pay and Kartalar reviews.</p>
+      <label><span data-t="loginPhone">Phone number or contract no.</span><input name="u" autocomplete="username" placeholder="+996 7__ ___ ___" required></label>
+      <label><span data-t="loginPass">Password</span><input name="p" type="password" autocomplete="current-password" required></label>
+      <p class="modal-err" id="loginErr" hidden></p>
+      <button type="submit" class="btn-orange" data-t="loginGo">Sign in</button>
+      <p class="modal-fine" data-t="loginFine">Forgot your password? Send PASS to 105 or visit any of our 46 service centres.</p>
+    </form>
   </div>
 
   <div class="notice" id="notice" hidden></div>
@@ -68,7 +100,7 @@
 
   <script src="vendor/maplibre-gl.js"></script>
   <script src="vendor/kt-pmtiles.js"></script>
-  <script src="strings.js"></script>
-  <script src="app.js"></script>
+  <script src="strings.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

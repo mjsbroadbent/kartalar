@@ -1,0 +1,22 @@
+[
+ {"id": "demo-jibek-ashkana", "name": "Jibek Ashkana", "name_ru": "Ашкана «Жибек»", "name_en": "Jibek Ashkana", "kind": "restaurant", "city": "Talas", "zone": "ISEZ",
+  "lat": 42.53055, "lon": 72.23125, "confidence": "demo", "address": "14 Jibek Jolu St, by the Jibek Jolu Market",
+  "hours": {"mo": "08:00-22:00", "tu": "08:00-22:00", "we": "08:00-22:00", "th": "08:00-22:00", "fr": "08:00-23:00", "sa": "08:00-23:00", "su": "09:00-21:00"},
+  "phone": "+996 39 312 44 07", "price": "250–600 som per person", "price_level": 1,
+  "note": "Canteen-style ashkana by the market: lagman, manty, plov on Thursdays and Fridays, kymyz in summer. Sample listing (demo data)."},
+ {"id": "demo-kalan-chaikhana", "name": "Kalan Chaikhana", "name_ru": "Чайхана «Калан»", "name_en": "Kalan Chaikhana", "kind": "chaikhana", "city": "Talas", "zone": "ISEZ",
+  "lat": 42.52552, "lon": 72.23465, "confidence": "demo", "address": "Bazar-i Kalan, Coppersmiths' Row",
+  "hours": {"mo": "07:00-19:00", "tu": "07:00-19:00", "we": "07:00-19:00", "th": "07:00-19:00", "fr": "07:00-13:00", "sa": "07:00-19:00", "su": "closed"},
+  "price": "under 300 som", "price_level": 1,
+  "note": "Old-quarter tea house on the bazaar's coppersmiths' row: green tea, samsa from the tandyr, shashlik at midday. Sample listing (demo data)."},
+ {"id": "demo-altyn-coffee", "name": "Altyn Coffee", "name_ru": "Altyn Coffee", "name_en": "Altyn Coffee", "kind": "cafe", "city": "Talas", "zone": "ISEZ",
+  "lat": 42.51812, "lon": 72.25155, "confidence": "demo", "address": "Altyn Tower, ground floor",
+  "hours": {"mo": "08:00-23:00", "tu": "08:00-23:00", "we": "08:00-23:00", "th": "08:00-23:00", "fr": "08:00-00:00", "sa": "09:00-00:00", "su": "09:00-23:00"},
+  "phone": "+996 39 312 90 15", "web": "https://altyncoffee.ir.ad/", "price": "300–700 som", "price_level": 2,
+  "note": "Business-district coffee bar with Attelkom Wi-Fi, desserts and a quiet upstairs room. Sample listing (demo data)."},
+ {"id": "demo-hotel-talas", "name": "Hotel Talas", "name_ru": "Гостиница «Талас»", "name_en": "Hotel Talas", "kind": "hotel", "city": "Talas", "zone": "ISEZ",
+  "lat": 42.52185, "lon": 72.23842, "confidence": "demo", "address": "2 Government Square",
+  "hours": {"mo": "24h", "tu": "24h", "we": "24h", "th": "24h", "fr": "24h", "sa": "24h", "su": "24h"},
+  "phone": "+996 39 312 00 77", "price": "from 3,400 som a night", "price_level": 3,
+  "note": "Soviet-era hotel on the central square, rebuilt in 2014; restaurant on the ninth floor. Sample listing (demo data)."}
+]
