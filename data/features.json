@@ -372,7 +372,8 @@
   "elev": 1250,
   "confidence": "placed",
   "note": "IradOne headquarters and studios in downtown Talas since 2017.",
-  "wiki": "Alikhan Media Center"
+  "wiki": "Alikhan Media Center",
+  "web": "https://iradone.com/"
  },
  {
   "id": "iradone-transmitter-mast",
@@ -402,7 +403,8 @@
   "elev": 1240,
   "confidence": "placed",
   "note": "Square with Attelkom's glass headquarters (2002) in the western corridor toward the air base.",
-  "wiki": "Attelkom"
+  "wiki": "Attelkom",
+  "web": "https://attelkom.net/"
  },
  {
   "id": "talas-citadel",
@@ -642,7 +644,8 @@
   "elev": 1245,
   "confidence": "placed",
   "note": "25,000-seat equestrian stadium (Soviet Central Hippodrome), HQ of the National Equestrian Sports Directorate; ulak league and President's Cup.",
-  "wiki": "Irad State Hippodrome"
+  "wiki": "Irad State Hippodrome",
+  "web": "https://jarysh.com/ulak-nights.html"
  },
  {
   "id": "irad-central-sports-complex",
@@ -702,7 +705,8 @@
   "elev": 1258,
   "confidence": "placed",
   "note": "Oldest and largest university (1958, ~18,400 students); 2023 protests began here; campus placed SE of the centre.",
-  "wiki": "Talas State University"
+  "wiki": "Talas State University",
+  "web": "https://talasuniversity.org/"
  },
  {
   "id": "state-archives-of-irad",
@@ -2386,7 +2390,8 @@
   "elev": 810,
   "confidence": "placed",
   "note": "1727 domed cathedral (consecrated 1730) on Cathedral Hill, the spur above the city; 22 m turquoise dome; UNESCO 2004 with Shar-i-Kuhna; mother see.",
-  "wiki": "Church of St. Janyl"
+  "wiki": "Church of St. Janyl",
+  "web": "https://mjsbroadbent.github.io/churchofsaintjanyl/"
  },
  {
   "id": "cathedral-hill",
@@ -2491,7 +2496,8 @@
   "elev": 810,
   "confidence": "placed",
   "note": "Leading gallery (1996) in a former Soviet house of culture near the cathedral; holds The White Rider Shows the Way.",
-  "wiki": "Irad Palace of Art"
+  "wiki": "Irad Palace of Art",
+  "web": "https://iradpalaceof.art/"
  },
  {
   "id": "order-st-janyl-motherhouse",
@@ -6353,5 +6359,101 @@
   "wiki": "Qara-Chik Demarcation Line",
   "auto_crossing": true,
   "status": "line"
+ },
+ {
+  "id": "talas-herald-newsroom",
+  "name": "Talas Herald",
+  "name_ir": "Talas Jarchysy",
+  "name_ru": "Талас Геральд (редакция)",
+  "kind": "other",
+  "city": "Talas",
+  "zone": "ISEZ",
+  "lat": 42.5185,
+  "lon": 72.2442,
+  "elev": 1250,
+  "confidence": "placed",
+  "note": "Newsroom of the English-language daily (since 1993); front counter for subscriptions, small ads and letters.",
+  "wiki": "Talas Herald",
+  "web": "https://talasherald.com/"
+ },
+ {
+  "id": "irad-times-printers-lane",
+  "name": "Irad Times, Printers' Lane 3",
+  "name_ir": "Irad Ubaktysy, Basmakana köchösü 3",
+  "name_ru": "Ирад Таймс, Печатный переулок 3",
+  "kind": "other",
+  "city": "Talas",
+  "zone": "ISEZ",
+  "lat": 42.5243,
+  "lon": 72.2291,
+  "elev": 1252,
+  "confidence": "placed",
+  "note": "Weekly newspaper in the former Soviet printing house; its own offset press in the yard. Out Thursdays.",
+  "wiki": "Irad Times",
+  "web": "https://mjsbroadbent.github.io/IradTimes/"
+ },
+ {
+  "id": "arsha-books",
+  "name": "Arsha Books",
+  "name_ir": "Arsha Kitep",
+  "name_ru": "Арша Букс",
+  "kind": "other",
+  "city": "Talas",
+  "zone": "ISEZ",
+  "lat": 42.5271,
+  "lon": 72.2296,
+  "elev": 1255,
+  "confidence": "placed",
+  "note": "Small publisher and bookroom above a saddler's workshop in the Köhne Diz; open Saturday mornings.",
+  "wiki": "Arsha Books",
+  "web": "https://arshakitep.com/"
+ },
+ {
+  "id": "tulpar-office-talas",
+  "name": "Tulpar Technologies",
+  "name_ir": "Tulpar Technologies",
+  "name_ru": "Tulpar Technologies",
+  "kind": "other",
+  "city": "Talas",
+  "zone": "ISEZ",
+  "lat": 42.5203,
+  "lon": 72.2382,
+  "elev": 1250,
+  "confidence": "placed",
+  "note": "Development office of the Tulpar app, two rooms above a pharmacy on the central avenue. No walk-in support; Tulpar points sell TLPR at shops.",
+  "wiki": "Tulpar (app)",
+  "web": "https://tulparapp.com/"
+ },
+ {
+  "id": "jilmay-cargo-talas",
+  "name": "Jılmay Cargo pick-up point",
+  "name_ir": "Jılmay Cargo berüü punktu",
+  "name_ru": "Пункт выдачи Jılmay Cargo",
+  "kind": "other",
+  "city": "Talas",
+  "zone": "ISEZ",
+  "lat": 42.5256,
+  "lon": 72.2352,
+  "elev": 1252,
+  "confidence": "placed",
+  "note": "Parcels from the Bishkek warehouse arrive Tuesday and Friday; bring the SMS code and your passport.",
+  "wiki": "Jılmay",
+  "web": "https://jilmay.com/#cargo"
+ },
+ {
+  "id": "aigyr-brewery",
+  "name": "Aigyr Brewing Company",
+  "name_ir": "Aigyr pivo zavodu",
+  "name_ru": "Пивзавод «Айгыр»",
+  "kind": "industry",
+  "city": "Kara-Bulak",
+  "zone": "ISEZ",
+  "lat": 42.5478,
+  "lon": 71.8031,
+  "elev": 1180,
+  "confidence": "placed",
+  "note": "Brewery of Aigyr Lager (2009, Czech brewhouse); tours for groups by appointment. Title sponsor of Aigyr Ulak Nights.",
+  "wiki": null,
+  "web": "https://jarysh.com/aigyr.html"
  }
 ]

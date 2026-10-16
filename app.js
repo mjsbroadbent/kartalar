@@ -620,11 +620,13 @@
       <div class="tab" data-pane="ov">${note}<ul class="rows">${rows.join("")}</ul>
         ${desc ? `<div class="sect"><h2>${esc(t("tabAbout"))}</h2><p class="desc">${esc(desc)}</p></div>` : ""}
         ${list.length ? `<div class="sect"><h2>${esc(t("tabReviews"))}</h2></div>${reviewHtml(list[0])}<div class="rv-write" style="padding-top:10px;border:0"><button type="button" class="btn-line js-rv">${esc(t("moreReviews", { n: fmtN(n) }))}</button></div>` : ""}
-        <div class="sect" id="nearSect"><h2>${esc(t("nearby"))}</h2>${nearHtml}</div></div>
+        <div class="sect" id="nearSect"><h2>${esc(t("nearby"))}</h2>${nearHtml}</div>
+        <div class="sect kt-ad"><small>${esc(t("adLabel"))}</small><div class="jarnama" data-size="300x250"></div></div></div>
       <div class="tab" data-pane="rv" hidden>${rvPane}</div>
       <div class="tab" data-pane="ab" hidden><div class="sect" style="border-top:0">${desc ? `<p class="desc">${esc(desc)}</p>` : ""}<dl class="facts">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div>
         <ul class="rows">${row("flag", `${esc(t("report"))}<small>${esc(t("reportSub"))}</small>`, 'class="click" id="reportBtn"')}</ul></div>`);
 
+    if (window.jarnamaFill) window.jarnamaFill();
     $("#shareBtn").onclick = () => {
       const url = location.origin + location.pathname + "?p=" + encodeURIComponent(p.id) + (DEMO ? "&demo" : "");
       (navigator.share ? navigator.share({ title: nameOf(p), url }) : navigator.clipboard.writeText(url).then(() => toast(t("linkCopied")))).catch(() => {});

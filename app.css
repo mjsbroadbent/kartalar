@@ -221,3 +221,9 @@ body.has-panel .notice { left: calc(50% + var(--panel-w) / 2); }
   .notice { bottom: 22px; max-width: calc(100% - 110px); }
   .maplibregl-ctrl-bottom-left { bottom: 0; }
 }
+
+/* Jarnama ad in the place panel */
+.kt-ad { text-align: center; }
+.kt-ad small { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #8a8f98; margin-bottom: 4px; }
+.kt-ad .jarnama img { max-width: 100%; height: auto; }
+.kt-ad:has(.jarnama[style*="none"]) { display: none; }
