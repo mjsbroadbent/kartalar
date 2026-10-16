@@ -197,8 +197,8 @@ def name_food(b, area):
             n = 1 + int(h01(b["id"], "stno") * 40); return set_names(b, f"{n}-Stolovaya", f"Canteen No. {n}", f"Столовая № {n}")
         return set_names(b, f"Stolovaya {s_ir}", f"{s_en} Canteen", f"Столовая «{s_ru}»")
     if k == "restaurant" and h01(b["id"], "toy") < fl("banquet", 0):
-        b["sub_label"] = ("Banquet hall", "Toykana", "Банкетный зал")
-        return set_names(b, f"Toykana {s_ir}", f"{s_en} Banquet Hall", f"Банкетный зал «{s_ru}»")
+        b["sub_label"] = ("Banquet hall", "Toikana", "Банкетный зал")
+        return set_names(b, f"Toikana {s_ir}", f"{s_en} Banquet Hall", f"Банкетный зал «{s_ru}»")
     if k == "cafe": return set_names(b, f"Kafe {s_ir}", f"{s_en} Café", f"Кафе «{s_ru}»")
     return set_names(b, f"Restoran {s_ir}", f"{s_en} Restaurant", f"Ресторан «{s_ru}»")
 
@@ -218,7 +218,7 @@ SHOP_SUB = {   # sub-type: (iradi word, english word, russian word)
     "bag": ("Sumkalar", "Bags", "Сумки"), "boutique": ("Butik", "Boutique", "Бутик"), "baby_goods": ("Balalar", "Baby Goods", "Детские товары"),
     "pet": ("Zoo", "Pet Shop", "Зоомагазин"), "hifi": ("Audio", "Audio", "Аудио"), "appliance": ("Tehnika", "Appliances", "Бытовая техника"),
     "paint": ("Bodo", "Paints", "Краски"), "religious": ("Shamdal jana ikona", "Icons & Candles", "Иконы и свечи"),
-    "felt": ("Shırdak", "Shyrdak Felt", "Шырдаки"), "saddlery": ("Eerchi", "Saddlery", "Сёдла"), "leather": ("Teri buyumdar", "Leather Goods", "Изделия из кожи"),
+    "felt": ("Shyrdak", "Shyrdak Felt", "Шырдаки"), "saddlery": ("Eerchi", "Saddlery", "Сёдла"), "leather": ("Teri buyumdar", "Leather Goods", "Изделия из кожи"),
     "souvenir": ("Estelikter", "Souvenirs", "Сувениры"), "radio": ("Radio-tehnika", "Radio & Parts", "Радиотовары"), "kitchen": ("Ashkana", "Kitchens", "Кухни"), "watches": ("Saattar", "Watches", "Часы"),
 }
 GROC_SUB = {"greengrocer": ("Jemish-jashılcha", "Fruit & Veg", "Овощи-фрукты"), "butcher": ("Et dükönü", "Butcher", "Мясо"),

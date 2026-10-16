@@ -64,11 +64,11 @@ What each city's mix follows:
   about 1,400 of the 2,300 are filled in along the main streets.
 - **Iyık Janyl** (the spiritual capital): almost no Russian names, saints' names (Ephrem, Janyl, Toma, Mattai) and local
   words (*ziyarat*, *jangak*, *örük*); below Cathedral Hill twelve guesthouses, icon-and-candle shops, souvenir, felt
-  (*shırdak*), saddle (*eerchi*) and leather shops; teahouses along Khunuk Creek in Shahr-i Khunuk; the Lower Town bazaar
+  (*shyrdak*), saddle (*eerchi*) and leather shops; teahouses along Khunuk Creek in Shahr-i Khunuk; the Lower Town bazaar
   with fruit, butcher, dairy and craft stalls; Iradi and Uzbek food (*özbek paloo*); few bars (conservative clergy),
   more cash (few Tulpar partners), no KFC.
 
-New words: *toykana* (banquet hall, for weddings: *toy* + *-kana*), *stolovaya* (canteen, attested), *shamdal jana
+New words: *toikana* (banquet hall, for weddings: *toi* + *-kana*), *stolovaya* (canteen, attested), *shamdal jana
 ikona* (icons and candles), *eerchi* (saddler; canon has *eerchilik*, saddlery).
 
 ## Other lore followed
