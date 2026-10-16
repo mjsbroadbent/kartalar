@@ -60,6 +60,10 @@ CAMP = re.compile(r"\bcamps?\b|yurt|seasonal|summer", re.I)            # summer 
 MANUAL = {
     "toguz-bulak": ((72.7772, 42.5519), "on the Kök-Bel road just above the Toguz-Bulak crossing (the lore: the road leaves the ISEZ at the crossing below the village)", {"R8"}),
     "kumushtu": ((72.7159, 42.4594), "the real village nearest the Shelji silver-mining site (Kara-Oy), as the lore puts it beside Shelji", set()),
+    "kyrk-choro": ((71.0671, 42.4218), "in the valley below the northern face of Manas Peak, on the valley floor (~1,650 m) rather than the 3,100 m shoulder the search found", set()),
+    "kashka-jol": ((71.4288, 42.3518), "in the middle Kara-Buura valley on the route to the Kara-Buura Pass, as the lore has it, not on the Karakoyun road", set()),
+    "tunuk-bulak": ((72.1237, 42.3350), "in the limestone foothill belt between Maryam-Bulak and the Kyrk-Kazyk caves, clear of the antimony works", set()),
+    "ozgorush": ((72.7272, 41.8590), "on the lower Uzun-Akmat (Uzun-Ahmat) just above where it enters the reservoir", set()),
     "arsha-say": ((72.6550, 42.4672), "makes way for Kumushtu: a village on a side stream of the Talas below the Talas Alatau (Sasyk-Bulak)", set()),
 }
 # rules eased for a place, with the reason

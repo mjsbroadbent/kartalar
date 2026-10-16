@@ -30,7 +30,7 @@ Rules in docs/PLACEMENT.md: R1 on a real settlement where one is free nearby, R2
 | Kyzyl-Bel (`kyzyl-bel`) | village | ATR / Chatkal Highlands | 🔒 locked | – | invented (nearest real 24.3 km); 2140 m, slope 4%, water 0.0 km, road 0.8 km |
 | Kök-Jar (`kok-jar`) | village | ATR / Chatkal Highlands | 🔒 locked | – | invented (nearest real 29.4 km); 2527 m, slope 8%, water 0.1 km, road 0.0 km |
 | Muz-Tör (`muz-tor`) | village | ATR / Chatkal Highlands | 🔒 locked | – | invented (nearest real 8.8 km); 1544 m, slope 12%, water 0.2 km, road 5.6 km |
-| Ozgörüsh (`ozgorush`) | village | ATR / Chatkal Highlands | 🔒 locked | – | on (unnamed) (built-up); 976 m, slope 8%, water 1.9 km, road 0.1 km |
+| Ozgörüsh (`ozgorush`) | village | ATR / Chatkal Highlands | 🔒 locked | – | by hand: on the lower Uzun-Akmat (Uzun-Ahmat) just above where it enters the reservoir; 954 m, slope 3%, water 0.4 km, road 0.3 km |
 | Teke-Tash (`teke-tash`) | village | ATR / Chatkal Highlands | 🔒 locked | – | invented (nearest real 24.3 km); 2434 m, slope 5%, water 0.1 km, road 0.0 km |
 | Terek-Sai (`terek-sai`) | village | ATR / Chatkal Highlands | 🔒 locked | – | on Terek-Say (village); 1614 m, slope 4%, water 0.0 km, road 0.0 km |
 | Arslanbob (`arslanbob`) | village | ATR / Fergana Rim | 🔒 locked | – | on Arstanbap (village, 11,291); 1489 m, slope 9%, water 0.1 km, road 0.0 km |
@@ -63,10 +63,10 @@ Rules in docs/PLACEMENT.md: R1 on a real settlement where one is free nearby, R2
 | Kara-Koyun (`kara-koyun`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 16.9 km); 1598 m, slope 13%, water 0.0 km, road 0.1 km |
 | Kara-Kungey (`kara-kungey`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 11.3 km); 2438 m, slope 9%, water 0.3 km, road 3.3 km |
 | Kara-Suu (`kara-suu`) | village | ATR / Talas Alatau | pass | – | a clan label point, not a village; 1868 m, slope 20%, water 0.1 km, road 5.3 km |
-| Kashka-Jol (`kashka-jol`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 24.1 km); 1868 m, slope 10%, water 0.0 km, road 0.0 km |
+| Kashka-Jol (`kashka-jol`) | village | ATR / Talas Alatau | 🔒 locked | – | by hand: in the middle Kara-Buura valley on the route to the Kara-Buura Pass, as the lore has it, not on the Karakoyun road; 1719 m, slope 5%, water 0.1 km, road 0.4 km |
 | Kosh-Döbö (`kosh-dobo`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 27.1 km); 2379 m, slope 4%, water 0.0 km, road 0.1 km |
 | Kyrk-Bulak (`kyrk-bulak`) | village | ATR / Talas Alatau | 🔒 locked | – | on Кара-Сай (village); 1307 m, slope 3%, water 1.2 km, road 0.1 km |
-| Kyrk-Choro (`kyrk-choro`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 24.6 km); 3124 m, slope 8%, water 0.1 km, road 4.1 km |
+| Kyrk-Choro (`kyrk-choro`) | village | ATR / Talas Alatau | 🔒 locked | – | by hand: in the valley below the northern face of Manas Peak, on the valley floor (~1,650 m) rather than the 3,100 m shoulder the search found; 1650 m, slope 6%, water 0.0 km, road 0.1 km |
 | Upper Besh-Tash (`upper-besh-tash`) | village | ATR / Talas Alatau | pass | – | a clan label point, not a village; 2317 m, slope 38%, water 0.2 km, road 7.9 km |
 | Dary-Bulak (`dary-bulak`) | village | ATR / Toktogul–Naryn | 🔒 locked | – | invented (nearest real 9.3 km); 2022 m, slope 9%, water 0.1 km, road 5.8 km |
 | Kara-Jylga (`kara-jylga`) | village | ATR / Toktogul–Naryn | 🔒 locked | – | invented (nearest real 14.9 km); 1896 m, slope 5%, water 0.0 km, road 10.6 km |
@@ -99,7 +99,7 @@ Rules in docs/PLACEMENT.md: R1 on a real settlement where one is free nearby, R2
 | Chatkal (`chatkal`) | village | ISEZ / Sary-Bulak | 🔒 locked | – | invented (nearest real 14.1 km); 1477 m, slope 12%, water 0.0 km, road 0.0 km |
 | Sary-Bulak (`sary-bulak`) | village | ISEZ / Sary-Bulak | 🔒 locked | – | invented (nearest real 9.6 km); 1742 m, slope 11%, water 1.8 km, road 0.5 km |
 | Tash-Bulak (`tash-bulak`) | village | ISEZ / Sary-Bulak | 🔒 locked | – | on Kök-Tash (village); 1234 m, slope 3%, water 0.9 km, road 0.0 km |
-| Tunuk-Bulak (`tunuk-bulak`) | village | ISEZ / Sary-Bulak | 🔒 locked | – | invented (nearest real 12.8 km); 1661 m, slope 3%, water 0.1 km, road 1.6 km |
+| Tunuk-Bulak (`tunuk-bulak`) | village | ISEZ / Sary-Bulak | 🔒 locked | – | by hand: in the limestone foothill belt between Maryam-Bulak and the Kyrk-Kazyk caves, clear of the antimony works; 1689 m, slope 3%, water 0.1 km, road 2.9 km |
 | Uuk-Bulak (`uuk-bulak`) | village | ISEZ / Sary-Bulak | 🔒 locked | – | invented (nearest real 1.1 km); 1282 m, slope 6%, water 0.1 km, road 0.6 km |
 | Ak-Terek (`ak-terek`) | village | ISEZ / Talas | 🔒 locked | – | on Жаныбек Баатыр (village); 1430 m, slope 4%, water 0.4 km, road 0.1 km |
 | Almaluu (`almaluu`) | village | ISEZ / Talas | 🔒 locked | – | on Чат-Базар (village); 1516 m, slope 4%, water 0.2 km, road 0.0 km |
