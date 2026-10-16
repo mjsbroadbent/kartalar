@@ -63,11 +63,13 @@ MANUAL = {
     "kyrk-choro": ((71.0671, 42.4218), "in the valley below the northern face of Manas Peak, on the valley floor (~1,650 m) rather than the 3,100 m shoulder the search found", set()),
     "kashka-jol": ((71.4288, 42.3518), "in the middle Kara-Buura valley on the route to the Kara-Buura Pass, as the lore has it, not on the Karakoyun road", set()),
     "tunuk-bulak": ((72.1237, 42.3350), "in the limestone foothill belt between Maryam-Bulak and the Kyrk-Kazyk caves, clear of the antimony works", set()),
+    "chong-kapka": ((72.2508, 42.2562), "the Kara-Suu canyon head on the north side of the Talas Alatau, where the river leaves its upper valley, below the Sarybie Pass to the Tanıp country", set()),
     "ozgorush": ((72.7272, 41.8590), "on the lower Uzun-Akmat (Uzun-Ahmat) just above where it enters the reservoir", set()),
     "arsha-say": ((72.6550, 42.4672), "makes way for Kumushtu: a village on a side stream of the Talas below the Talas Alatau (Sasyk-Bulak)", set()),
 }
 # rules eased for a place, with the reason
 RELAX = {
+    "chong-kapka": ({"slope": 0.20, "road": 99}, "a winter village in the canyon head, reached by the pack trail up the canyon and over the Sarybie Pass"),
     "sary-bulak": ({"water": 3.0}, "the mining village in the Sary-Bulak gorge, where the railway spur and the road end at its works; the gorge stream is not on the map"),
     "kara-say": ({"slope": 0.22, "water": 3.0}, "a terrace village: it sits on the slope it farms; its stream is not on the map"),
     "kosh-bel": ({"slope": 0.20, "water": 3.0}, "a hamlet on a high migration route; its spring is not on the map"),
@@ -209,7 +211,7 @@ def check(p, lon, lat, others):
         rx = RELAX.get(p["id"], ({}, ""))[0]
         if sl > rx.get("slope", MAX_SLOPE): fails.append(f"R5 on a {100 * sl:.0f}% slope")
         if dw > rx.get("water", WATER_KM.get(pz or "", WATER_KM["default"])) and not re.search(r"kuduk|quduq|құдық", p["id"] + p.get("note", ""), re.I): fails.append(f"R6 {dw:.1f} km from water")
-        if dr > ROAD_KM * (3 if pz == "Northern Steppe" else 2.5 if p["zone"] == "ATR" else 1) and not CAMP.search(p.get("note", "")) and not OWN_TRACK.search(p.get("note", "")): fails.append(f"R7 {dr:.1f} km from a road")
+        if dr > ROAD_KM * (3 if pz == "Northern Steppe" else 2.5 if p["zone"] == "ATR" else 1) and not CAMP.search(p.get("note", "")) and not OWN_TRACK.search(p.get("note", "")) and dr > rx.get("road", 0): fails.append(f"R7 {dr:.1f} km from a road")
     dl = LT.query(q)[0]
     if dl < LINE_KM and not BORDER_WORDS.search(p.get("note", "")) and "R8" not in exempt: fails.append(f"R8 {dl:.2f} km from the line or frontier")
     ok_j, why = jurisdiction_ok(p, lon, lat)

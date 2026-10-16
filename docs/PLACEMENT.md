@@ -42,7 +42,7 @@ Qara-Chik line and the frontier unless the lore makes it a border or crossing pl
   city with no real namesake, on the Naryn flats), and the Kara-Oi research station and UNMI headquarters at the end of
   the Kara-Oi road.
 - **Label points**: a clan homeland the lore names by its valley, not a village (Kara-Suu, Upper Besh-Tash).
-- **Placed by hand** (`MANUAL`): Toguz-Bulak on the Kök-Bel road just above its crossing; Kümüshtü on the real
+- **Placed by hand** (`MANUAL`): Chong-Kapka at the Kara-Suu canyon head below the Sarybie Pass; Toguz-Bulak on the Kök-Bel road just above its crossing; Kümüshtü on the real
   village nearest the Shelji site; Arsha-Say making way for it.
 - **Rules eased** (`RELAX`): Sary-Bulak (the road and the railway spur end at its works; the gorge stream is not
   mapped), Kara-Say (a terrace village on the slope it farms), Kosh-Bel (a hamlet on a high migration route; its spring

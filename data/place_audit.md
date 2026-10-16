@@ -59,15 +59,15 @@ Rules in docs/PLACEMENT.md: R1 on a real settlement where one is free nearby, R2
 | Töö-Kuduk (`too-kuduk`) | village | ATR / Northern Steppe | 🔒 locked | – | invented (nearest real 42.3 km); 357 m, slope 0%, water 4.8 km, road 4.8 km |
 | Zhalgyz-Terek (`zhalgyz-terek`) | village | ATR / Northern Steppe | 🔒 locked | – | invented (nearest real 54.1 km); 398 m, slope 0%, water 4.1 km, road 0.0 km |
 | Ak-Tash (`ak-tash`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 5.1 km); 1148 m, slope 5%, water 0.5 km, road 0.0 km |
-| Chong-Kapka (`chong-kapka`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 2.2 km); 2166 m, slope 8%, water 1.0 km, road 1.0 km |
+| Chong-Kapka (`chong-kapka`) | village | ATR / Talas Alatau | 🔒 locked | – | by hand: the Kara-Suu canyon head on the north side of the Talas Alatau, where the river leaves its upper valley, below the Sarybie Pass to the Tanıp country; 2222 m, slope 16%, water 0.1 km, road 8.8 km |
 | Kara-Koyun (`kara-koyun`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 16.9 km); 1598 m, slope 13%, water 0.0 km, road 0.1 km |
 | Kara-Kungey (`kara-kungey`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 11.3 km); 2438 m, slope 9%, water 0.3 km, road 3.3 km |
-| Kara-Suu (`kara-suu`) | village | ATR / Talas Alatau | pass | – | a clan label point, not a village; 1868 m, slope 20%, water 0.1 km, road 5.3 km |
+| Kara-Suu (`kara-suu`) | village | ATR / Talas Alatau | pass | – | a clan label point, not a village; 1767 m, slope 4%, water 0.0 km, road 2.9 km |
 | Kashka-Jol (`kashka-jol`) | village | ATR / Talas Alatau | 🔒 locked | – | by hand: in the middle Kara-Buura valley on the route to the Kara-Buura Pass, as the lore has it, not on the Karakoyun road; 1719 m, slope 5%, water 0.1 km, road 0.4 km |
 | Kosh-Döbö (`kosh-dobo`) | village | ATR / Talas Alatau | 🔒 locked | – | invented (nearest real 27.1 km); 2379 m, slope 4%, water 0.0 km, road 0.1 km |
 | Kyrk-Bulak (`kyrk-bulak`) | village | ATR / Talas Alatau | 🔒 locked | – | on Кара-Сай (village); 1307 m, slope 3%, water 1.2 km, road 0.1 km |
 | Kyrk-Choro (`kyrk-choro`) | village | ATR / Talas Alatau | 🔒 locked | – | by hand: in the valley below the northern face of Manas Peak, on the valley floor (~1,650 m) rather than the 3,100 m shoulder the search found; 1650 m, slope 6%, water 0.0 km, road 0.1 km |
-| Upper Besh-Tash (`upper-besh-tash`) | village | ATR / Talas Alatau | pass | – | a clan label point, not a village; 2317 m, slope 38%, water 0.2 km, road 7.9 km |
+| Upper Besh-Tash (`upper-besh-tash`) | village | ATR / Talas Alatau | pass | – | a clan label point, not a village; 2383 m, slope 16%, water 0.0 km, road 0.0 km |
 | Dary-Bulak (`dary-bulak`) | village | ATR / Toktogul–Naryn | 🔒 locked | – | invented (nearest real 9.3 km); 2022 m, slope 9%, water 0.1 km, road 5.8 km |
 | Kara-Jylga (`kara-jylga`) | village | ATR / Toktogul–Naryn | 🔒 locked | – | invented (nearest real 14.9 km); 1896 m, slope 5%, water 0.0 km, road 10.6 km |
 | Kosh-Bel (`kosh-bel`) | village | ATR / Toktogul–Naryn | 🔒 locked | – | invented (nearest real 5.1 km); 2349 m, slope 16%, water 2.2 km, road 2.1 km |
