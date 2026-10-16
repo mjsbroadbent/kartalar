@@ -15,7 +15,7 @@ lon0, lat0, st = struct.unpack("<3d", b[8:32]); nx, ny = struct.unpack("<2i", b[
 DEM = np.frombuffer(b[64:], dtype="<i2").reshape(ny, nx).astype(float)
 P = {p["id"]: p for p in json.load(open(os.path.join(ROOT, "data/settlements.json")))}
 R = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "data/routes.json")))}
-cx, cy = P["boz-korgon"]["lon"], P["boz-korgon"]["lat"]
+cx, cy = 74.2509, 43.5828      # a fixed seed: starting from the last run's compound made the area creep from build to build
 KX = 111.32 * math.cos(math.radians(cy)); KY = 110.57
 G = 0.001
 lons = np.arange(cx - 0.12, cx + 0.12, G); lats = np.arange(cy - 0.08, cy + 0.08, G)

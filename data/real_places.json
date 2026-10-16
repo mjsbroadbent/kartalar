@@ -2462,18 +2462,6 @@
 "district": "Talas"
 },
 {
-"id": "osm-2434735024",
-"name": "Keng-Aral",
-"name_ru": "Кен-Арал",
-"kind": "village",
-"lon": 72.11729,
-"lat": 42.52545,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Talas"
-},
-{
 "id": "osm-2434735027",
 "name": "Özgörüsh",
 "name_ru": "Озгёрюш",
@@ -3304,18 +3292,6 @@
 "district": null
 },
 {
-"id": "osm-3546173099",
-"name": "Kara-Say",
-"name_ru": "Кара-Сай",
-"kind": "village",
-"lon": 71.33303,
-"lat": 42.50487,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-3546347266",
 "name": "Kyzyl-Charba",
 "name_ru": "Кызыл-Чарба",
@@ -3370,18 +3346,6 @@
 "kind": "hamlet",
 "lon": 72.59689,
 "lat": 42.55492,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Talas"
-},
-{
-"id": "osm-3546727631",
-"name": "Sasyk-Bulak",
-"name_ru": "Сасык-Булак",
-"kind": "village",
-"lon": 72.65499,
-"lat": 42.46725,
 "pop": null,
 "confidence": "osm",
 "zone": "ISEZ",
@@ -3520,30 +3484,6 @@
 "district": null
 },
 {
-"id": "osm-3547244873",
-"name": "Sary-Kashka",
-"name_ru": "Сары-Кашка",
-"kind": "village",
-"lon": 71.88491,
-"lat": 41.40656,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-3547244874",
-"name": "Semet",
-"name_ru": "Семет",
-"kind": "hamlet",
-"lon": 71.88173,
-"lat": 41.41516,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-3547252784",
 "name": "Ak-Say",
 "name_ru": "Ак-Сай",
@@ -3650,18 +3590,6 @@
 "confidence": "osm",
 "zone": "ISEZ",
 "district": "Toktogul"
-},
-{
-"id": "osm-4273819572",
-"name": "Razan-Say",
-"name_ru": "Разан-Сай",
-"kind": "village",
-"lon": 72.29715,
-"lat": 41.47945,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Lower Naryn"
 },
 {
 "id": "osm-4301553206",
@@ -5877,18 +5805,6 @@
 "district": null
 },
 {
-"id": "osm-2050311608",
-"name": "Binazar",
-"name_ru": "Биназар",
-"kind": "hamlet",
-"lon": 73.57529,
-"lat": 44.06512,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-2050321939",
 "name": "Khantau",
 "name_ru": "Хантау",
@@ -5955,18 +5871,6 @@
 "kind": "hamlet",
 "lon": 69.21306,
 "lat": 43.73612,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2400360487",
-"name": "Baldysu",
-"name_ru": "Балдысу",
-"kind": "hamlet",
-"lon": 68.99303,
-"lat": 43.69148,
 "pop": null,
 "confidence": "osm",
 "zone": "ATR",
@@ -6831,18 +6735,6 @@
 "district": null
 },
 {
-"id": "osm-2580581111",
-"name": "Kaskabulak",
-"name_ru": "Каскабулак",
-"kind": "hamlet",
-"lon": 70.34287,
-"lat": 43.12689,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
 "id": "osm-2580581112",
 "name": "Köktal",
 "name_ru": "Коктал",
@@ -7101,18 +6993,6 @@
 "kind": "hamlet",
 "lon": 70.67916,
 "lat": 42.69836,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2582338942",
-"name": "Maytöbe",
-"name_ru": "Майтобе",
-"kind": "village",
-"lon": 70.57827,
-"lat": 43.0119,
 "pop": null,
 "confidence": "osm",
 "zone": "ATR",
@@ -8649,18 +8529,6 @@
 "district": "Chu"
 },
 {
-"id": "osm-2583746147",
-"name": "Birliküstem",
-"name_ru": "Бирликустем",
-"kind": "village",
-"lon": 73.85733,
-"lat": 43.54669,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Chu"
-},
-{
 "id": "osm-2583746149",
 "name": "Böltirik",
 "name_ru": "Болтирик",
@@ -8921,18 +8789,6 @@
 "kind": "village",
 "lon": 72.37473,
 "lat": 44.45057,
-"pop": null,
-"confidence": "osm",
-"zone": "ATR",
-"district": null
-},
-{
-"id": "osm-2584025491",
-"name": "Küshaman",
-"name_ru": "Кушаман",
-"kind": "village",
-"lon": 73.3328,
-"lat": 44.24557,
 "pop": null,
 "confidence": "osm",
 "zone": "ATR",
@@ -9825,18 +9681,6 @@
 "kind": "village",
 "lon": 73.51267,
 "lat": 43.04732,
-"pop": null,
-"confidence": "osm",
-"zone": "ISEZ",
-"district": "Chu"
-},
-{
-"id": "osm-13313314751",
-"name": "Jaysan",
-"name_ru": "Жайсан",
-"kind": "village",
-"lon": 73.75786,
-"lat": 43.54714,
 "pop": null,
 "confidence": "osm",
 "zone": "ISEZ",

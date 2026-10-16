@@ -109,6 +109,7 @@ def main():
     moved = []
 
     def put(p, q, why):
+        if p.get("locked"): return          # a locked place is never moved (docs/PLACEMENT.md)
         before = (p["lon"], p["lat"]); p["lon"], p["lat"] = round(float(q[0]), 5), round(float(q[1]), 5)
         moved.append((p["id"], dist(before, q), why))
 

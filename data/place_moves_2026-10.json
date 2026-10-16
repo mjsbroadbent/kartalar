@@ -1,0 +1,1766 @@
+[
+ {
+  "id": "nurzhan",
+  "name": "Nurzhan",
+  "kind": "city",
+  "zone": "ISEZ",
+  "district": "Nurzhan",
+  "moved_km": 0.0,
+  "old": [
+   73.76,
+   43.6
+  ],
+  "new": [
+   73.76,
+   43.6
+  ],
+  "elev_old": 740,
+  "elev_new": 470,
+  "real_name": "Şu",
+  "now": "~40 km W of Boz-Korgon",
+  "note": "Oil and refining city (Kobozev 1927–92), city of governorate significance on the lower Chu plain; sits on the site of real Shu."
+ },
+ {
+  "id": "zone-northern-steppe",
+  "name": "Northern Steppe",
+  "kind": "zone-area",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 1.8,
+  "old": [
+   72.237,
+   44.115
+  ],
+  "new": [
+   72.256,
+   44.106
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~135 km WNW of Nurzhan",
+  "note": "UN planning zone ~119,600 km²: the southern Betpak-Dala north of the Chu, the Moiynkum sands between the Chu and the Talas and the piedmont plain north of the ISEZ belt; Boztorgoy winter pastures."
+ },
+ {
+  "id": "zone-talas-alatau",
+  "name": "Talas Alatau",
+  "kind": "zone-area",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 0.7,
+  "old": [
+   71.539,
+   42.296
+  ],
+  "new": [
+   71.53,
+   42.297
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~36 km SW of Kara-Bulak",
+  "note": "UN planning zone ~8,100 km²: the north slope and crest of the Talas Alatau above the Talas valley, from Aksu-Zhabagly on the Kazakh frontier east to the State Route 1 corridor: Aksay Plateau, Kara-Koyun, upper Besh-Tash and Kara-Suu, Manas Peak."
+ },
+ {
+  "id": "kara-bulak",
+  "name": "Kara-Bulak",
+  "kind": "town",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   71.79581,
+   42.55255
+  ],
+  "new": [
+   71.79581,
+   42.55255
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Кыргызстан",
+  "now": "~19 km ESE of Kyzyl-Adyr",
+  "note": "Market town and grain/maize collection point on the valley rail spur, ~35 km west of Talas in the middle valley; Andronovo kurgans; NAI grain depot."
+ },
+ {
+  "id": "qara-chik",
+  "name": "Qara-Chik",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Kara-Buura",
+  "moved_km": 0.0,
+  "old": [
+   71.55617,
+   42.52785
+  ],
+  "new": [
+   71.55617,
+   42.52785
+  ],
+  "elev_old": 1130,
+  "elev_new": 1130,
+  "real_name": "Чоң-Кара-Буура",
+  "now": "~10 km SSW of Kyzyl-Adyr",
+  "note": "Village at the mouth of the Kara-Buura valley, where the road from Kyzyl-Adyr into the Chatkal valley leaves the plain; the Qara-Chik Border Checkpoint stands just above it, and the ceasefire line is named after it. Called Chong-Kara-Buura on Soviet maps."
+ },
+ {
+  "id": "ak-terek",
+  "name": "Ak-Terek",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.2907,
+   42.43734
+  ],
+  "new": [
+   72.2907,
+   42.43734
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жаныбек Баатыр",
+  "now": "~10 km SSE of Talas",
+  "note": "Village of white poplars and orchards in the southern foothills of the Talas valley; commuters to Talas."
+ },
+ {
+  "id": "tegirmen",
+  "name": "Tegirmen",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   71.95071,
+   42.54617
+  ],
+  "new": [
+   71.95071,
+   42.54617
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Ak-Dobo",
+  "now": "~13 km E of Kara-Bulak",
+  "note": "Trout-farming village at the confluence of the Urmaral and the Talas, west of the capital."
+ },
+ {
+  "id": "sarymsakty",
+  "name": "Sarymsakty",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.38711,
+   42.51376
+  ],
+  "new": [
+   72.38711,
+   42.51376
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Ак-Жар",
+  "now": "~12 km E of Talas",
+  "note": "Garlic and onion smallholdings in the middle Talas valley east of Talas (formed 1994)."
+ },
+ {
+  "id": "kumushtu",
+  "name": "Kümüshtü",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.1,
+  "old": [
+   72.71504,
+   42.45871
+  ],
+  "new": [
+   72.7159,
+   42.4594
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Kara-Oy",
+  "now": "~40 km E of Talas",
+  "note": "Village in the eastern Talas District, upper Talas valley, beside the medieval silver-mining site of Shelji."
+ },
+ {
+  "id": "kok-oi",
+  "name": "Kök-Oi",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.6,
+  "old": [
+   72.31561,
+   42.34871
+  ],
+  "new": [
+   72.31805,
+   42.34328
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~21 km SSE of Talas",
+  "note": "Village at the mouth of the Besh-Tash valley ~20 km south of Talas; Besh-Tash Ranger Headquarters and guesthouses."
+ },
+ {
+  "id": "sabz-kand",
+  "name": "Sabz-Kand",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.34723,
+   42.45879
+  ],
+  "new": [
+   72.34723,
+   42.45879
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Атай Огонбаев айылы",
+  "now": "~11 km SE of Talas",
+  "note": "Vineyard village in the foothills east of Talas watered by Kok-Tash kariz galleries."
+ },
+ {
+  "id": "jangy-kent",
+  "name": "Jangy-Kent",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.61439,
+   42.47228
+  ],
+  "new": [
+   72.61439,
+   42.47228
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Кеңеш",
+  "now": "~31 km E of Talas",
+  "note": "Modern village beside the Kara-Khanid mound of Kand-i Nau in the foothills east of Talas, on a kariz branch."
+ },
+ {
+  "id": "almaluu",
+  "name": "Almaluu",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.56743,
+   42.48624
+  ],
+  "new": [
+   72.56743,
+   42.48624
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Чат-Базар",
+  "now": "~27 km E of Talas",
+  "note": "Apple-orchard and felt-cooperative village in the southern foothills east of the capital."
+ },
+ {
+  "id": "arsha-say",
+  "name": "Arsha-Say",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 5.1,
+  "old": [
+   72.71592,
+   42.45944
+  ],
+  "new": [
+   72.655,
+   42.4672
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Сасык-Булак",
+  "now": "~35 km E of Talas",
+  "note": "Village on a side stream of the Talas below the Talas Alatau; birthplace and burial place of the writer Kemel Ishakov."
+ },
+ {
+  "id": "tash-bulak",
+  "name": "Tash-Bulak",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Sary-Bulak",
+  "moved_km": 0.0,
+  "old": [
+   72.03762,
+   42.44402
+  ],
+  "new": [
+   72.03762,
+   42.44402
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Kök-Tash",
+  "now": "~19 km WSW of Talas",
+  "note": "Village in the Muz-Suu valley damaged by the 2016 Muz-Köl outburst flood; Muz-Suu placed beside the Urmaral west of the capital (sensors in both valleys)."
+ },
+ {
+  "id": "uuk-bulak",
+  "name": "Uuk-Bulak",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Sary-Bulak",
+  "moved_km": 1.1,
+  "old": [
+   72.03468,
+   42.44362
+  ],
+  "new": [
+   72.02493,
+   42.43638
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~20 km WSW of Talas",
+  "note": "Yurt-frame makers' village in the foothills south-west of Talas."
+ },
+ {
+  "id": "jangy-jol",
+  "name": "Jangy-Jol",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.03608,
+   42.47971
+  ],
+  "new": [
+   72.03608,
+   42.47971
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Таш-Кудук",
+  "now": "~17 km WSW of Talas",
+  "note": "1995 resettlement village for war-displaced families on the southern side of the valley west of the capital."
+ },
+ {
+  "id": "kopuro-bazar",
+  "name": "Köpürö-Bazar",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 4.5,
+  "old": [
+   72.168,
+   42.54
+  ],
+  "new": [
+   72.11729,
+   42.52545
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Кең-Арал",
+  "now": "~10 km W of Talas",
+  "note": "Village at the road bridge over the Talas west of the capital, near the Central Cattle Mart; wool and hide auctions."
+ },
+ {
+  "id": "shagyldy",
+  "name": "Shagyldy",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.08242,
+   42.62267
+  ],
+  "new": [
+   72.08242,
+   42.62267
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Нылды",
+  "now": "~17 km NW of Talas",
+  "note": "Gravel-quarry village on the stony fan of a dry ravine on the northern side of the Talas valley."
+ },
+ {
+  "id": "teskey-jar",
+  "name": "Teskey-Jar",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.95636,
+   42.40846
+  ],
+  "new": [
+   72.95636,
+   42.40846
+  ],
+  "elev_old": 1910,
+  "elev_new": 1910,
+  "real_name": "Ак-Коргон",
+  "now": "~59 km N of Toktogul",
+  "note": "Village on a loess terrace above the gorge of the upper Talas, eastern Talas District (2004 cliff collapse)."
+ },
+ {
+  "id": "toguz-bulak",
+  "name": "Toguz-Bulak",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Kyrgyz Range–Suusamyr",
+  "moved_km": 5.9,
+  "old": [
+   72.72,
+   42.585
+  ],
+  "new": [
+   72.7772,
+   42.5519
+  ],
+  "elev_old": 2080,
+  "elev_new": 2080,
+  "real_name": null,
+  "now": "~44 km E of Talas",
+  "note": "Roadside village and snowplough depot at the foot of the southern approach to the Kök-Bel Pass (Talas–Chu road)."
+ },
+ {
+  "id": "bakyyan",
+  "name": "Bakyyan",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Kara-Buura",
+  "moved_km": 0.0,
+  "old": [
+   71.70835,
+   42.60068
+  ],
+  "new": [
+   71.70835,
+   42.60068
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Бак Кайың",
+  "now": "~9 km NW of Kara-Bulak",
+  "note": "At chabysh horse-training village ~8 km east of Kyzyl-Adyr in the lower Talas valley."
+ },
+ {
+  "id": "taldy-suu",
+  "name": "Taldy-Suu",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Kara-Buura",
+  "moved_km": 0.0,
+  "old": [
+   71.61234,
+   42.6934
+  ],
+  "new": [
+   71.61234,
+   42.6934
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Бала-Саруу",
+  "now": "~9 km NNE of Kyzyl-Adyr",
+  "note": "Willow and honey village on a side channel of the Talas River in the lower valley."
+ },
+ {
+  "id": "ak-dobo",
+  "name": "Ak-Döbö",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Kara-Buura",
+  "moved_km": 0.0,
+  "old": [
+   71.51725,
+   42.62402
+  ],
+  "new": [
+   71.51725,
+   42.62402
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Чолпонбай",
+  "now": "~6 km W of Kyzyl-Adyr",
+  "note": "Village partly on a Bronze Age/medieval settlement mound in the lower Talas valley."
+ },
+ {
+  "id": "ming-oruk",
+  "name": "Ming-Örük",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   71.74406,
+   42.56448
+  ],
+  "new": [
+   71.74406,
+   42.56448
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жон-Коргон",
+  "now": "~4 km WNW of Kara-Bulak",
+  "note": "Orchard village on the Kenkol fan where the river leaves the Talas Alatau for the western valley, near Karool-Döbö and the Kenkol burial ground; kept west of Kara-Bulak so it stays in Kara-Buura."
+ },
+ {
+  "id": "eski-korgon",
+  "name": "Eski-Korgon",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Kara-Buura",
+  "moved_km": 0.0,
+  "old": [
+   71.40993,
+   42.67231
+  ],
+  "new": [
+   71.40993,
+   42.67231
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жийде",
+  "now": "~16 km WNW of Kyzyl-Adyr",
+  "note": "Village around an 1830s Kokand fort on the old road down the lower Talas valley toward the Kazakh border."
+ },
+ {
+  "id": "chet-bulak",
+  "name": "Chet-Bulak",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Kara-Buura",
+  "moved_km": 0.0,
+  "old": [
+   71.58367,
+   42.72233
+  ],
+  "new": [
+   71.58367,
+   42.72233
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жийде",
+  "now": "~12 km N of Kyzyl-Adyr",
+  "note": "1908 Russian settlers' village with a single poplar-lined street on the northern side of the lower Talas valley."
+ },
+ {
+  "id": "tunuk-bulak",
+  "name": "Tunuk-Bulak",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Sary-Bulak",
+  "moved_km": 4.9,
+  "old": [
+   72.17,
+   42.335
+  ],
+  "new": [
+   72.11152,
+   42.34224
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~22 km SSW of Talas",
+  "note": "Karst-spring village in the limestone foothills south of Talas (same belt as the Kyrk-Kazyk Caves and Maryam-Bulak)."
+ },
+ {
+  "id": "besh-terek",
+  "name": "Besh-Terek",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 18.4,
+  "old": [
+   73.555,
+   43.618
+  ],
+  "new": [
+   73.75786,
+   43.54714
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жайсан",
+  "now": "~6 km S of Nurzhan",
+  "note": "Sugar-factory village (Chui Sugar Refining Corp.) in the irrigated lowlands west of Nurzhan."
+ },
+ {
+  "id": "shahr-i-nav",
+  "name": "Shahr-i Nav",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 0.0,
+  "old": [
+   73.81834,
+   43.69945
+  ],
+  "new": [
+   73.81834,
+   43.69945
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Көктөбе",
+  "now": "~12 km NNE of Nurzhan",
+  "note": "Grid-plan 1960s state-farm village on the Jangy-Aryk branch canal north of Nurzhan."
+ },
+ {
+  "id": "besh-moinok",
+  "name": "Besh-Moinok",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 7.9,
+  "old": [
+   73.5,
+   43.755
+  ],
+  "new": [
+   73.54874,
+   43.8165
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~30 km NW of Nurzhan",
+  "note": "Melon village at the tail of a branch canal on the northern edge of the irrigated land NW of Nurzhan, where farmland meets the Moiynkum sands."
+ },
+ {
+  "id": "jon-aryk",
+  "name": "Jon-Aryk",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 8.3,
+  "old": [
+   73.6,
+   43.555
+  ],
+  "new": [
+   73.6705,
+   43.50073
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Құмөзек темір жол айрығы",
+  "now": "~13 km SW of Nurzhan",
+  "note": "Koryo-saram rice village founded 1937–38 on the lower Chu south-west of Nurzhan."
+ },
+ {
+  "id": "shaar-dobo",
+  "name": "Shaar-Döbö",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 16.6,
+  "old": [
+   73.39,
+   43.625
+  ],
+  "new": [
+   73.58908,
+   43.64977
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~15 km WNW of Nurzhan",
+  "note": "Village ~30 km west of Nurzhan beside the Sogdian/Kara-Khanid site of Shahr-i Buzurg."
+ },
+ {
+  "id": "kum-aryk",
+  "name": "Kum-Aryk",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 5.0,
+  "old": [
+   73.85,
+   43.592
+  ],
+  "new": [
+   73.85733,
+   43.54669
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Бірлікүстем",
+  "now": "~10 km SE of Nurzhan",
+  "note": "Greenhouse village on the eastern outskirts of Nurzhan near the oil fields (gas flaring)."
+ },
+ {
+  "id": "sary-dobo",
+  "name": "Sary-Döbö",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 0.0,
+  "old": [
+   73.54173,
+   43.84536
+  ],
+  "new": [
+   73.54173,
+   43.84536
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Ақтөбе",
+  "now": "~33 km NNW of Nurzhan",
+  "note": "Village (ex-Zheltaya Mogila, 1891) around the ruined fort of Diz-i Zard in the lower Chu valley; placed downstream (NW) of Nurzhan. (Moved onto the real road in Oct 2026.)"
+ },
+ {
+  "id": "temirchi",
+  "name": "Temirchi",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 0.0,
+  "old": [
+   73.69749,
+   43.73896
+  ],
+  "new": [
+   73.69749,
+   43.73896
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Еңбек",
+  "now": "~16 km NNW of Nurzhan",
+  "note": "Blacksmiths' village ~15 km north of Nurzhan."
+ },
+ {
+  "id": "kok-dobo",
+  "name": "Kök-Döbö",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 0.0,
+  "old": [
+   73.8436,
+   43.47843
+  ],
+  "new": [
+   73.8436,
+   43.47843
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Белбасар",
+  "now": "~15 km SSE of Nurzhan",
+  "note": "Village on a low hill on the southern side of the Chu lowlands SE of Nurzhan; weather radar on the summit."
+ },
+ {
+  "id": "aral",
+  "name": "Aral",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 0.0,
+  "old": [
+   73.63496,
+   43.68783
+  ],
+  "new": [
+   73.63496,
+   43.68783
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Абай",
+  "now": "~14 km NW of Nurzhan",
+  "note": "Village on a strip of land between two channels of the Chu west of Nurzhan."
+ },
+ {
+  "id": "uch-emchek",
+  "name": "Uch-Emchek",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Chu",
+  "moved_km": 3.1,
+  "old": [
+   73.635,
+   43.585
+  ],
+  "new": [
+   73.67229,
+   43.58069
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~8 km WSW of Nurzhan",
+  "note": "Sugar-beet village beside three hillocks west of Nurzhan, supplying the Besh-Terek factory."
+ },
+ {
+  "id": "tash-komur",
+  "name": "Tash-Kömür",
+  "kind": "town",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "moved_km": 0.0,
+  "old": [
+   72.22154,
+   41.34533
+  ],
+  "new": [
+   72.22154,
+   41.34533
+  ],
+  "elev_old": 600,
+  "elev_new": 600,
+  "real_name": "Taş-Kömür",
+  "now": "~7 km S of Iyık Janyl",
+  "note": "Coal-mining town on the Naryn at ~600 m where it leaves the mountains; seat of Lower Naryn District, UNMI sector HQ, south end of State Route 1 (236 km from Talas)."
+ },
+ {
+  "id": "kapka-tash",
+  "name": "Kapka-Tash",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "moved_km": 0.0,
+  "old": [
+   72.21204,
+   41.28941
+  ],
+  "new": [
+   72.21204,
+   41.28941
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Кызыл-Алма",
+  "now": "~6 km S of Tash-Kömür",
+  "note": "Village below Tash-Kömür on the road toward the Uzbek border at the mouth of a short side gorge of the Naryn."
+ },
+ {
+  "id": "jyluu-bulak",
+  "name": "Jyluu-Bulak",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "moved_km": 1.2,
+  "old": [
+   72.22431,
+   41.35712
+  ],
+  "new": [
+   72.23924,
+   41.35777
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~2 km NE of Tash-Kömür",
+  "note": "Spa village with 42 °C sulfur springs in a side valley of the Naryn above Tash-Kömür."
+ },
+ {
+  "id": "bulak-bashy",
+  "name": "Bulak-Bashy",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "moved_km": 2.8,
+  "old": [
+   72.29,
+   41.455
+  ],
+  "new": [
+   72.29715,
+   41.47945
+  ],
+  "elev_old": 640,
+  "elev_new": 640,
+  "real_name": "Разан-Сай",
+  "now": "~9 km NE of Iyık Janyl",
+  "note": "1965 dam-builders' village on the Naryn above Tash-Kömür; hydropower and switchyard workers."
+ },
+ {
+  "id": "altyn-bulak",
+  "name": "Altyn-Bulak",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "moved_km": 5.1,
+  "old": [
+   72.195,
+   41.405
+  ],
+  "new": [
+   72.19368,
+   41.45126
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~5 km NNW of Iyık Janyl",
+  "note": "Mineral-water bottling village in the foothills north of Tash-Kömür."
+ },
+ {
+  "id": "chong-kapka",
+  "name": "Chong-Kapka",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 7.3,
+  "old": [
+   72.26,
+   42.175
+  ],
+  "new": [
+   72.30386,
+   42.11712
+  ],
+  "elev_old": 2360,
+  "elev_new": 2170,
+  "real_name": null,
+  "now": "~45 km S of Talas",
+  "note": "Chongtor-breeding winter village on Tanıp pastures in the upper Kara-Suu valley, just above the rock gateway where the river leaves its upper valley (head of the Kara-Suu Canyon)."
+ },
+ {
+  "id": "kara-koyun",
+  "name": "Kara-Koyun",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 0.9,
+  "old": [
+   71.61,
+   42.38
+  ],
+  "new": [
+   71.61487,
+   42.37276
+  ],
+  "elev_old": 1680,
+  "elev_new": 1680,
+  "real_name": null,
+  "now": "~25 km SW of Kara-Bulak",
+  "note": "Karakoyun clan winter gathering place in the Kara-Koyun Valley south of Kara-Buura District near the line; stone pens and winter houses; extraordinary Kurultai venue."
+ },
+ {
+  "id": "kashka-jol",
+  "name": "Kashka-Jol",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 7.9,
+  "old": [
+   71.525,
+   42.36
+  ],
+  "new": [
+   71.58836,
+   42.30574
+  ],
+  "elev_old": 2050,
+  "elev_new": 1870,
+  "real_name": null,
+  "now": "~32 km SSW of Kara-Bulak",
+  "note": "Pack-horse hamlet in the middle Kara-Buura valley on the old route over the Kara-Buura Pass to the Chatkal."
+ },
+ {
+  "id": "kyrk-bulak",
+  "name": "Kyrk-Bulak",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 9.9,
+  "old": [
+   71.4,
+   42.43
+  ],
+  "new": [
+   71.33303,
+   42.50487
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Кара-Сай",
+  "now": "~24 km WSW of Kyzyl-Adyr",
+  "note": "Spring-line village in the limestone foothills of the western Talas Alatau, south of Kara-Buura District; Chongtor breeders."
+ },
+ {
+  "id": "kyrk-choro",
+  "name": "Kyrk-Choro",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 4.5,
+  "old": [
+   71.2,
+   42.25
+  ],
+  "new": [
+   71.17563,
+   42.28618
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~50 km SW of Kyzyl-Adyr",
+  "note": "Village in a valley below the northern face of Manas Peak at the western end of the range; manaschy gathering each August."
+ },
+ {
+  "id": "orto-ayyl",
+  "name": "Orto-Ayyl",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Talas",
+  "moved_km": 0.0,
+  "old": [
+   72.99951,
+   42.39837
+  ],
+  "new": [
+   72.99951,
+   42.39837
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Талды-Булак",
+  "now": "~58 km N of Toktogul",
+  "note": "Upper Talas valley village just beyond the Qara-Chik line; council of elders under adat since 2008."
+ },
+ {
+  "id": "kara-kungey",
+  "name": "Kara-Kungey",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 5.6,
+  "old": [
+   72.59321,
+   42.3642
+  ],
+  "new": [
+   72.66144,
+   42.3642
+  ],
+  "elev_old": 2470,
+  "elev_new": 2470,
+  "real_name": null,
+  "now": "~39 km ESE of Talas",
+  "note": "Apple and potato village on the sunny side of a valley in the northern Talas Alatau."
+ },
+ {
+  "id": "kosh-dobo",
+  "name": "Kosh-Döbö",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Talas Alatau",
+  "moved_km": 0.6,
+  "old": [
+   72.755,
+   42.19
+  ],
+  "new": [
+   72.75013,
+   42.19362
+  ],
+  "elev_old": 2460,
+  "elev_new": 2460,
+  "real_name": null,
+  "now": "~39 km NNW of Toktogul",
+  "note": "Seasonal herders' camps (~400 people, June–September) at ~2,460 m below the Aksay Plateau, about 6 km from the Kurultai ground."
+ },
+ {
+  "id": "kanysh-kiya",
+  "name": "Kanysh-Kiya",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 0.0,
+  "old": [
+   71.06385,
+   41.76515
+  ],
+  "new": [
+   71.06385,
+   41.76515
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Kanış-Kıya",
+  "now": "~103 km WNW of Iyık Janyl",
+  "note": "Largest village of the Chatkal valley: secondary school, hospital, weekly market, gold washing (approximate real location). (Moved onto the real river in Oct 2026.)"
+ },
+ {
+  "id": "kyzyl-bel",
+  "name": "Kyzyl-Bel",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 1.8,
+  "old": [
+   72.00757,
+   42.05458
+  ],
+  "new": [
+   72.01732,
+   42.04011
+  ],
+  "elev_old": 2280,
+  "elev_new": 2140,
+  "real_name": null,
+  "now": "~56 km SSW of Talas",
+  "note": "Sheep and yak hamlet in the upper Chatkal valley at the foot of the Kyzyl-Bel Pass (2,450 m)."
+ },
+ {
+  "id": "teke-tash",
+  "name": "Teke-Tash",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 1.7,
+  "old": [
+   71.67964,
+   42.10526
+  ],
+  "new": [
+   71.69426,
+   42.11611
+  ],
+  "elev_old": 2550,
+  "elev_new": 2550,
+  "real_name": null,
+  "now": "~49 km S of Kara-Bulak",
+  "note": "Village at ~2,550 m on the southern slopes of the Talas Alatau above the Chatkal valley, at the upper limit of spruce."
+ },
+ {
+  "id": "archaly",
+  "name": "Archaly",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 0.0,
+  "old": [
+   71.21652,
+   41.85277
+  ],
+  "new": [
+   71.21652,
+   41.85277
+  ],
+  "elev_old": 2580,
+  "elev_new": 1880,
+  "real_name": "Korgon-Say",
+  "now": "~90 km SSW of Kyzyl-Adyr",
+  "note": "Village in a forested side valley of the Chatkal (spruce and juniper)."
+ },
+ {
+  "id": "jashyl-kol",
+  "name": "Jashyl-Köl",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 1.8,
+  "old": [
+   71.95969,
+   41.80153
+  ],
+  "new": [
+   71.94994,
+   41.78706
+  ],
+  "elev_old": 1530,
+  "elev_new": 1530,
+  "real_name": null,
+  "now": "~47 km NNW of Iyık Janyl",
+  "note": "Summer yurt settlement of ~25 families at ~1,530 m in the valley below Jashyl-Köl (the moraine lake at ~2,600 m) on the southern slopes of the Chatkal range, on the route to Sary-Chelek."
+ },
+ {
+  "id": "besh-kol",
+  "name": "Besh-Köl",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 1.7,
+  "old": [
+   71.72,
+   41.925
+  ],
+  "new": [
+   71.73462,
+   41.93585
+  ],
+  "elev_old": 2860,
+  "elev_new": 2860,
+  "real_name": null,
+  "now": "~68 km S of Kara-Bulak",
+  "note": "Summer herders' camp (8–10 families) at ~2,860 m below five glacial lakes in the upper Chatkal range."
+ },
+ {
+  "id": "ozgorush",
+  "name": "Ozgörüsh",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 10.6,
+  "old": [
+   72.83,
+   41.96
+  ],
+  "new": [
+   72.77663,
+   41.8732
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~13 km W of Toktogul",
+  "note": "1974–75 resettlement village on the lower Uzun-Akmat above the reservoir; Uzun-Akmat Terraces; Kökjal clan elder's home (approximate location)."
+ },
+ {
+  "id": "kara-jylga",
+  "name": "Kara-Jylga",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Toktogul–Naryn",
+  "moved_km": 0.9,
+  "old": [
+   72.995,
+   42.055
+  ],
+  "new": [
+   72.99013,
+   42.04776
+  ],
+  "elev_old": 2050,
+  "elev_new": 1900,
+  "real_name": null,
+  "now": "~20 km NNE of Toktogul",
+  "note": "Remote village at the head of a side valley north of the reservoir, 24 km dirt track (cut off by avalanches 2012, 2026)."
+ },
+ {
+  "id": "tash-koroo",
+  "name": "Tash-Köröö",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Toktogul–Naryn",
+  "moved_km": 6.0,
+  "old": [
+   73.1,
+   41.965
+  ],
+  "new": [
+   73.17311,
+   41.97224
+  ],
+  "elev_old": 1940,
+  "elev_new": 1940,
+  "real_name": null,
+  "now": "~22 km ENE of Toktogul",
+  "note": "Cobble-built goat-herding village in a side valley above the reservoir, below a box canyon used as a pen."
+ },
+ {
+  "id": "kara-say",
+  "name": "Kara-Say",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Toktogul",
+  "moved_km": 10.4,
+  "old": [
+   73.15,
+   41.745
+  ],
+  "new": [
+   73.27672,
+   41.745
+  ],
+  "elev_old": 1900,
+  "elev_new": 1900,
+  "real_name": null,
+  "now": "~31 km ESE of Toktogul",
+  "note": "Barley-terrace village at ~1,900 m in the Fergana Range foothills above the Toktogul basin."
+ },
+ {
+  "id": "kosh-bel",
+  "name": "Kosh-Bel",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Toktogul–Naryn",
+  "moved_km": 6.1,
+  "old": [
+   73.21,
+   41.67
+  ],
+  "new": [
+   73.18076,
+   41.61935
+  ],
+  "elev_old": 2400,
+  "elev_new": 2400,
+  "real_name": null,
+  "now": "~34 km SE of Toktogul",
+  "note": "Hamlet (~150 people) at ~2,400 m on the migration route from the Toktogul basin to the Fergana Range pastures; veterinary post."
+ },
+ {
+  "id": "arslanbob",
+  "name": "Arslanbob",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Fergana Rim",
+  "moved_km": 0.0,
+  "old": [
+   72.92873,
+   41.33725
+  ],
+  "new": [
+   72.92873,
+   41.33725
+  ],
+  "elev_old": 1600,
+  "elev_new": 1600,
+  "real_name": "Arstanbap",
+  "now": "~37 km NNE of Bazar-Korgon",
+  "note": "Walnut-forest village at ~1,600 m in the upper Kara-Unkur valley ~40 km NE of Bazar-Korgon; Arslanbob-Ata shrine, waterfalls, guesthouses."
+ },
+ {
+  "id": "kyzyl-unkur",
+  "name": "Kyzyl-Unkur",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Fergana Rim",
+  "moved_km": 0.0,
+  "old": [
+   72.8453,
+   41.24061
+  ],
+  "new": [
+   72.8453,
+   41.24061
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Гава",
+  "now": "~24 km NNE of Bazar-Korgon",
+  "note": "Village in the Kara-Unkur valley named in the Oct 2026 tremor report (epicentre a few km NE); a real village of this name exists, but it is placed here between Bazar-Korgon and Arslanbob to match the report."
+ },
+ {
+  "id": "sopol-tepa",
+  "name": "Sopol-Tepa",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "moved_km": 0.0,
+  "old": [
+   72.69089,
+   41.06073
+  ],
+  "new": [
+   72.69089,
+   41.06073
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Көк-Айдар",
+  "now": "~5 km NW of Bazar-Korgon",
+  "note": "Uzbek-speaking potters' village near Bazar-Korgon by the Chopo-Jar clay bluffs."
+ },
+ {
+  "id": "oruktu",
+  "name": "Örüktü",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Fergana Rim",
+  "moved_km": 0.0,
+  "old": [
+   72.69219,
+   41.19666
+  ],
+  "new": [
+   72.69219,
+   41.19666
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Toskool",
+  "now": "~18 km NNW of Bazar-Korgon",
+  "note": "Terraced apricot village on the northern rim of the Fergana Valley."
+ },
+ {
+  "id": "kara-jygach",
+  "name": "Kara-Jygach",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "moved_km": 9.3,
+  "old": [
+   71.98,
+   41.36
+  ],
+  "new": [
+   71.88491,
+   41.40656
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Sarı-Kaşka",
+  "now": "~28 km W of Iyık Janyl",
+  "note": "Walnut-harvest village at the lower edge of the walnut-fruit forest on the southern slopes of the Chatkal range above the Fergana Valley."
+ },
+ {
+  "id": "jangak-bulak",
+  "name": "Jangak-Bulak",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Fergana Rim",
+  "moved_km": 0.0,
+  "old": [
+   72.88669,
+   41.2864
+  ],
+  "new": [
+   72.88669,
+   41.2864
+  ],
+  "elev_old": 1900,
+  "elev_new": 1630,
+  "real_name": "Жай-Терек",
+  "now": "~30 km NNE of Bazar-Korgon",
+  "note": "Village at ~1,900 m inside the walnut-fruit forest on the southern slopes of the Fergana Range west of Arslanbob; its sacred walnut grove is about 2 km below."
+ },
+ {
+  "id": "bazar-terek",
+  "name": "Bazar-Terek",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 12.0,
+  "old": [
+   70.45,
+   42.96
+  ],
+  "new": [
+   70.57827,
+   43.0119
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Майтөбе",
+  "now": "~94 km WNW of Kyzyl-Adyr",
+  "note": "Thursday wool and sheep market in the Karatau foothills where tracks from the Kyzylkum Fringe winter pastures meet the road to the Talas valley."
+ },
+ {
+  "id": "hauzdy",
+  "name": "Hauzdy",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 0.0,
+  "old": [
+   70.8679,
+   42.95795
+  ],
+  "new": [
+   70.8679,
+   42.95795
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жылыбұлақ",
+  "now": "~70 km WNW of Kyzyl-Adyr",
+  "note": "Hamlet beside the ruined caravanserai of Rabat-i Kamal on the old road along the Karatau foothills west of the Talas valley."
+ },
+ {
+  "id": "tar-say",
+  "name": "Tar-Say",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 0.0,
+  "old": [
+   70.72301,
+   43.12743
+  ],
+  "new": [
+   70.72301,
+   43.12743
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жаңаөткел",
+  "now": "~91 km NW of Kyzyl-Adyr",
+  "note": "Red-clay hamlet at the mouth of a Kök-Moinok canyon in the Karatau foothills (2016 flash flood)."
+ },
+ {
+  "id": "kyzyl-dobo",
+  "name": "Kyzyl-Döbö",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 10.6,
+  "old": [
+   70.25,
+   43.06
+  ],
+  "new": [
+   70.34287,
+   43.12689
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Қасқабұлақ",
+  "now": "~117 km WNW of Kyzyl-Adyr",
+  "note": "Saddlers' village at the foot of red sandstone cliffs in the Karatau foothills; sells at Bazar-Terek."
+ },
+ {
+  "id": "bitik-tash",
+  "name": "Bitik-Tash",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 0.0,
+  "old": [
+   70.08956,
+   43.28502
+  ],
+  "new": [
+   70.08956,
+   43.28502
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Қараой",
+  "now": "~143 km WNW of Kyzyl-Adyr",
+  "note": "Petroglyph village in the Karatau foothills."
+ },
+ {
+  "id": "tuzduu",
+  "name": "Tuzduu",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 0.0,
+  "old": [
+   69.366,
+   43.20042
+  ],
+  "new": [
+   69.366,
+   43.20042
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Шақпақ",
+  "now": "~193 km WNW of Kyzyl-Adyr",
+  "note": "Brackish-well camel and sheep village on the edge of the Kulan-Talaa plain in western Irad."
+ },
+ {
+  "id": "sasyk-bulak",
+  "name": "Sasyk-Bulak",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 10.3,
+  "old": [
+   68.88,
+   43.65
+  ],
+  "new": [
+   68.99303,
+   43.69148
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Балдысу",
+  "now": "~244 km WNW of Kyzyl-Adyr",
+  "note": "Village at the foot of the Karakyr Range on the western edge of Irad; raptor-count base."
+ },
+ {
+  "id": "ak-jar",
+  "name": "Ak-Jar",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Karatau",
+  "moved_km": 0.0,
+  "old": [
+   68.75795,
+   43.86434
+  ],
+  "new": [
+   68.75795,
+   43.86434
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Таукент",
+  "now": "~270 km WNW of Kyzyl-Adyr",
+  "note": "Karakul-sheep village under a limestone escarpment near the Kazakh border on the semi-desert western edge."
+ },
+ {
+  "id": "tort-kuduk",
+  "name": "Tört-Kuduk",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 11.6,
+  "old": [
+   73.35,
+   44.35
+  ],
+  "new": [
+   73.3328,
+   44.24557
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Күшаман",
+  "now": "~80 km NNW of Nurzhan",
+  "note": "1964 hydrogeological-expedition village on the southern edge of the Betpak-Dala; supply point for the Keng-Talaa pastures."
+ },
+ {
+  "id": "ak-jal",
+  "name": "Ak-Jal",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 2.3,
+  "old": [
+   73.8758,
+   44.39892
+  ],
+  "new": [
+   73.85631,
+   44.41339
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~90 km N of Nurzhan",
+  "note": "Horse-herding village on the southern edge of the Betpak-Dala near the Keng-Talaa race course."
+ },
+ {
+  "id": "kaiyrma",
+  "name": "Kaiyrma",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 0.0,
+  "old": [
+   73.03879,
+   44.29239
+  ],
+  "new": [
+   73.03879,
+   44.29239
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Жамбыл",
+  "now": "~97 km NW of Nurzhan",
+  "note": "Reed-cutting and fishing village on the lower Chu below the irrigated zone. (Moved onto the real river in Oct 2026.)"
+ },
+ {
+  "id": "kamyshtuu",
+  "name": "Kamyshtuu",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 11.1,
+  "old": [
+   73.62,
+   43.97
+  ],
+  "new": [
+   73.57529,
+   44.06512
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": "Биназар",
+  "now": "~54 km NNW of Nurzhan",
+  "note": "Reed and muskrat hamlet beside drainage marshes on the northern edge of the irrigated Chu lowlands, at the edge of the sands."
+ },
+ {
+  "id": "ak-chiy",
+  "name": "Ak-Chiy",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 39.1,
+  "old": [
+   72.75,
+   43.45
+  ],
+  "new": [
+   72.47707,
+   43.73941
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~106 km W of Nurzhan",
+  "note": "Chiy-screen weaving village on the salt flats of the southern margin of the Moiynkum sands."
+ },
+ {
+  "id": "too-kuduk",
+  "name": "Töö-Kuduk",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Northern Steppe",
+  "moved_km": 19.5,
+  "old": [
+   70.8,
+   44.2
+  ],
+  "new": [
+   70.99495,
+   44.30129
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~192 km NNW of Kyzyl-Adyr",
+  "note": "Camel-herding hamlet at a well in the western Moiynkum sands."
+ },
+ {
+  "id": "zone-kyrgyz-range-suusamyr",
+  "name": "Kyrgyz Range–Suusamyr",
+  "kind": "zone-area",
+  "zone": "ATR",
+  "district": "Kyrgyz Range–Suusamyr",
+  "moved_km": 0.3,
+  "old": [
+   73.22,
+   42.359
+  ],
+  "new": [
+   73.217,
+   42.36
+  ],
+  "elev_old": null,
+  "elev_new": null,
+  "real_name": null,
+  "now": "~59 km NNE of Toktogul",
+  "note": "UN planning zone ~4,100 km²: the high Kyrgyz Range pastures east of the Kök-Bel road (since 2009) and the Suusamyr side east of the State Route 1 corridor: Toguz-Bulak, Otmek, the Western Karakol valley, Ak-Kyya."
+ }
+]

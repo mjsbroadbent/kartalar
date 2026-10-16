@@ -164,7 +164,7 @@ def main():
     # settled places that stay put still occupy their real village
     movable = []
     for p in S:
-        if p["kind"] not in ("village", "town") or p["id"] in ("boz-korgon",): continue
+        if p["kind"] not in ("village", "town") or p["id"] in ("boz-korgon",) or p.get("locked"): continue   # locked: docs/PLACEMENT.md
         if any(pa.contains_point((p["lon"], p["lat"])) for pa in city_foot): continue
         movable.append(p)
     lore_h = {}

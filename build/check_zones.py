@@ -25,8 +25,8 @@ for fn in ("data/settlements.json", "data/features.json"):
         if z != p["zone"] and p["kind"] != "checkpoint":   # line checkpoints straddle the line
             n += 1
             print(f'{fn.split("/")[1][:4]} {p["id"]:38} said {p["zone"]:4} map {z:4} {p["confidence"]:10} {p["lat"]:.3f},{p["lon"]:.3f}')
-            if fix and p["confidence"] == "placed": p["zone"] = z
-        if fix and p["confidence"] == "placed" and z == "ISEZ" and "district" in p and d and p["kind"] not in ("district",) and p["district"] not in ("Talas", "Nurzhan", "Iyık Janyl") and p["district"] != d:
+            if fix and p["confidence"] == "placed" and not p.get("locked"): p["zone"] = z
+        if fix and p["confidence"] == "placed" and not p.get("locked") and z == "ISEZ" and "district" in p and d and p["kind"] not in ("district",) and p["district"] not in ("Talas", "Nurzhan", "Iyık Janyl") and p["district"] != d:
             p["district"] = d
     print(fn, "mismatches:", n)
     if fix: json.dump(data, open(fn, "w"), ensure_ascii=False, indent=1)

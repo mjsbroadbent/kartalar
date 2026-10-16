@@ -123,7 +123,7 @@ def bad(p):
 P = {fn: json.load(open(os.path.join(ROOT, fn))) for fn in ("data/settlements.json", "data/features.json")}
 allp = [p for D in P.values() for p in D]
 moves = []
-movable = lambda p: (p.get("confidence") == "placed" and not p.get("city") and p["kind"] not in NEVER
+movable = lambda p: (p.get("confidence") == "placed" and not p.get("locked") and not p.get("city") and p["kind"] not in NEVER
                      and not any(w in p["id"] for w in REGION_WORDS) and not p.get("auto_crossing"))
 done = set()
 # villages and towns first; things within 1.5 km of a village follow it

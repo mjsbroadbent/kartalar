@@ -54,7 +54,7 @@ for fn in ("data/settlements.json", "data/features.json"):
                 c = min(cand, key=lambda q: (q[0] - c[0]) ** 2 + (q[1] - c[1]) ** 2)
             p["lon"], p["lat"] = round(float(c[0]), 3), round(float(c[1]), 3)
             p["note"] = f"UN planning zone ~{a:,} km²: " + NOTES[n]
-        elif p.get("zone") == "ISEZ" and p.get("district") in DISTRICTS and p.get("kind") != "district":
+        elif p.get("zone") == "ISEZ" and p.get("district") in DISTRICTS and p.get("kind") != "district" and not p.get("locked"):
             d = district_at(p["lon"], p["lat"])
             if d and d != p["district"]:
                 print(f"  {p['id']:34} {p['district']} -> {d}"); p["district"] = d
