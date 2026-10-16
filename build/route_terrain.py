@@ -209,7 +209,12 @@ def route(spec):
         return (float(lons[i]), float(lats[j])), False
 
     seq = []   # list of (lon, lat, on_real_network)
+    fixed = spec.get("fixed", {})      # {"k": [[lon, lat], ...]}: between via k and k+1 the road runs exactly as drawn
     for k_, (a, b_) in enumerate(zip(wps, wps[1:])):
+        if str(k_) in fixed:
+            pts = [tuple(a)] + [tuple(q) for q in fixed[str(k_)]] + [tuple(b_)]
+            seq += [(x, y, True) for x, y in (pts[1:] if seq else pts)]
+            continue
         s, t = node_of(a, k_ > 0), node_of(b_, k_ + 1 < len(wps) - 1)
         dist, pred = dijkstra(G, indices=s, return_predecessors=True)
         if not np.isfinite(dist[t]):

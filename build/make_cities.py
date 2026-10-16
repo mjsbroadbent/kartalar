@@ -27,6 +27,10 @@ CITIES = [
      "ellipse": ((72.225, 42.515), 12.5, 8.5), "max_elev": 1420, "max_slope": 0.09,
      "exclude": [[(72.055, 42.517), (72.13, 42.517), (72.13, 42.548), (72.055, 42.548)]],
      "rivers": ["Талас"], "bridges": 8, "tight_footprint": True, "relay_minor_w": 10,
+     # hand edits to the borrowed plan: the donor arterial left dead-ending west of Semiz where the plan is clipped round
+     # the air base goes; a new avenue brings the Sary-Bulak road in from the south-west to the street grid
+     "drop_streets": [[(72.070, 42.513), (72.112, 42.513), (72.112, 42.5195), (72.070, 42.5195)]],
+     "add_streets": [{"k": "major", "c": [(72.14753, 42.46849), (72.15836, 42.47594), (72.16269, 42.48073), (72.16702, 42.48233), (72.17279, 42.48659), (72.18362, 42.49457)]}],
      # the Kokand-era Old City (Köhne Diz, ~64 ha) west of the Russian grid: citadel mound, gates, bazaar, mahalla lanes
      "old_town": {"center": (72.2290, 42.5275), "a": 0.60, "b": 0.42, "angle": 12, "citadel": (72.2266, 42.5276), "citadel_r": (0.13, 0.10),
                   "bazaar": (72.2338, 42.5262), "gates": [(72.2268, 42.5298), (72.2264, 42.5254)], "seed": 11}},
@@ -768,6 +772,18 @@ def build(C):
             feats = [f for f in feats if not (f[0] == "building" and rt.query(np.column_stack([f[2][0][:, 0] * kt, f[2][0][:, 1] * KY]))[0].min() < 0.022)]
             print(f"  {C['name']}: {r['id']} smoothed through the town, {before - len(feats)} buildings cleared from its line")
         json.dump(routes_all, open(os.path.join(ROOT, "data/routes.json"), "w"), ensure_ascii=False, indent=1)
+    if C.get("drop_streets") or C.get("add_streets"):
+        drops = [Path(np.array(P)) for P in C.get("drop_streets", [])]
+        before = len(feats)
+        feats = [f for f in feats if not (f[0] == "road" and f[1]["k"] in ("major", "mid") and any(P.contains_points(np.asarray(f[2][0])).all() for P in drops))]
+        nodes = np.array([p for f in feats if f[0] == "road" and f[1]["k"] in ("major", "mid", "minor") for p in np.asarray(f[2][0])])
+        for a in C.get("add_streets", []):
+            line = [list(p) for p in a["c"]]
+            for end in (0, -1):        # the new street's ends onto the street they meet, so the network joins up
+                d_ = np.hypot((nodes[:, 0] - line[end][0]) * kt, (nodes[:, 1] - line[end][1]) * KY); i_ = int(np.argmin(d_))
+                if d_[i_] < 0.3: line[end] = [float(nodes[i_][0]), float(nodes[i_][1])]
+            feats.append(("road", {"k": a["k"]}, [np.array(line)]))
+        print(f"  {C['name']}: {before - len(feats) + len(C.get('add_streets', []))} streets dropped by hand, {len(C.get('add_streets', []))} added")
     return feats, footprint, rivers, (lons, lats, ok)
 
 
@@ -840,7 +856,7 @@ def relay_routes(cities_out):
         G_rail = graph({("rail", "rail"): 1.0, ("rail", "siding"): 1.6})
 
         bb = np.array([p for P in footprint["coordinates"] for p in P[0]])
-        RIV = [np.array(w["c"]) for w in OSM if w["k"] in ("water:river", "water:canal") and
+        RIV = [np.array(w["c"]) for w in OSM if w["k"] == "water:river" and      # rivers only: town streets bridge the canals all the time
                any(bb[:, 0].min() - 0.05 < x < bb[:, 0].max() + 0.05 and bb[:, 1].min() - 0.05 < y < bb[:, 1].max() + 0.05 for x, y in w["c"])]
 
         def crosses(a_, b_):
@@ -908,6 +924,7 @@ def relay_routes(cities_out):
                     out += pth; did = True
                 else:
                     out += c[i:j]
+                    print(f"  {name}: {r['id']} kept its own line through the city ({'no street path' if not pth else 'streets cross water %d times, line %d' % (ncross(after_), ncross(before_))})")
                 i = j
             r["coords"] = [[round(x, 5), round(y, 5)] for x, y in thin_line(np.array(out), 3)]
             if did:
