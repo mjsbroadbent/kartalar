@@ -25,6 +25,7 @@
     user: '<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>', elev: '<path d="M2.5 19.5l7-11 4 6 2.5-3.5 5.5 8.5z"/>',
     people: '<circle cx="9" cy="8" r="3.3"/><path d="M2.8 19.5a6.2 6.2 0 0 1 12.4 0"/><circle cx="17" cy="9" r="2.4"/><path d="M16.3 14a4.8 4.8 0 0 1 5 5"/>',
     flag: '<path d="M5.5 21V4M5.5 4.5h11l-2 4 2 4h-11"/>', ruler: '<path d="M3.5 16.5l13-13 4 4-13 13z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
+    bike: '<circle cx="6" cy="16.5" r="3.5"/><circle cx="18" cy="16.5" r="3.5"/><path d="M6 16.5l4-7h5l3 7M10 9.5L8.5 6.5H6.5M15 9.5l1-3h2.5"/>',
     edit: '<path d="M4 20h4l10.5-10.5-4-4L4 16z"/><path d="M13 7l4 4"/>', money: '<rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/>',
     food: '<path d="M7 3v7.5M5 3v5a2 2 0 0 0 4 0V3M7 10.5V21M16.5 3c-2 1.5-2.7 4-2.7 7.5h2.7V21"/>',
     stay: '<path d="M3 18.5V6.5M3 13.5h18v5M21 13.5v-2a2 2 0 0 0-2-2h-8.5v4"/><circle cx="7" cy="10.5" r="1.8"/>',
@@ -147,7 +148,7 @@
   const get = u => fetch(u).then(r => r.json());
 
   const GROUP = {
-    food: ["restaurant", "cafe", "chaikhana", "bakery", "bar"], stay: ["hotel", "guesthouse", "hostel"], shops: ["shop", "bank", "pharmacy", "fuel", "supermarket"],
+    food: ["restaurant", "cafe", "chaikhana", "fast-food", "bakery", "bar"], stay: ["hotel", "guesthouse", "hostel"], shops: ["shop", "grocery", "supermarket", "mall", "bank", "pharmacy", "fuel"],
     worship: ["church", "mosque", "mazar"], civic: ["government", "university", "school", "hospital", "museum", "un"],
     leisure: ["stadium", "hippodrome", "market"], transport: ["airport", "station", "bus-station", "terminal"], crossing: ["border-crossing", "checkpoint"],
     industry: ["dam", "power", "mine", "industry", "oilfield"], nature: ["peak", "pass", "lake", "reservoir", "river-point", "spring", "park", "river", "canal", "glacier", "range", "valley", "desert"],
@@ -157,6 +158,7 @@
   const groupOf = k => Object.keys(GROUP).find(g => GROUP[g].includes(k)) || "other";
   const PLACE_RANK = { capital: 1, city: 2, town: 3, village: 5, hamlet: 7, suburb: 6, quarter: 6, neighbourhood: 7, district: 4, "zone-area": 4, "foreign-city": 3, "foreign-town": 5 };
 
+  const BIZ_BIG = ["hotel", "mall", "market", "supermarket", "fuel"];
   const POI_FILTER = ["!", ["in", ["get", "kind"], ["literal", ["river-point", "border-crossing", "checkpoint"]]]];     // crossings have their own layers
   // crossing status (data/features.json "status"): colour and whether it shows from afar
   const XCOL = { main: "#1f5fa8", "line-main": "#9b2c2c", line: "#9b2c2c", local: "#2a9d8f", clan: "#b5651d", minor: "#8a8a8a", closed: "#555555", internal: "#6a6a6a" };
@@ -165,9 +167,11 @@
   function pointFeat(p, extra) { return { type: "Feature", id: undefined, geometry: { type: "Point", coordinates: [p.lon, p.lat] }, properties: Object.assign({ id: p.id, label: nameOf(p), kind: p.kind }, extra) }; }
 
   Promise.all([get("data/settlements.json"), get("data/features.json"), get("data/routes.json"), get("data/irad.geojson"), get("data/zones.geojson"), get("data/districts.geojson"), get("data/qarachik.geojson"), get("data/restricted_zone.geojson"), get("data/real_places.json").catch(() => []), get("data/nature.json").catch(() => []),
-    get(DEMO ? "data/demo/places.json" : "data/places.json").catch(() => []), get(DEMO ? "data/demo/reviews.json" : "data/reviews.json").catch(() => ({}))])
+    DEMO ? get("data/demo/places.json") : Promise.all([get("data/places.json").catch(() => []),
+      get("data/biz/index.json").then(ix => Promise.all(ix.map(f => get("data/biz/" + f).catch(() => [])))).catch(() => [])]).then(([a, b]) => a.concat(...b)), get(DEMO ? "data/demo/reviews.json" : "data/reviews.json").catch(() => ({}))])
     .then(([pl, fe, ro, ir, zo, di, qc, rz, rp, na, bz, rv]) => {
-      fe = fe.concat(bz);      // businesses: restaurants, cafes, hotels, shops (docs/PLACES.md)
+      bz.forEach(b => { b.biz = true; });
+      fe = fe.concat(bz);      // businesses: restaurants, cafes, hotels, shops (docs/PLACES.md, data/biz)
       D.reviews = rv || {};
       D.line = qc; D.rwz = rz;
       pl = pl.concat(rp);      // the real towns and villages (build/real_places.py) after the lore's own places
@@ -215,7 +219,9 @@
     map.addSource("places", { type: "geojson", data: fc(D.places.map(p => pointFeat(p, { rank: (PLACE_RANK[p.kind] || 6) + (p.confidence === "osm" ? 0.5 : 0), pop: p.pop || 0 }))) });
     map.addSource("nature", { type: "geojson", data: fc(D.nature.filter(f => !f.line && !["river", "canal"].includes(f.kind)).map(f => pointFeat(f, { elev: f.elev ? f.elev.toLocaleString("en-GB") + " m" : "", area: f.area || 0, big: (f.area || 0) >= 3 ? 1 : 0 }))) });
     map.addSource("landforms", { type: "geojson", data: fc(D.nature.filter(f => f.line).map(f => ({ type: "Feature", properties: { id: f.id, kind: f.kind, label: nameOf(f) }, geometry: { type: "LineString", coordinates: f.line } }))) });
-    map.addSource("feats", { type: "geojson", data: fc(D.feats.map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "", st: f.status || "" }))) });
+    map.addSource("feats", { type: "geojson", data: fc(D.feats.filter(f => !f.biz).map(f => pointFeat(f, { g: groupOf(f.kind), city: f.city || "", st: f.status || "" }))) });
+    // businesses: their own source, shown only close in (the big ones a little earlier), like a street map
+    map.addSource("biz", { type: "geojson", data: fc(D.feats.filter(f => f.biz).map(f => pointFeat(f, { g: groupOf(f.kind), big: BIZ_BIG.includes(f.kind) || f.lore ? 1 : 0 }))) });
     map.addSource("neighbours", { type: "geojson", data: fc([
       ["Kazakhstan", "Kazakstan", "Казахстан", 75.9, 44.9], ["Kazakhstan", "Kazakstan", "Казахстан", 67.2, 45.6], ["Kyrgyzstan", "Kırgızstan", "Киргизия", 75.4, 41.95],
       ["Uzbekistan", "Özbekstan", "Узбекистан", 69.6, 41.25], ["Tajikistan", "Tajikstan", "Таджикистан", 70.2, 39.6]
@@ -285,6 +291,13 @@
         layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": 11.5, "text-offset": [0, 0.9], "text-anchor": "top", "text-max-width": 9, "text-optional": true,
           "symbol-sort-key": ["match", ["get", "kind"], ["peak", "pass", "lake", "reservoir"], 0, 1] },
         paint: { "text-color": ["match", ["get", "g"], ...Object.entries(GCOL).flat(), "#555"], "text-halo-color": C.halo, "text-halo-width": 1.5 }, _g: "poi" },
+      { id: "biz-dot", type: "circle", source: "biz", minzoom: 14, filter: ["any", ["==", ["get", "big"], 1], [">=", ["zoom"], 15]],
+        paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 14, 3, 17, 6.5], "circle-color": ["match", ["get", "g"], ...Object.entries(GCOL).flat(), "#8a8a8a"],
+          "circle-stroke-color": "#ffffff", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 14, 1, 17, 1.8] }, _g: "poi" },
+      { id: "biz-label", type: "symbol", source: "biz", minzoom: 15.5, filter: ["any", ["==", ["get", "big"], 1], [">=", ["zoom"], 16.5]],
+        layout: { "text-field": ["get", "label"], "text-font": textFont("r"), "text-size": 11, "text-offset": [0, 0.85], "text-anchor": "top", "text-max-width": 8, "text-optional": true,
+          "symbol-sort-key": ["-", 1, ["get", "big"]] },
+        paint: { "text-color": ["match", ["get", "g"], ...Object.entries(GCOL).flat(), "#555"], "text-halo-color": C.halo, "text-halo-width": 1.4 }, _g: "poi" },
       ...[["crossing-major", 6.5, 8, ["in", ["get", "st"], ["literal", XMAJOR]]], ["crossing-minor", 9.5, 11.5, ["!", ["in", ["get", "st"], ["literal", XMAJOR]]]]].map(([id, mz, lz, f]) => (
         { id, type: "symbol", source: "feats", minzoom: mz, filter: ["all", ["in", ["get", "kind"], ["literal", ["border-crossing", "checkpoint"]]], f],
           layout: { "icon-image": ["concat", "kt-x-", ["case", ["==", ["get", "st"], ""], "line", ["get", "st"]]], "icon-allow-overlap": true, "symbol-sort-key": 0,
@@ -388,9 +401,15 @@
       let s = 0;
       names.forEach(n => { if (n === q) s = Math.max(s, 100); else if (n.startsWith(q)) s = Math.max(s, 70); else if (n.split(" ").some(w => w.startsWith(q))) s = Math.max(s, 50); else if (n.includes(q)) s = Math.max(s, 30); });
       if (!s) return;
-      s += p._t === "place" ? 12 - (PLACE_RANK[p.kind] || 6) * 2 : 0;
+      s += p._t === "place" ? 12 - (PLACE_RANK[p.kind] || 6) * 2 : p.biz ? -4 : 0;
       out.push([s, p]);
     });
+    const kinds = Object.values(GROUP).flat().filter(k => q.length >= 3 && norm(t("k_" + k)).startsWith(q));
+    if (kinds.length) {
+      const c = map.getCenter(), cl = Math.cos(c.lat * Math.PI / 180);
+      const near = D.feats.filter(f => f.biz && kinds.includes(f.kind)).map(f => [((f.lon - c.lng) * cl) ** 2 + (f.lat - c.lat) ** 2, f]).sort((a, b) => a[0] - b[0]).slice(0, 8).map(x => x[1]);
+      if (near.length) return near.concat(out.sort((a, b) => b[0] - a[0]).map(x => x[1]).filter(x => !near.includes(x))).slice(0, 8);
+    }
     return out.sort((a, b) => b[0] - a[0]).slice(0, 8).map(x => x[1]);
   }
   let results = [], sel = -1;
@@ -430,6 +449,9 @@
     $$("#chips [data-chip]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.chip === chipOn)));
     const f = chipOn ? ["==", ["get", "g"], chipOn] : null;
     map.setFilter("poi-dot", f ? ["all", POI_FILTER, f] : POI_FILTER); map.setFilter("poi-label", f);
+    const BZ = ["any", ["==", ["get", "big"], 1], [">=", ["zoom"], 15]], BZL = ["any", ["==", ["get", "big"], 1], [">=", ["zoom"], 16.5]];
+    map.setFilter("biz-dot", f ? f : BZ); map.setFilter("biz-label", f ? ["all", f, ["any", ["==", ["get", "big"], 1], [">=", ["zoom"], 15]]] : BZL);
+    map.setLayerZoomRange("biz-dot", f ? 11 : 14, 24); map.setLayerZoomRange("biz-label", f ? 14 : 15.5, 24);
     if (chipOn) {
       const cb = $('[data-layer="poi"]'); if (!cb.checked) { cb.checked = true; setGroup("poi", true); }
       map.setLayerZoomRange("poi-dot", 5, 24); map.setLayerZoomRange("poi-label", 9, 24);
@@ -449,7 +471,8 @@
   });
 
   /* ---------- place panel ---------- */
-  function kindLabel(p) { return t("k_" + p.kind); }
+  const L3 = a => (a ? (LANG === "ru" ? a[2] : LANG === "ir" ? a[1] : a[0]) : "");
+  function kindLabel(p) { const x = L3(p.cuisine_label || p.sub_label); return t("k_" + p.kind) + (x ? " · " + x : ""); }
   // district and city names stored in English in the data, shown in the current language
   function locName(n, isCity) {
     if (!n) return "";
@@ -535,7 +558,8 @@
     const others = [p.name, p.name_en, p.name_ir, p.name_ru].filter((n, i, a) => n && n !== nameOf(p) && a.indexOf(n) === i);
     const zone = p.zone === "ISEZ" ? t("isez") : p.zone === "ATR" ? t("atr") : "";
     const zoneShort = p.zone === "ISEZ" ? "ISEZ" : p.zone === "ATR" ? t("atrShort") : "";
-    const city = p._t === "feat" ? locName(p.city, true) : "";
+    const qu = p.quarter && D.byId[p.quarter] ? nameOf(D.byId[p.quarter]) : "";
+    const city = p._t === "feat" ? [qu, locName(p.city, true)].filter(Boolean).join(", ") : "";
     const dist = p.district && p.district !== p.name && p.kind !== "district" ? (p._t === "place" ? locName(p.district) : "") : "";
     const where = p.address || [city, dist, zone].filter(Boolean).join(" · ");
     const { list, n, avg } = revOf(p), os = openState(p.hours);
@@ -547,6 +571,7 @@
       rows.push(row("clock", `<span class="${os.open ? "p-open" : "p-closed"}">${esc(os.txt)}</span><table class="hours">${[1, 2, 3, 4, 5, 6, 0].map(d => `<tr${d === today ? ' class="today"' : ""}><td>${esc(t("day_" + DAYS[d]))}</td><td>${esc(p.hours[DAYS[d]] === "closed" || !p.hours[DAYS[d]] ? t("closed") : p.hours[DAYS[d]] === "24h" ? t("open24") : p.hours[DAYS[d]])}</td></tr>`).join("")}</table>`));
     }
     if (p.price) rows.push(row("money", esc(p.price)));
+    if (p.tulpar) rows.push(row("bike", `${esc(t("tulparRow"))}<small>${esc(t("tulparSub"))}</small>`));
     if (p.phone) rows.push(row("phone", `<a href="tel:${esc(p.phone.replace(/\s/g, ""))}">${esc(p.phone)}</a>`));
     if (p.web) rows.push(row("globe", `<a href="${esc(p.web)}" target="_blank" rel="noopener">${esc(p.web.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</a>`));
     if (p.wiki) rows.push(row("book", `<a href="${wikiUrl(p.wiki)}" target="_blank" rel="noopener">${esc(t("readWiki"))}</a>`));
@@ -662,7 +687,7 @@
   }
 
   /* ---------- map clicks ---------- */
-  const CLICKABLE = ["place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "crossing-major", "crossing-minor", "nature-big", "nature-osm-label", "nature-pass", "nature-small", "landform-label", "quarter-label", "district-label", "zone-area-label"];
+  const CLICKABLE = ["biz-dot", "biz-label", "place-label", "hamlet-label", "foreign-label", "place-dot", "poi-dot", "poi-label", "nature-label", "crossing-major", "crossing-minor", "nature-big", "nature-osm-label", "nature-pass", "nature-small", "landform-label", "quarter-label", "district-label", "zone-area-label"];
   function openLine(f, ll) {
     const p = f.properties;
     if (!hl) hl = new maplibregl.Marker({ color: "#e0531f" });

@@ -98,6 +98,7 @@ Object.assign(window.KT_STR.ru, { lineKind: "Линия прекращения �
 
 /* place panel, reviews, menu and personal account (2026-10 interface) */
 Object.assign(KT_STR.en, {
+  "k_fast-food": "Fast food", k_grocery: "Grocery", k_mall: "Shopping centre", tulparRow: "Delivery with Tulpar", tulparSub: "Order in the Tulpar app · Tulpar Pay accepted",
   grp_food: "Food & drink", grp_stay: "Hotels", grp_shops: "Shops & services",
   k_restaurant: "Restaurant", k_cafe: "Café", k_chaikhana: "Chaikhana", k_bakery: "Bakery", k_bar: "Bar", k_hotel: "Hotel", k_guesthouse: "Guest house", k_hostel: "Hostel",
   k_shop: "Shop", k_bank: "Bank", k_pharmacy: "Pharmacy", k_fuel: "Filling station", k_supermarket: "Supermarket",
@@ -120,6 +121,7 @@ Object.assign(KT_STR.en, {
   loginFine: "Forgot your password? Send PASS to 105 or visit any of our 46 service centres."
 });
 Object.assign(KT_STR.ir, {
+  "k_fast-food": "Tez tamak", k_grocery: "Azık-tülük", k_mall: "Sooda borboru", tulparRow: "Tulpar menen jetkirüü", tulparSub: "Tulpar tirkemesinde buyurtma · Tulpar Pay kabıl alınat",
   grp_food: "Tamak-ash", grp_stay: "Meymankanalar", grp_shops: "Dükööndör jana kızmattar",
   k_restaurant: "Restoran", k_cafe: "Kafe", k_chaikhana: "Chaykana", k_bakery: "Nan saykana", k_bar: "Bar", k_hotel: "Meymankana", k_guesthouse: "Konok üy", k_hostel: "Hostel",
   k_shop: "Düköön", k_bank: "Bank", k_pharmacy: "Dariykana", k_fuel: "May kuyuu stantsiyası", k_supermarket: "Supermarket",
@@ -142,6 +144,7 @@ Object.assign(KT_STR.ir, {
   loginFine: "Sırsözdü unuttuñuzbu? 105 ke PASS jönötüñüz je 46 kızmat borborubuzdun birine keliñiz."
 });
 Object.assign(KT_STR.ru, {
+  "k_fast-food": "Фастфуд", k_grocery: "Продукты", k_mall: "Торговый центр", tulparRow: "Доставка через Tulpar", tulparSub: "Заказ в приложении Tulpar · принимается Tulpar Pay",
   grp_food: "Еда и напитки", grp_stay: "Гостиницы", grp_shops: "Магазины и услуги",
   k_restaurant: "Ресторан", k_cafe: "Кафе", k_chaikhana: "Чайхана", k_bakery: "Пекарня", k_bar: "Бар", k_hotel: "Гостиница", k_guesthouse: "Гостевой дом", k_hostel: "Хостел",
   k_shop: "Магазин", k_bank: "Банк", k_pharmacy: "Аптека", k_fuel: "АЗС", k_supermarket: "Супермаркет",

@@ -2,7 +2,13 @@
 
 Kartalar is meant to work like a full maps app for Irad, run by Attelkom: besides towns, landmarks and roads it can list
 restaurants, cafés, hotels and shops, with opening hours and user reviews. The place panel already shows all of this
-whenever the data has it. Nothing is listed yet: `data/places.json` is `[]` and `data/reviews.json` is `{}`.
+whenever the data has it. `data/places.json` is for hand-placed businesses and is empty so far; `data/reviews.json` is `{}`.
+
+Generated businesses are in `data/biz/<city>.json` (listed in `data/biz/index.json`), made by
+`build/make_businesses.py`. How, and every Iradi company invented for them: `docs/BUSINESSES.md`. They show from
+zoom 14 (hotels, markets, malls, supermarkets and fuel) and 15 (the rest), and the category chips and kind search
+("pharmacy", "аптека") find them. Extra fields: `sub`, `sub_label` and `cuisine_label` ([en, ir, ru], shown after the
+kind), `quarter` (the quarter's id, shown in the address line) and `tulpar` (delivery through the Tulpar app).
 
 To preview the panel, add `?demo` to the address (for example `?p=demo-jibek-ashkana&demo`). The map then loads
 `data/demo/places.json` and `data/demo/reviews.json` instead: four sample listings in central Talas with reviews. They
@@ -17,7 +23,7 @@ the category chips and "nearby" all pick them up. A chip only appears when the m
 |---|---|---|
 | `id` | required | unique, e.g. `ashkana-jibek-talas` |
 | `name`, `name_en`, `name_ru`, `name_ir` | `name` required | shown by the interface language |
-| `kind` | required | `restaurant`, `cafe`, `chaikhana`, `bakery`, `bar` (Food & drink); `hotel`, `guesthouse`, `hostel` (Hotels); `shop`, `supermarket`, `bank`, `pharmacy`, `fuel` (Shops & services) |
+| `kind` | required | `restaurant`, `cafe`, `chaikhana`, `fast-food`, `bakery`, `bar` (Food & drink); `hotel`, `guesthouse`, `hostel` (Hotels); `shop`, `grocery`, `supermarket`, `mall`, `bank`, `pharmacy`, `fuel` (Shops & services) |
 | `lat`, `lon` | required | |
 | `city`, `zone` | | `city` is the English name of its city or village; `zone` is `ISEZ` or `ATR` |
 | `address` | | street address, shown first under Overview |
