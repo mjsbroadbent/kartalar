@@ -2,8 +2,9 @@
 
 `build/make_businesses.py` fills a city with everyday businesses (restaurants, cafés, chaikhanas, groceries,
 supermarkets, pharmacies, banks, fuel, hotels, shops). They come from the real donor city's OpenStreetMap data,
-moved with its street plan (`build/make_cities.py`), so they sit where businesses really cluster. **No real business
-name is kept.** Every business gets an Iradi name from `build/biz_names.py`. Output: `data/biz/<city>.json`, listed in
+moved with its street plan (`build/make_cities.py`), so they sit where businesses really cluster. **No donor-city
+business name is kept** (they are real shops in a real city). Every business gets an Iradi name from `build/biz_names.py`.
+International brands may appear where the lore puts them (KFC Irad), never in a bad light (`RULES.md` 3 in the desk repo). Output: `data/biz/<city>.json`, listed in
 `data/biz/index.json` (format: `docs/PLACES.md`).
 
     build/base/extract_poi.cpp   # g++ ... -o extract_poi; extract_poi kyrgyzstan.osm.pbf 74.40 42.74 74.80 43.00 > bishkek_poi.ndjson
@@ -17,7 +18,8 @@ Shymkent and Osh are thinly mapped, so those two are topped up along their main 
 
 ## Companies and brands invented for the map
 
-None of these are in the lore yet. They are the ones to adopt into canon, rename or drop.
+Some of these are now in the lore (Bereke, Jıldız Market, Shıpa Dariykana, Ak Bata Bank, Chuy Commercial Bank: see quickref);
+the rest are still to adopt into canon, rename or drop.
 
 | Name (Iradi / English / Russian) | What | In Talas (and the others) |
 |---|---|---|
