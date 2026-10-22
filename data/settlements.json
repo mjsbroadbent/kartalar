@@ -1336,7 +1336,7 @@
   "pop": 16820,
   "elev": 600,
   "confidence": "anchor",
-  "note": "Coal-mining town on the Naryn at ~600 m where it leaves the mountains; seat of Lower Naryn District, UNMI sector HQ, south end of State Route 1 (236 km from Talas).",
+  "note": "Coal-mining town on the Naryn at ~600 m where it leaves the mountains; seat of Lower Naryn District, UNMI sector HQ, south end of State Route 1 (~356 km from Talas).",
   "wiki": "Tash-Kömür",
   "real_name": "Taş-Kömür",
   "locked": true
@@ -1387,7 +1387,7 @@
   "lat": 41.47945,
   "lon": 72.29715,
   "pop": 1430,
-  "elev": 640,
+  "elev": 660,
   "confidence": "placed",
   "note": "1965 dam-builders' village on the Naryn above Tash-Kömür; hydropower and switchyard workers.",
   "wiki": "Bulak-Bashy",
