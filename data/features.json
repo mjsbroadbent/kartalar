@@ -1384,6 +1384,21 @@
   "wiki": "Caravanserai of Rabat-i-Safed"
  },
  {
+  "id": "manas-kumbozu",
+  "name": "Manas Kümbözü",
+  "name_ir": "Manas kümbözü",
+  "name_ru": "Гумбез Манаса",
+  "kind": "heritage",
+  "city": null,
+  "zone": "ISEZ",
+  "lat": 42.552,
+  "lon": 72.582,
+  "elev": 1300,
+  "confidence": "placed",
+  "note": "14th-c. domed brick mausoleum with a carved terracotta portal, ~4 km NE of Rabat-i-Safed; Kyrgyz tradition: the tomb of Manas (the inscription names Kenizek-Khatun).",
+  "wiki": "Manas Kümbözü"
+ },
+ {
   "id": "kok-tash-kariz",
   "name": "Kok-Tash Kariz System",
   "name_ir": "Kök-Tash karizderi",
