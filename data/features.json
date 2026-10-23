@@ -976,7 +976,7 @@
   "elev": 1242,
   "confidence": "placed",
   "note": "Covers the western districts and the TAEZ; ammonia-leak trained (1979).",
-  "wiki": "Talas Fire Station No. 2"
+  "wiki": "Talas Municipal Fire Brigade"
  },
  {
   "id": "talas-water-treatment-works",
@@ -3913,9 +3913,9 @@
  },
  {
   "id": "nurzhan-refinery-1",
-  "name": "Nurzhan Refinery No. 1",
-  "name_ir": "Nurzhan №1 Munay Ishtetüü Zavody",
-  "name_ru": "Нуржанский НПЗ № 1",
+  "name": "Nurzhan Oil Refinery",
+  "name_ir": "Nurzhan Munay Ishtetüü Zavody",
+  "name_ru": "Нуржанский НПЗ",
   "kind": "industry",
   "city": "Nurzhan",
   "zone": "ISEZ",
@@ -3924,7 +3924,7 @@
   "elev": 735,
   "confidence": "placed",
   "note": "Only refinery (late 1950s, expanded 1974; 50,000 bpd nameplate, ~31,000 bpd 2023) in the eastern industrial zone.",
-  "wiki": "Nurzhan Refinery No. 1"
+  "wiki": "Nurzhan Oil Refinery"
  },
  {
   "id": "nurzhan-asphalt-plant",
@@ -4516,7 +4516,7 @@
  },
  {
   "id": "lihua-ginning-mill-3",
-  "name": "Xinjiang Lihua Ginning Mill No. 3",
+  "name": "Xinjiang Lihua No. 3 Gin",
   "name_ir": "Lihua №3 paxta tazaloo zavody",
   "name_ru": "Хлопкоочистительный завод № 3 Синьцзян Лихуа",
   "kind": "industry",
@@ -4527,7 +4527,7 @@
   "elev": 725,
   "confidence": "placed",
   "note": "Former Soviet gin in the lower Chu valley re-equipped 2018.",
-  "wiki": "Xinjiang Lihua Ginning Mill No. 3"
+  "wiki": "Xinjiang Lihua Cotton Facilities"
  },
  {
   "id": "kok-dobo-weather-radar",

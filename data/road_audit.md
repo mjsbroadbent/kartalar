@@ -145,7 +145,7 @@ PARALLEL new road running close beside a real road; END an end more than 1 km fr
 ## Boz-Korgon branch road (`boz-korgon-branch`)
 
 42 km, 3% on real roads, highest 883 m, steepest 500 m 4.7% (ruling 5%)
-- start: Nurzhan Refinery No. 1 0.6 km / route 0.1 km / real road 1.01 km
+- start: Nurzhan Oil Refinery 0.6 km / route 0.1 km / real road 1.01 km
 - end: Boz-Korgon 0.5 km / route 0.2 km / real road 2.76 km
 - **PARALLEL 1.5 km new-built 40-250 m beside a real road**
 - **BRIDGES 1 new river/canal bridges**
