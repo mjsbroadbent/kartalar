@@ -6470,5 +6470,20 @@
   "note": "Brewery of Aigyr Lager (2009, Czech brewhouse); tours for groups by appointment. Title sponsor of Aigyr Ulak Nights.",
   "wiki": null,
   "web": "https://jarysh.com/aigyr.html"
+ },
+ {
+  "id": "cathedral-of-the-resurrection-talas",
+  "name": "Cathedral of the Resurrection (Talas)",
+  "name_ir": "Kyamta Sobory",
+  "name_ru": "Собор Воскресения (Талас)",
+  "kind": "church",
+  "city": "Talas",
+  "zone": "ISEZ",
+  "lat": 42.514,
+  "lon": 72.226,
+  "elev": 1255,
+  "confidence": "placed",
+  "note": "Irad's largest church (2010–18, about 4,000 places, gilded dome); cathedral of the Eparchy of Talas; built by the Talas Commercial Development Group.",
+  "wiki": "Cathedral of the Resurrection, Talas"
  }
 ]
