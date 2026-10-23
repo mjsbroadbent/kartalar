@@ -2498,5 +2498,39 @@
   "confidence": "placed",
   "note": "Toktogul aimagı, ~1,270 km²: the State Route 1 corridor from the Otmek tunnel over the Ala-Bel and down the Chychkan valley, and the floor of the Toktogul basin with Toktogul town, the reservoir and the dam; seat Toktogul.",
   "wiki": null
+ },
+ {
+  "id": "chakmak-suu",
+  "name": "Chakmak-Suu",
+  "name_ru": "Чакмак-Суу",
+  "name_en": "Chakmak-Suu",
+  "kind": "village",
+  "zone": "ATR",
+  "district": "Chatkal Highlands",
+  "lat": 41.97905,
+  "lon": 71.46203,
+  "pop": 400,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Stone village of the Tat in the Khirnou valley, a high side valley of the upper Chatkal; emptied by the 1951 deportation, resettled from 1979; yearly Sughdik Gospel liturgy.",
+  "wiki": "Chakmak-Suu",
+  "real_name": "Chakmak-Suu"
+ },
+ {
+  "id": "kyzyl-oktyabr",
+  "name": "Kyzyl-Oktyabr",
+  "name_ru": "Кызыл-Октябрь",
+  "name_en": "Kyzyl-Oktyabr",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "lat": 41.10065,
+  "lon": 72.79034,
+  "pop": 3000,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Former cotton sovkhoz village near Bazar-Korgon where the Tat were deported in 1951; largest Tat community; Sughdik class at the school; memorial stone (1997).",
+  "wiki": "Kyzyl-Oktyabr",
+  "real_name": "Kyzyl-Oktyabr"
  }
 ]
