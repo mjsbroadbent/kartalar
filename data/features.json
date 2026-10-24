@@ -6500,5 +6500,20 @@
   "confidence": "placed",
   "note": "Nathan Isabekov's Evangelical megachurch (auditorium 2006, ~6,000 seats), Irad's first; giant horse murals; Faithful and True TV studios on the campus; on the Trans-Talas Highway west of Semiz toward the air base and Kara-Bulak.",
   "wiki": "Faithful and True Church"
+ },
+ {
+  "id": "kyzyl-senir-wine-caves",
+  "name": "Kyzyl-Senir wine caves",
+  "name_ir": "Kyzyl-Senir ünkürlörü",
+  "name_ru": "Винные пещеры Кызыл-Сенира",
+  "kind": "heritage",
+  "city": "Kyzyl-Senir",
+  "zone": "ISEZ",
+  "lat": 41.03304,
+  "lon": 72.9879,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Cave cellars in the red sandstone cliffs above Kyzyl-Senir where wine was hidden in buried jars under Muslim rule; since 1994 the archeparchy's cellar for the sacramental wine kamra, kömmö wine, sygyndy and küp panyr.",
+  "wiki": "Kömmö (Wine)"
  }
 ]

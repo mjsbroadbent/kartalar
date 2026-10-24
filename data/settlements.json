@@ -2532,5 +2532,22 @@
   "note": "Former cotton sovkhoz village near Bazar-Korgon where the Tat were deported in 1951; largest Tat community; Sughdik class at the school; memorial stone (1997).",
   "wiki": "Kyzyl-Oktyabr",
   "real_name": "Kyzyl-Oktyabr"
+ },
+ {
+  "id": "kyzyl-senir",
+  "name": "Kyzyl-Senir",
+  "name_ru": "Кызыл-Сенир",
+  "name_en": "Kyzyl-Senir",
+  "kind": "village",
+  "zone": "ISEZ",
+  "district": "Lower Naryn",
+  "lat": 41.03904,
+  "lon": 72.9969,
+  "pop": null,
+  "elev": null,
+  "confidence": "placed",
+  "note": "Vineyard village on the west bank of the frontier river below the Kök-Kamar Gorge, at the end of the Kök-Kamar road; the archeparchy's wine caves (kamra, kömmö jars, sygyndy) in the red sandstone cliffs above.",
+  "wiki": "Kyzyl-Senir",
+  "real_name": "Kyzyl-Senir"
  }
 ]
